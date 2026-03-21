@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giuliana | Tutoring</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f9c8d8;
+    --pink-deep: #f2a8c0;
+    --pink-light: #fdeef4;
+    --pink-pale: #fff5f9;
+    --white: #ffffff;
+    --text: #3a2a30;
+    --text-muted: #9a7080;
+    --border: #f0d5e0;
+    --accent: #e8849e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); font-style: italic; }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ─── HERO ─── */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--pink-pale) 0%, var(--white) 60%, var(--pink-light) 100%);
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #home::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    opacity: 0.35;
+  }
+
+  #home::after {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--pink-deep) 0%, transparent 70%);
+    bottom: -50px; left: -80px;
+    opacity: 0.2;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--pink);
+    color: var(--accent);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.4rem 1.2rem;
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .hero-title em { color: var(--accent); font-style: italic; }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 0.9rem 2.4rem;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.7s 0.3s ease both;
+    box-shadow: 0 4px 20px rgba(232,132,158,0.35);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(232,132,158,0.45);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 0.9rem 2.4rem;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    margin-left: 1rem;
+    animation: fadeUp 0.7s 0.35s ease both;
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); background: var(--pink-pale); }
+
+  /* ─── TESTIMONIALS ─── */
+  #reviews-home {
+    background: var(--white);
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 3rem;
+  }
+
+  .testimonials-track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .testimonials-track::-webkit-scrollbar { display: none; }
+
+  .testimonial-card {
+    flex: 0 0 320px;
+    scroll-snap-align: start;
+    background: var(--pink-pale);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    text-align: left;
+  }
+
+  .t-stars { color: var(--accent); font-size: 1rem; margin-bottom: 0.8rem; letter-spacing: 2px; }
+
+  .t-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--text);
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+
+  .t-author { font-size: 0.82rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* ─── ABOUT ─── */
+  #about {
+    background: var(--pink-pale);
+    padding: 5rem 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .about-inner {
+    max-width: 700px;
+    text-align: center;
+  }
+
+  .about-inner p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-top: 1.5rem;
+  }
+
+  /* ─── ENROLL ─── */
+  #enroll {
+    padding: 5rem 2rem;
+    text-align: center;
+    background: var(--white);
+  }
+
+  .enroll-card {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink-pale), var(--white));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem 3.5rem;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .enroll-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+  .enroll-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 1rem 0 2rem;
+    font-weight: 300;
+  }
+
+  /* ─── REVIEWS PAGE ─── */
+  #reviews {
+    padding: 5rem 2rem;
+    background: var(--pink-pale);
+    min-height: 60vh;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 2rem auto 0;
+  }
+
+  .review-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.6rem;
+  }
+
+  .review-card .t-text { font-size: 1rem; }
+
+  /* ─── SUBMIT REVIEW ─── */
+  #submit-review {
+    padding: 5rem 2rem;
+    background: var(--white);
+    text-align: center;
+  }
+
+  .form-wrap {
+    max-width: 520px;
+    margin: 2rem auto 0;
+    text-align: left;
+  }
+
+  .form-group { margin-bottom: 1.2rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--pink-pale);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--accent); background: var(--white); }
+
+  .form-group textarea { height: 100px; resize: vertical; }
+
+  .star-picker { display: flex; gap: 0.4rem; margin-top: 0.3rem; }
+
+  .star-picker span {
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.15s;
+    user-select: none;
+  }
+
+  .star-picker span.active { color: var(--accent); }
+
+  .notice {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.8rem;
+    font-style: italic;
+  }
+
+  /* ─── ADMIN PANEL ─── */
+  #admin {
+    padding: 5rem 2rem;
+    background: var(--pink-pale);
+    display: none;
+  }
+
+  #admin.visible { display: block; }
+
+  .pending-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem;
+    margin: 1rem auto;
+    max-width: 700px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pending-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+  .btn-approve {
+    background: #d4edda; color: #2d6a4f;
+    border: none; border-radius: 8px;
+    padding: 0.4rem 1rem;
+    cursor: pointer; font-size: 0.85rem;
+    font-family: inherit; font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .btn-reject {
+    background: #fce8ec; color: #a02828;
+    border: none; border-radius: 8px;
+    padding: 0.4rem 1rem;
+    cursor: pointer; font-size: 0.85rem;
+    font-family: inherit; font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .btn-approve:hover, .btn-reject:hover { opacity: 0.75; }
+
+  /* ─── CALENDAR ─── */
+  #calendar {
+    padding: 5rem 2rem;
+    background: var(--white);
+    text-align: center;
+  }
+
+  .cal-wrap { max-width: 500px; margin: 2rem auto 0; }
+
+  .cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+  }
+
+  .cal-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+
+  .cal-nav {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    width: 34px; height: 34px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-muted);
+    transition: border-color 0.2s;
+  }
+
+  .cal-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .cal-day-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 0.3rem 0;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    border: 1.5px solid transparent;
+    color: var(--text);
+  }
+
+  .cal-day:hover { background: var(--pink-light); border-color: var(--border); }
+  .cal-day.today { background: var(--pink); color: var(--accent); font-weight: 500; }
+  .cal-day.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.booked { background: var(--pink-light); color: var(--accent); position: relative; }
+  .cal-day.booked::after {
+    content: '•';
+    position: absolute;
+    bottom: 2px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.5rem;
+    color: var(--accent);
+  }
+
+  .cal-legend {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .cal-note {
+    margin-top: 1.5rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--pink-pale);
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  footer strong {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ─── ADMIN LOGIN ─── */
+  #admin-login-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(58,42,48,0.4);
+    backdrop-filter: blur(6px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #admin-login-overlay.visible { display: flex; }
+
+  .login-box {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(58,42,48,0.15);
+  }
+
+  .login-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+  }
+
+  .login-box input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: var(--pink-pale);
+    outline: none;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  .login-box input:focus { border-color: var(--accent); }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 99px;
+    font-size: 0.88rem;
+    font-weight: 400;
+    transition: transform 0.3s ease;
+    z-index: 9999;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1rem; }
+    .enroll-card { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">Giuliana <span>✦</span></a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#enroll">Enroll</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#" onclick="openAdmin(event)">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <span class="hero-tag">✨ Personalized Tutoring</span>
+  <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
+  <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
+  <div>
+    <a href="#enroll" class="btn-primary">Get Started</a>
+    <a href="#about" class="btn-secondary">Learn More</a>
+  </div>
+
+  <!-- Testimonials carousel in hero -->
+  <div style="margin-top: 4rem; width: 100%; max-width: 900px;" id="reviews-home">
+    <p class="section-label">What parents are saying</p>
+    <div class="testimonials-track" id="hero-testimonials"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <p class="section-label">About</p>
+    <h2 class="section-title">Hi, I'm Giuliana 💕</h2>
+    <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I specialize in creating a warm, supportive environment where every child feels seen and capable.</p>
+    <p style="margin-top: 1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section id="enroll">
+  <p class="section-label">Enrollment</p>
+  <h2 class="section-title">Ready to get started?</h2>
+  <div class="enroll-card">
+    <div class="enroll-icon">📋</div>
+    <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:1.5rem;">Tell me about your child</h3>
+    <p>Fill out a quick intake form with your child's age, grade, subject needs, and learning goals. I'll reach out to schedule your first session!</p>
+    <a href="https://forms.google.com" target="_blank" class="btn-primary">Fill Out Intake Form →</a>
+    <p class="notice">🔒 Your information is private and never shared.</p>
+  </div>
+</section>
+
+<!-- REVIEWS DISPLAY -->
+<section id="reviews">
+  <div style="text-align:center;">
+    <p class="section-label">Testimonials</p>
+    <h2 class="section-title">Parent Reviews</h2>
+  </div>
+  <div class="reviews-grid" id="approved-reviews"></div>
+</section>
+
+<!-- SUBMIT REVIEW -->
+<section id="submit-review">
+  <p class="section-label">Leave a Review</p>
+  <h2 class="section-title">Share your experience</h2>
+  <div class="form-wrap">
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="r-name" placeholder="e.g. Sarah M.">
+    </div>
+    <div class="form-group">
+      <label>Star Rating</label>
+      <div class="star-picker" id="star-picker">
+        <span data-val="1">★</span>
+        <span data-val="2">★</span>
+        <span data-val="3">★</span>
+        <span data-val="4">★</span>
+        <span data-val="5">★</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Your Review</label>
+      <textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="submitReview()" style="border:none;cursor:pointer;width:100%;text-align:center;">Submit Review</button>
+    <p class="notice">✨ Reviews are moderated and posted after approval.</p>
+  </div>
+</section>
+
+<!-- ADMIN PANEL -->
+<section id="admin">
+  <div style="text-align:center; margin-bottom: 2rem;">
+    <p class="section-label">Admin</p>
+    <h2 class="section-title">Pending Reviews</h2>
+  </div>
+  <div id="pending-list"></div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar">
+  <p class="section-label">Schedule</p>
+  <h2 class="section-title">Availability Calendar</h2>
+  <div class="cal-wrap">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+      <h3 id="cal-month-label"></h3>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-legend">
+      <span><span class="legend-dot" style="background:var(--pink)"></span>Today</span>
+      <span><span class="legend-dot" style="background:var(--accent)"></span>Selected</span>
+      <span><span class="legend-dot" style="background:var(--pink-light)"></span>Booked</span>
+    </div>
+    <p class="cal-note" id="cal-note">Select a date to check availability. Fill out the intake form to book a session!</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Giuliana ✦ Tutoring</strong>
+  <p>Making learning a little more lovely, one student at a time 💕</p>
+</footer>
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div id="admin-login-overlay">
+  <div class="login-box">
+    <h3>Admin Access</h3>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Enter your password to view pending reviews.</p>
+    <input type="password" id="admin-pw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()">
+    <button class="btn-primary" onclick="checkAdmin()" style="border:none;cursor:pointer;width:100%;text-align:center;">Enter</button>
+    <button onclick="document.getElementById('admin-login-overlay').classList.remove('visible')" style="margin-top:0.7rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-family:inherit;font-size:0.85rem;">Cancel</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── DATA (localStorage for persistence) ───
+  const ADMIN_PASSWORD = "tutor2024"; // Change this!
+
+  function getApproved() {
+    try { return JSON.parse(localStorage.getItem('approvedReviews') || '[]'); } catch { return []; }
+  }
+
+  function getPending() {
+    try { return JSON.parse(localStorage.getItem('pendingReviews') || '[]'); } catch { return []; }
+  }
+
+  function saveApproved(arr) { localStorage.setItem('approvedReviews', JSON.stringify(arr)); }
+  function savePending(arr) { localStorage.setItem('pendingReviews', JSON.stringify(arr)); }
+
+  // Seed some default approved reviews if none exist
+  function seedReviews() {
+    if (getApproved().length === 0) {
+      saveApproved([
+        { name: "Sarah M.", stars: 5, text: "Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!", date: "2025-02" },
+        { name: "James & Priya L.", stars: 5, text: "My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.", date: "2025-01" },
+        { name: "Tanya R.", stars: 5, text: "Our daughter jumped two reading levels in one semester. We couldn't be more grateful.", date: "2024-12" },
+        { name: "Michelle K.", stars: 5, text: "She tailors every session to where my child is at. It's clear she truly cares about her students.", date: "2024-11" }
+      ]);
+    }
+  }
+
+  // ─── RENDER APPROVED REVIEWS ───
+  function renderApproved() {
+    const reviews = getApproved();
+    const grid = document.getElementById('approved-reviews');
+    grid.innerHTML = reviews.length === 0
+      ? '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet — be the first!</p>'
+      : reviews.map(r => `
+        <div class="review-card">
+          <div class="t-stars">${'★'.repeat(r.stars)}</div>
+          <p class="t-text">"${r.text}"</p>
+          <span class="t-author">— ${r.name}</span>
+        </div>`).join('');
+
+    // Hero carousel (first 4)
+    const hero = document.getElementById('hero-testimonials');
+    hero.innerHTML = reviews.slice(0,4).map(r => `
+      <div class="testimonial-card">
+        <div class="t-stars">${'★'.repeat(r.stars)}</div>
+        <p class="t-text">"${r.text}"</p>
+        <span class="t-author">— ${r.name}</span>
+      </div>`).join('');
+  }
+
+  // ─── STAR PICKER ───
+  let selectedStars = 0;
+  document.getElementById('star-picker').addEventListener('click', e => {
+    if (e.target.dataset.val) {
+      selectedStars = parseInt(e.target.dataset.val);
+      document.querySelectorAll('#star-picker span').forEach((s, i) => {
+        s.classList.toggle('active', i < selectedStars);
+      });
+    }
+  });
+
+  // ─── SUBMIT REVIEW ───
+  function submitReview() {
+    const name = document.getElementById('r-name').value.trim();
+    const text = document.getElementById('r-text').value.trim();
+    if (!name || !text || !selectedStars) { showToast('Please fill out all fields and select a rating!'); return; }
+
+    const pending = getPending();
+    pending.push({ id: Date.now(), name, stars: selectedStars, text, date: new Date().toISOString().slice(0,7) });
+    savePending(pending);
+
+    document.getElementById('r-name').value = '';
+    document.getElementById('r-text').value = '';
+    selectedStars = 0;
+    document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
+
+    showToast('Thank you! Your review has been submitted for approval 💕');
+  }
+
+  // ─── ADMIN ───
+  function openAdmin(e) {
+    e.preventDefault();
+    document.getElementById('admin-login-overlay').classList.add('visible');
+    setTimeout(() => document.getElementById('admin-pw').focus(), 100);
+  }
+
+  function checkAdmin() {
+    const pw = document.getElementById('admin-pw').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('admin-login-overlay').classList.remove('visible');
+      document.getElementById('admin-pw').value = '';
+      document.getElementById('admin').classList.add('visible');
+      renderPending();
+      document.getElementById('admin').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      showToast('Incorrect password. Try again.');
+    }
+  }
+
+  function renderPending() {
+    const pending = getPending();
+    const list = document.getElementById('pending-list');
+    if (pending.length === 0) {
+      list.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No pending reviews! You\'re all caught up ✨</p>';
+      return;
+    }
+    list.innerHTML = pending.map(r => `
+      <div class="pending-card" id="pending-${r.id}">
+        <div>
+          <div class="t-stars">${'★'.repeat(r.stars)}</div>
+          <p style="font-size:0.95rem;line-height:1.6;">"${r.text}"</p>
+          <span class="t-author">— ${r.name}</span>
+        </div>
+        <div class="pending-actions">
+          <button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button>
+          <button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function approveReview(id) {
+    let pending = getPending();
+    const idx = pending.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const [review] = pending.splice(idx, 1);
+    savePending(pending);
+    const approved = getApproved();
+    approved.unshift(review);
+    saveApproved(approved);
+    renderPending();
+    renderApproved();
+    showToast('Review approved and posted! ✨');
+  }
+
+  function rejectReview(id) {
+    let pending = getPending();
+    pending = pending.filter(r => r.id !== id);
+    savePending(pending);
+    renderPending();
+    showToast('Review rejected and removed.');
+  }
+
+  // ─── CALENDAR ───
+  let calDate = new Date();
+  const BOOKED_DAYS = [3, 7, 12, 18, 24]; // Example booked days
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function renderCalendar() {
+    const year = calDate.getFullYear();
+    const month = calDate.getMonth();
+    const today = new Date();
+    document.getElementById('cal-month-label').textContent = `${MONTHS[month]} ${year}`;
+
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+      grid.innerHTML += `<div class="cal-day empty"></div>`;
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+      const isBooked = BOOKED_DAYS.includes(d);
+      const cls = isToday ? 'today' : isBooked ? 'booked' : '';
+      grid.innerHTML += `<div class="cal-day ${cls}" onclick="selectDay(${d}, ${month}, ${year})">${d}</div>`;
+    }
+  }
+
+  function selectDay(d, m, y) {
+    document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('selected'));
+    event.target.classList.add('selected');
+    const isBooked = BOOKED_DAYS.includes(d);
+    const note = document.getElementById('cal-note');
+    if (isBooked) {
+      note.textContent = `${MONTHS[m]} ${d}, ${y} is already booked. Please choose another date or fill out the intake form to join the waitlist!`;
+    } else {
+      note.innerHTML = `${MONTHS[m]} ${d}, ${y} looks available! <a href="#enroll" style="color:var(--accent)">Fill out the intake form</a> to request this date.`;
+    }
+  }
+
+  function changeMonth(dir) {
+    calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1);
+    renderCalendar();
+  }
+
+  // ─── TOAST ───
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ─── INIT ───
+  seedReviews();
+  renderApproved();
+  renderCalendar();
+</script>
+</body>
+</html>
