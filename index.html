@@ -371,8 +371,8 @@
   </div>
 </div>
 
-<!-- PARENT DASHBOARD (page section, still exists for scroll anchor) -->
-<section id="parent-dashboard">
+<!-- PARENT DASHBOARD (hidden - content lives in account panel) -->
+<section id="parent-dashboard" style="display:none!important;">
   <div class="dash-wrap">
     <p class="section-label">Parent Portal</p>
     <h2 class="section-title" id="dash-greeting" style="margin-bottom:1.5rem;">My Dashboard</h2>
@@ -741,11 +741,9 @@ async function onLoggedIn() {
     await renderTutorDashboard();
     document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
   } else {
-    document.getElementById('parent-dashboard').classList.add('visible');
-    await renderParentDashboard();
-    updateContactUI();
     startParentMessageListener();
-    document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
+    updateContactUI();
+    await openAccountPanel();
   }
   renderCalendar();
   showToast('Welcome back, ' + currentUser.firstName + '!');
@@ -1270,21 +1268,22 @@ document.addEventListener('click', e => {
 // ══════════════════════════════════════════
 //  ACCOUNT PANEL
 // ══════════════════════════════════════════
-function openAccountPanel() {
+async function openAccountPanel() {
   closeProfileMenu();
   document.getElementById('account-panel').classList.add('open');
   document.getElementById('account-panel-overlay').classList.add('visible');
-  renderAccountPanel();
+  await renderAccountPanel();
 }
 function closeAccountPanel() {
   document.getElementById('account-panel').classList.remove('open');
   document.getElementById('account-panel-overlay').classList.remove('visible');
 }
-function renderAccountPanel() {
+async function renderAccountPanel() {
   const body  = document.getElementById('panel-body');
   const title = document.getElementById('panel-title');
-  if (isTutor) { title.textContent = 'Tutor Account'; renderTutorAccountPanel(body); }
-  else if (currentUser) { title.textContent = 'My Account'; renderParentAccountPanel(body); }
+  body.innerHTML = '<p style="color:var(--text-muted);font-size:.9rem;padding:2rem;text-align:center;">Loading...</p>';
+  if (isTutor) { title.textContent = 'Tutor Account'; await renderTutorAccountPanel(body); }
+  else if (currentUser) { title.textContent = 'My Account'; await renderParentAccountPanel(body); }
 }
 
 async function renderParentAccountPanel(body) {
@@ -1305,13 +1304,25 @@ async function renderParentAccountPanel(body) {
         <div class="panel-info-row"><span>Age</span><span>${c.age}</span></div>
         <div class="panel-info-row"><span>Subject</span><span>${c.subject}</span></div>
         <div class="panel-info-row"><span>Needs help with</span><span style="text-align:right;max-width:55%;">${c.specific||'—'}</span></div>
+        ${c.questions?`<div class="panel-info-row"><span>Questions</span><span style="text-align:right;max-width:55%;">${c.questions}</span></div>`:''}
       </div>
-      <button onclick="openEditChild()" style="margin-top:.5rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
+      <button onclick="openEditChild()" style="margin-top:.8rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
     </div>
     <div class="panel-section">
       <p class="panel-section-title">My Appointments</p>
-      ${appts.length===0 ? '<p style="color:var(--text-muted);font-size:.88rem;">No sessions yet.</p>'
-        : appts.map(a=>{const sc=a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';return`<div class="panel-appt-item"><div class="panel-appt-date">${formatDate(a.date)}</div><div style="flex:1;"><div style="font-size:.88rem;font-weight:500;">${a.time} · ${a.subject}</div><div style="font-size:.78rem;color:var(--text-muted);">${a.notes||'No notes'}</div></div><span class="appt-status ${sc}">${a.status}</span></div>`;}).join('')}
+      ${appts.length===0
+        ? '<p style="color:var(--text-muted);font-size:.88rem;">No sessions yet.</p>'
+        : appts.map(a=>{
+            const sc=a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';
+            return `<div class="panel-appt-item">
+              <div class="panel-appt-date">${formatDate(a.date)}</div>
+              <div style="flex:1;">
+                <div style="font-size:.88rem;font-weight:500;">${a.time} · ${a.subject}</div>
+                <div style="font-size:.78rem;color:var(--text-muted);">${a.notes||'No notes'}</div>
+              </div>
+              <span class="appt-status ${sc}">${a.status}</span>
+            </div>`;
+          }).join('')}
       <button onclick="openApptRequest();closeAccountPanel();" style="margin-top:.8rem;" class="request-btn">+ Request Session</button>
     </div>
     <div class="panel-section">
@@ -1323,14 +1334,9 @@ async function renderParentAccountPanel(body) {
       </div>
     </div>
     <div class="panel-section">
-      <p class="panel-section-title">Account</p>
-      <div class="panel-danger-zone">
-        <p>Deleting your account will permanently remove all your data including appointments and messages. This cannot be undone.</p>
-        <button class="btn-danger" onclick="deleteAccount()">Delete My Account</button>
-      </div>
+      <button onclick="deleteAccount()" style="width:100%;background:var(--pink);color:var(--accent);border:none;border-radius:12px;padding:.9rem;font-size:.9rem;font-weight:500;font-family:inherit;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--pink-deep)'" onmouseout="this.style.background='var(--pink)'">Delete My Account</button>
     </div>
   `;
-  // Load messages into panel thread
   const msgs = await fsGetMessages(u.email);
   renderPanelThreadFromData(msgs);
 }
@@ -1407,7 +1413,7 @@ window.doTutorLogin      = doTutorLogin;
 window.doSignup          = doSignup;
 window.logout            = logout;
 window.toggleProfileMenu = toggleProfileMenu;
-window.openAccountPanel  = openAccountPanel;
+window.openAccountPanel  = () => openAccountPanel();
 window.closeAccountPanel = closeAccountPanel;
 window.openEditChild     = openEditChild;
 window.saveChildInfo     = saveChildInfo;
