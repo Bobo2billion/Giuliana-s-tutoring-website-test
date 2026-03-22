@@ -1,1 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giuliana Reitzell | Tutoring</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:#f9c8d8;--pink-deep:#f2a8c0;--pink-light:#fdeef4;--pink-pale:#fff5f9;
+    --white:#ffffff;--text:#3a2a30;--text-muted:#9a7080;--border:#f0d5e0;--accent:#e8849e;
+    --green:#d4edda;--green-text:#2d6a4f;--red-bg:#fce8ec;--red-text:#a02828;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden;}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;letter-spacing:.05em;color:var(--text);text-decoration:none;}
+  .nav-logo span{color:var(--accent);font-style:italic;}
+  .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+  .nav-links a{font-size:.85rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--accent);}
+  #nav-login-btn{background:var(--pink);color:var(--accent);border:none;padding:.5rem 1.3rem;border-radius:99px;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:background .2s;}
+  #nav-login-btn:hover{background:var(--pink-deep);}
+  #nav-user-info{display:none;align-items:center;gap:.8rem;font-size:.85rem;color:var(--text-muted);}
+  #nav-user-info strong{color:var(--accent);}
+  #nav-logout{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;font-family:inherit;text-decoration:underline;}
+
+  /* HERO */
+  #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--pink-pale) 0%,var(--white) 60%,var(--pink-light) 100%);padding:6rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
+  #home::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:-100px;right:-100px;opacity:.35;}
+  #home::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,var(--pink-deep) 0%,transparent 70%);bottom:-50px;left:-80px;opacity:.2;}
+  .hero-tag{display:inline-block;background:var(--pink);color:var(--accent);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem 1.2rem;border-radius:99px;margin-bottom:1.5rem;font-weight:500;animation:fadeUp .7s ease both;}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:300;line-height:1.1;margin-bottom:1.2rem;animation:fadeUp .7s .1s ease both;}
+  .hero-title em{color:var(--accent);font-style:italic;}
+  .hero-sub{font-size:1.05rem;color:var(--text-muted);max-width:480px;line-height:1.7;margin-bottom:2.5rem;font-weight:300;animation:fadeUp .7s .2s ease both;}
+  .btn-primary{display:inline-block;background:var(--accent);color:white;padding:.9rem 2.4rem;border-radius:99px;font-size:.9rem;font-weight:500;letter-spacing:.04em;text-decoration:none;transition:transform .2s,box-shadow .2s;animation:fadeUp .7s .3s ease both;box-shadow:0 4px 20px rgba(232,132,158,.35);border:none;cursor:pointer;font-family:inherit;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,132,158,.45);}
+  .btn-secondary{display:inline-block;border:1.5px solid var(--border);color:var(--text);padding:.9rem 2.4rem;border-radius:99px;font-size:.9rem;font-weight:400;letter-spacing:.04em;text-decoration:none;transition:border-color .2s,background .2s;margin-left:1rem;animation:fadeUp .7s .35s ease both;}
+  .btn-secondary:hover{border-color:var(--accent);background:var(--pink-pale);}
+
+  .section-label{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:.6rem;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;margin-bottom:2rem;}
+
+  /* TESTIMONIALS */
+  .testimonials-track{display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .testimonials-track::-webkit-scrollbar{display:none;}
+  .testimonial-card{flex:0 0 320px;scroll-snap-align:start;background:var(--pink-pale);border:1px solid var(--border);border-radius:18px;padding:2rem;text-align:left;}
+  .t-stars{color:var(--accent);font-size:1rem;margin-bottom:.8rem;letter-spacing:2px;}
+  .t-text{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;line-height:1.65;color:var(--text);font-style:italic;margin-bottom:1.2rem;}
+  .t-author{font-size:.82rem;font-weight:500;color:var(--text-muted);letter-spacing:.05em;}
+
+  /* ABOUT */
+  #about{background:var(--pink-pale);padding:5rem 2rem;display:flex;justify-content:center;text-align:center;}
+  .about-inner{max-width:700px;}
+  .about-inner p{font-size:1rem;line-height:1.85;color:var(--text-muted);font-weight:300;margin-top:1.5rem;}
+
+  /* REVIEWS */
+  #reviews{padding:5rem 2rem;background:var(--pink-pale);}
+  .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto;}
+  .review-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.6rem;}
+
+  /* SUBMIT REVIEW */
+  #submit-review{padding:5rem 2rem;background:var(--white);text-align:center;}
+  .form-wrap{max-width:520px;margin:2rem auto 0;text-align:left;}
+  .form-group{margin-bottom:1.2rem;}
+  .form-group label{display:block;font-size:.82rem;letter-spacing:.06em;font-weight:500;color:var(--text-muted);text-transform:uppercase;margin-bottom:.4rem;}
+  .form-group input,.form-group textarea,.form-group select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);background:var(--pink-pale);outline:none;transition:border-color .2s;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);background:var(--white);}
+  .form-group textarea{height:100px;resize:vertical;}
+  .star-picker{display:flex;gap:.4rem;margin-top:.3rem;}
+  .star-picker span{font-size:1.6rem;cursor:pointer;color:#ddd;transition:color .15s;user-select:none;}
+  .star-picker span.active{color:var(--accent);}
+
+  /* CONTACT SECTION */
+  #contact{padding:5rem 2rem;background:var(--pink-pale);text-align:center;}
+  .contact-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2.5rem;max-width:560px;margin:0 auto;}
+  .contact-card p{font-size:.95rem;color:var(--text-muted);line-height:1.7;margin-bottom:2rem;font-weight:300;}
+
+  /* CALENDAR */
+  #calendar{padding:5rem 2rem;background:var(--white);text-align:center;}
+  .cal-wrap{max-width:500px;margin:2rem auto 0;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+  .cal-header h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;}
+  .cal-nav{background:none;border:1.5px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1rem;color:var(--text-muted);transition:border-color .2s;}
+  .cal-nav:hover{border-color:var(--accent);color:var(--accent);}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-day-label{font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-align:center;padding:.3rem 0;}
+  .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:.88rem;cursor:pointer;transition:background .15s,color .15s;border:1.5px solid transparent;color:var(--text);}
+  .cal-day:hover{background:var(--pink-light);border-color:var(--border);}
+  .cal-day.today{background:var(--pink);color:var(--accent);font-weight:500;}
+  .cal-day.selected{background:var(--accent);color:white;border-color:var(--accent);}
+  .cal-day.empty{cursor:default;pointer-events:none;}
+  .cal-day.booked{background:var(--pink-light);color:var(--accent);position:relative;}
+  .cal-day.booked::after{content:'•';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:.5rem;color:var(--accent);}
+  .cal-day.my-appt{background:var(--accent);color:white;}
+  .cal-legend{display:flex;gap:1.5rem;justify-content:center;margin-top:1.2rem;font-size:.8rem;color:var(--text-muted);flex-wrap:wrap;}
+  .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle;}
+  .cal-note{margin-top:1.5rem;font-size:.88rem;color:var(--text-muted);font-style:italic;line-height:1.6;}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(58,42,48,.45);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
+  .modal-overlay.visible{display:flex;}
+  .modal-box{background:var(--white);border-radius:24px;padding:2.5rem;width:90%;max-width:420px;box-shadow:0 24px 64px rgba(58,42,48,.18);position:relative;animation:popIn .3s ease;max-height:90vh;overflow-y:auto;}
+  .modal-box.wide{max-width:580px;}
+  @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  .modal-close{position:absolute;top:1.2rem;right:1.4rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);line-height:1;}
+  .modal-tabs{display:flex;gap:.5rem;margin-bottom:1.8rem;border-bottom:1.5px solid var(--border);}
+  .tab-btn{background:none;border:none;padding:.7rem 1.2rem;font-size:.85rem;font-weight:500;font-family:inherit;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:color .2s,border-color .2s;}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .modal-box h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;margin-bottom:1.2rem;text-align:center;}
+  .modal-box .form-group{margin-bottom:1rem;}
+  .modal-box .form-group input,.modal-box .form-group select,.modal-box .form-group textarea{background:var(--pink-pale);}
+  .modal-note{font-size:.78rem;color:var(--text-muted);text-align:center;margin-top:.8rem;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+
+  /* MESSAGING */
+  .msg-thread{max-height:320px;overflow-y:auto;border:1.5px solid var(--border);border-radius:14px;padding:1rem;background:var(--pink-pale);margin-bottom:1rem;display:flex;flex-direction:column;gap:.6rem;}
+  .msg-thread::-webkit-scrollbar{width:4px;}
+  .msg-thread::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  .msg-row{display:flex;flex-direction:column;max-width:80%;}
+  .msg-row.mine{align-self:flex-end;align-items:flex-end;}
+  .msg-row.theirs{align-self:flex-start;align-items:flex-start;}
+  .msg-sender-name{font-size:.7rem;font-weight:500;color:var(--text-muted);margin-bottom:.2rem;letter-spacing:.02em;}
+  .msg-bubble{padding:.7rem 1rem;border-radius:14px;font-size:.88rem;line-height:1.5;}
+  .msg-row.mine .msg-bubble{background:var(--accent);color:white;border-bottom-right-radius:4px;}
+  .msg-row.theirs .msg-bubble{background:var(--white);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
+  .msg-bubble .msg-meta{font-size:.7rem;opacity:.65;margin-top:.3rem;}
+  .msg-compose{display:flex;gap:.6rem;}
+  .msg-compose input{flex:1;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.9rem;background:var(--pink-pale);outline:none;transition:border-color .2s;}
+  .msg-compose input:focus{border-color:var(--accent);background:var(--white);}
+  .msg-send-btn{background:var(--accent);color:white;border:none;border-radius:10px;padding:.7rem 1.2rem;cursor:pointer;font-size:.9rem;font-weight:500;font-family:inherit;transition:opacity .2s;white-space:nowrap;}
+  .msg-send-btn:hover{opacity:.85;}
+  .msg-unread-badge{background:var(--accent);color:white;border-radius:99px;font-size:.7rem;font-weight:700;padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle;}
+  .family-msg-btn{background:var(--pink-pale);color:var(--accent);border:1.5px solid var(--border);border-radius:8px;padding:.35rem .85rem;cursor:pointer;font-size:.8rem;font-family:inherit;font-weight:500;transition:background .2s;white-space:nowrap;}
+  .family-msg-btn:hover{background:var(--pink);}
+
+  /* PARENT DASHBOARD */
+  #parent-dashboard{display:none;padding:5rem 2rem;background:var(--pink-pale);}
+  #parent-dashboard.visible{display:block;}
+  .dash-wrap{max-width:800px;margin:0 auto;}
+  .dash-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:1.8rem;margin-bottom:1.5rem;}
+  .dash-card h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem;}
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem;}
+  .info-item{background:var(--pink-pale);border-radius:10px;padding:.8rem 1rem;}
+  .info-item .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:500;margin-bottom:.2rem;}
+  .info-item .value{font-size:.95rem;color:var(--text);}
+  .appt-item{display:flex;align-items:center;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);}
+  .appt-item:last-child{border-bottom:none;}
+  .appt-date{background:var(--pink);color:var(--accent);border-radius:10px;padding:.4rem .8rem;font-size:.82rem;font-weight:500;white-space:nowrap;}
+  .appt-details{flex:1;}
+  .appt-details strong{font-size:.9rem;display:block;}
+  .appt-details span{font-size:.82rem;color:var(--text-muted);}
+  .appt-status{font-size:.75rem;padding:.25rem .7rem;border-radius:99px;font-weight:500;}
+  .appt-status.confirmed{background:var(--green);color:var(--green-text);}
+  .appt-status.pending-s{background:var(--pink-light);color:var(--accent);}
+  .appt-status.cancelled{background:#f0f0f0;color:#888;text-decoration:line-through;}
+  .refresh-btn{background:none;border:1.5px solid var(--border);border-radius:99px;padding:.3rem .9rem;font-size:.75rem;font-family:inherit;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;transition:border-color .2s,color .2s;}
+  .refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .refresh-btn svg{transition:transform .5s ease;}
+  .refresh-btn.spinning svg{transform:rotate(360deg);}
+  .new-msg-banner{background:var(--pink);color:var(--accent);font-size:.82rem;font-weight:500;padding:.5rem 1rem;border-radius:10px;margin-bottom:.8rem;display:none;text-align:center;cursor:pointer;}
+  .new-msg-banner.visible{display:block;}
+  .request-btn{background:var(--accent);color:white;border:none;border-radius:10px;padding:.6rem 1.2rem;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;transition:opacity .2s;}
+  .request-btn:hover{opacity:.85;}
+
+  /* TUTOR DASHBOARD */
+  #tutor-dashboard{display:none;padding:5rem 2rem;background:var(--pink-pale);}
+  #tutor-dashboard.visible{display:block;}
+  .tutor-tabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap;}
+  .tutor-tab{background:var(--white);border:1.5px solid var(--border);border-radius:99px;padding:.5rem 1.3rem;font-size:.82rem;font-weight:500;font-family:inherit;cursor:pointer;color:var(--text-muted);transition:all .2s;}
+  .tutor-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+  .tutor-panel{display:none;}
+  .tutor-panel.active{display:block;}
+  .parent-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+  .parent-row-info strong{font-size:.95rem;display:block;margin-bottom:.2rem;}
+  .parent-row-info span{font-size:.82rem;color:var(--text-muted);display:block;line-height:1.6;}
+  .pending-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+  .pending-actions{display:flex;gap:.5rem;flex-shrink:0;}
+  .btn-approve{background:var(--green);color:var(--green-text);border:none;border-radius:8px;padding:.4rem 1rem;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:500;}
+  .btn-reject{background:var(--red-bg);color:var(--red-text);border:none;border-radius:8px;padding:.4rem 1rem;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:500;}
+  .appt-request-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+
+  footer{background:var(--pink-pale);border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;font-size:.82rem;color:var(--text-muted);}
+  footer strong{display:block;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.3rem;}
+
+  .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:white;padding:.8rem 2rem;border-radius:99px;font-size:.88rem;transition:transform .3s ease;z-index:9999;white-space:nowrap;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:600px){nav{padding:1rem 1.2rem;}.nav-links{gap:.8rem;}.enroll-card{padding:2rem 1.2rem;}.form-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home" class="nav-logo">Giuliana Reitzell <span>✦</span></a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li>
+      <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
+      <div id="nav-user-info">
+        <span>Hi, <strong id="nav-username"></strong></span>
+        <button id="nav-logout" onclick="logout()">Log out</button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <span class="hero-tag">✨ Personalized Tutoring</span>
+  <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
+  <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
+  <div>
+    <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Get Started</button>
+    <a href="#about" class="btn-secondary">Learn More</a>
+  </div>
+  <div style="margin-top:4rem;width:100%;max-width:900px;text-align:center;">
+    <p class="section-label">What parents are saying</p>
+    <div class="testimonials-track" id="hero-testimonials"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <p class="section-label">About</p>
+    <h2 class="section-title">Hi, I'm Giuliana.</h2>
+    <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I create a warm, supportive space where every child feels seen and capable.</p>
+    <p style="margin-top:1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div style="text-align:center;">
+    <p class="section-label">Testimonials</p>
+    <h2 class="section-title">Parent Reviews</h2>
+  </div>
+  <div class="reviews-grid" id="approved-reviews"></div>
+</section>
+
+<!-- SUBMIT REVIEW -->
+<section id="submit-review">
+  <p class="section-label">Leave a Review</p>
+  <h2 class="section-title">Share your experience</h2>
+  <div class="form-wrap">
+    <div class="form-group"><label>Your Name</label><input type="text" id="r-name" placeholder="e.g. Sarah M."></div>
+    <div class="form-group">
+      <label>Star Rating</label>
+      <div class="star-picker" id="star-picker">
+        <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
+      </div>
+    </div>
+    <div class="form-group"><label>Your Review</label><textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea></div>
+    <button class="btn-primary" onclick="submitReview()" style="animation:none;border:none;width:100%;text-align:center;">Submit Review</button>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2 class="section-title">Get in Touch</h2>
+  <div class="contact-card">
+    <p id="contact-desc">Have a question? Send a message and I'll get back to you as soon as possible. Log in to start a conversation.</p>
+    <div id="contact-login-prompt">
+      <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Log In to Message</button>
+    </div>
+    <div id="contact-thread-wrap" style="display:none;">
+      <div class="msg-thread" id="contact-thread"></div>
+      <div class="msg-compose">
+        <input type="text" id="contact-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendContactMsg()">
+        <button class="msg-send-btn" onclick="sendContactMsg()">Send</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar">
+  <p class="section-label">Schedule</p>
+  <h2 class="section-title">Availability Calendar</h2>
+  <div class="cal-wrap">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+      <h3 id="cal-month-label"></h3>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-legend">
+      <span><span class="legend-dot" style="background:var(--pink)"></span>Today</span>
+      <span><span class="legend-dot" style="background:var(--pink-light);border:1px solid var(--border)"></span>Booked</span>
+      <span><span class="legend-dot" style="background:var(--accent)"></span>Your Session</span>
+    </div>
+    <p class="cal-note" id="cal-note">Select a date to check availability. Log in to request a session!</p>
+    <div id="cal-request-wrap" style="display:none;margin-top:1rem;text-align:center;">
+      <button class="request-btn" id="cal-request-btn">Request This Date</button>
+    </div>
+  </div>
+</section>
+
+<!-- PARENT DASHBOARD -->
+<section id="parent-dashboard">
+  <div class="dash-wrap">
+    <p class="section-label">Parent Portal</p>
+    <h2 class="section-title" id="dash-greeting" style="margin-bottom:1.5rem;">My Dashboard</h2>
+    <div class="dash-card">
+      <h4>Child Information</h4>
+      <div class="info-grid" id="child-info-grid"></div>
+      <button onclick="openEditChild()" style="margin-top:1.2rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
+    </div>
+    <div class="dash-card">
+      <h4>My Appointments</h4>
+      <div id="my-appointments"></div>
+      <button onclick="openApptRequest()" style="margin-top:1.2rem;" class="request-btn">+ Request New Session</button>
+    </div>
+    <div class="dash-card">
+      <h4 style="display:flex;align-items:center;justify-content:space-between;">
+        Messages <span id="parent-unread-badge" style="display:none;" class="msg-unread-badge"></span>
+        <button class="refresh-btn" onclick="refreshParentMsgs(this)" title="Check for new messages">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </h4>
+      <div class="new-msg-banner" id="parent-new-msg-banner" onclick="refreshParentMsgs(null)">New message from Giuliana — tap to load</div>
+      <div class="msg-thread" id="parent-msg-thread"></div>
+      <div class="msg-compose">
+        <input type="text" id="parent-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendParentMsg()">
+        <button class="msg-send-btn" onclick="sendParentMsg()">Send</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TUTOR DASHBOARD -->
+<section id="tutor-dashboard">
+  <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
+    <p class="section-label">Tutor Portal</p>
+    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana Reitzell.</h2>
+    <div class="tutor-tabs">
+      <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-reviews-mod')">Review Moderation</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-messages')">Messages <span id="tutor-unread-total" style="display:none;" class="msg-unread-badge"></span></button>
+    </div>
+
+    <div id="tp-families" class="tutor-panel active">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Registered Families</h4>
+      <div id="families-list"></div>
+    </div>
+
+    <div id="tp-appointments" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Session Requests</h4>
+      <div id="appt-requests-list"></div>
+    </div>
+
+    <div id="tp-reviews-mod" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Pending Reviews</h4>
+      <div id="pending-list"></div>
+    </div>
+
+    <div id="tp-messages" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Family Messages</h4>
+      <div id="tutor-family-selector"></div>
+      <div id="tutor-msg-area" style="display:none;margin-top:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <strong id="tutor-msg-target-name" style="font-size:.95rem;"></strong>
+          <div style="display:flex;gap:.6rem;align-items:center;">
+            <button class="refresh-btn" onclick="refreshTutorMsgs(this)" title="Check for new messages">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+            <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back to all</button>
+          </div>
+        </div>
+        <div class="new-msg-banner" id="tutor-new-msg-banner" onclick="refreshTutorMsgs(null)">New message — tap to load</div>
+        <div class="msg-thread" id="tutor-msg-thread"></div>
+        <div class="msg-compose">
+          <input type="text" id="tutor-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
+          <button class="msg-send-btn" onclick="sendTutorMsg()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>Giuliana Reitzell ✦ Tutoring</strong>
+  <p>Personalized tutoring for every learner.</p>
+</footer>
+
+<!-- LOGIN / SIGNUP MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLoginModal()">×</button>
+    <div class="modal-tabs">
+      <button class="tab-btn active" onclick="switchAuthTab('tab-login',this)">Log In</button>
+      <button class="tab-btn" onclick="switchAuthTab('tab-signup',this)">Create Account</button>
+      <button class="tab-btn" onclick="switchAuthTab('tab-tutor',this)" id="tutor-tab-btn" style="display:none;">Tutor</button>
+    </div>
+    <div class="tab-panel active" id="tab-login">
+      <h3>Welcome back.</h3>
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-primary" onclick="doLogin()" style="animation:none;border:none;width:100%;text-align:center;">Log In</button>
+      <p class="modal-note">Giuliana? <a href="#" onclick="showTutorTab(event)" style="color:var(--accent);">Tutor login →</a></p>
+    </div>
+    <div class="tab-panel" id="tab-signup">
+      <h3>Create your account</h3>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;text-align:center;">Parent Information</p>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="su-first" placeholder="Jane"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="su-last" placeholder="Smith"></div>
+      </div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="su-phone" placeholder="(555) 000-0000"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="su-pw" placeholder="Min. 6 characters"></div>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">Child's Information</p>
+      <div class="form-row">
+        <div class="form-group"><label>Child's First Name</label><input type="text" id="su-child-first" placeholder="Emma"></div>
+        <div class="form-group"><label>Child's Last Name</label><input type="text" id="su-child-last" placeholder="Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Age</label><input type="number" id="su-child-age" placeholder="9" min="4" max="18"></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="su-subject" placeholder="e.g. Algebra, Reading Comprehension…"></div>
+      </div>
+      <div class="form-group"><label>What specifically do they need help with?</label><textarea id="su-specific" placeholder="e.g. Struggling with fractions and long division…" style="height:80px;"></textarea></div>
+      <div class="form-group"><label>Any questions for Giuliana? (optional)</label><textarea id="su-questions" placeholder="Feel free to ask anything!" style="height:80px;"></textarea></div>
+      <button class="btn-primary" onclick="doSignup()" style="animation:none;border:none;width:100%;text-align:center;">Create Account</button>
+    </div>
+    <div class="tab-panel" id="tab-tutor">
+      <h3>Tutor Login</h3>
+      <div class="form-group"><label>Password</label><input type="password" id="tutor-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doTutorLogin()"></div>
+      <button class="btn-primary" onclick="doTutorLogin()" style="animation:none;border:none;width:100%;text-align:center;">Enter</button>
+      <p class="modal-note"><a href="#" onclick="switchAuthTab('tab-login',null);return false;" style="color:var(--text-muted);">← Back</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT CHILD MODAL -->
+<div class="modal-overlay" id="edit-child-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('edit-child-modal').classList.remove('visible')">×</button>
+    <h3>Edit Information</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;">Parent</p>
+    <div class="form-group"><label>Phone Number</label><input type="tel" id="ec-phone"></div>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">Child</p>
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" id="ec-child-first"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" id="ec-child-last"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Age</label><input type="number" id="ec-age" min="4" max="18"></div>
+      <div class="form-group"><label>Subject</label><input type="text" id="ec-subject" placeholder="e.g. Algebra…"></div>
+    </div>
+    <div class="form-group"><label>What specifically do they need help with?</label><textarea id="ec-specific" style="height:80px;"></textarea></div>
+    <div class="form-group"><label>Questions for Giuliana (optional)</label><textarea id="ec-questions" style="height:80px;"></textarea></div>
+    <button class="btn-primary" onclick="saveChildInfo()" style="animation:none;border:none;width:100%;text-align:center;">Save</button>
+  </div>
+</div>
+
+<!-- REQUEST APPOINTMENT MODAL -->
+<div class="modal-overlay" id="appt-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('appt-modal').classList.remove('visible')">×</button>
+    <h3>Request a Session</h3>
+    <div class="form-group"><label>Preferred Date</label><input type="date" id="appt-date"></div>
+    <div class="form-group"><label>Preferred Time</label>
+      <select id="appt-time"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select>
+    </div>
+    <div class="form-group"><label>Subject Focus</label>
+      <select id="appt-subject"><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General Review</option></select>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><textarea id="appt-notes" placeholder="Anything specific to focus on?"></textarea></div>
+    <button class="btn-primary" onclick="submitApptRequest()" style="animation:none;border:none;width:100%;text-align:center;">Send Request</button>
+    <p class="modal-note">Giuliana Reitzell will confirm within 24 hours.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const TUTOR_PASSWORD = "giuliana2026";
+
+const db = { get:k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+const getUsers    = () => db.get('gt_users')    || {};
+const getApproved = () => db.get('gt_approved') || [];
+const getPending  = () => db.get('gt_pending')  || [];
+const getAppts    = () => db.get('gt_appts')    || [];
+const getMessages = () => db.get('gt_messages') || {}; // { email: [{id, from, text, ts, readByTutor, readByParent}] }
+const saveUsers    = v => db.set('gt_users', v);
+const saveApproved = v => db.set('gt_approved', v);
+const savePending  = v => db.set('gt_pending', v);
+const saveAppts    = v => db.set('gt_appts', v);
+const saveMessages = v => db.set('gt_messages', v);
+
+let currentUser = null, isTutor = false;
+let activeTutorThreadEmail = null;
+
+// ── HELPERS ──
+function getThread(email) { const m = getMessages(); return m[email] || []; }
+function saveThread(email, arr) { const m = getMessages(); m[email] = arr; saveMessages(m); }
+function countUnreadForParent(email) { return getThread(email).filter(m => m.from === 'tutor' && !m.readByParent).length; }
+function countUnreadForTutor(email)  { return getThread(email).filter(m => m.from === 'parent' && !m.readByTutor).length; }
+function totalTutorUnread() { return Object.keys(getUsers()).reduce((s,e) => s + countUnreadForTutor(e), 0); }
+
+function seedReviews() {
+  if (getApproved().length === 0) {
+    saveApproved([
+      {name:"Sarah M.",stars:5,text:"Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!",date:"2025-02"},
+      {name:"James & Priya L.",stars:5,text:"My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.",date:"2025-01"},
+      {name:"Tanya R.",stars:5,text:"Our daughter jumped two reading levels in one semester. We couldn't be more grateful.",date:"2024-12"},
+      {name:"Michelle K.",stars:5,text:"She tailors every session to where my child is at. It's clear she truly cares about her students.",date:"2024-11"},
+    ]);
+  }
+}
+
+// ── AUTH ──
+function openLoginModal() { document.getElementById('login-modal').classList.add('visible'); }
+function closeLoginModal() { document.getElementById('login-modal').classList.remove('visible'); }
+
+function switchAuthTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function showTutorTab(e) { e.preventDefault(); document.getElementById('tutor-tab-btn').style.display=''; switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn')); }
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pw    = document.getElementById('login-pw').value;
+  const users = getUsers();
+  if (!users[email]) { showToast('No account found. Please sign up!'); return; }
+  if (users[email].password !== pw) { showToast('Incorrect password.'); return; }
+  currentUser = users[email]; isTutor = false; onLoggedIn();
+}
+function doTutorLogin() {
+  if (document.getElementById('tutor-pw').value !== TUTOR_PASSWORD) { showToast('Incorrect password.'); return; }
+  isTutor = true; currentUser = {firstName:'Giuliana', lastName:'Reitzell', email:'__tutor__'};
+  onLoggedIn();
+}
+function doSignup() {
+  const first    = document.getElementById('su-first').value.trim();
+  const last     = document.getElementById('su-last').value.trim();
+  const phone    = document.getElementById('su-phone').value.trim();
+  const email    = document.getElementById('su-email').value.trim().toLowerCase();
+  const pw       = document.getElementById('su-pw').value;
+  const cFirst   = document.getElementById('su-child-first').value.trim();
+  const cLast    = document.getElementById('su-child-last').value.trim();
+  const cAge     = document.getElementById('su-child-age').value;
+  const subject  = document.getElementById('su-subject').value.trim();
+  const specific = document.getElementById('su-specific').value.trim();
+  const questions= document.getElementById('su-questions').value.trim();
+  if (!first||!last||!phone||!email||!pw||!cFirst||!cLast||!cAge||!subject||!specific) {
+    showToast('Please fill out all required fields!'); return;
+  }
+  if (pw.length < 6) { showToast('Password must be at least 6 characters.'); return; }
+  const users = getUsers();
+  if (users[email]) { showToast('An account with that email already exists.'); return; }
+  const user = {
+    firstName:first, lastName:last, phone, email, password:pw,
+    child:{ firstName:cFirst, lastName:cLast, age:cAge, subject, specific, questions },
+    createdAt: new Date().toISOString()
+  };
+  users[email] = user; saveUsers(users);
+  currentUser = user; isTutor = false; onLoggedIn();
+}
+
+function onLoggedIn() {
+  closeLoginModal();
+  document.getElementById('login-pw').value=''; document.getElementById('tutor-pw').value='';
+  document.getElementById('nav-login-btn').style.display='none';
+  document.getElementById('nav-user-info').style.display='flex';
+  document.getElementById('nav-username').textContent = isTutor ? 'Giuliana Reitzell' : currentUser.firstName;
+  if (isTutor) {
+    document.getElementById('tutor-dashboard').classList.add('visible');
+    renderTutorDashboard();
+    document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('parent-dashboard').classList.add('visible');
+    renderParentDashboard();
+    updateContactUI();
+    document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
+  }
+  renderCalendar();
+  showToast('Welcome back, ' + currentUser.firstName + '!');
+}
+
+function logout() {
+  currentUser = null; isTutor = false;
+  document.getElementById('nav-login-btn').style.display='';
+  document.getElementById('nav-user-info').style.display='none';
+  document.getElementById('parent-dashboard').classList.remove('visible');
+  document.getElementById('tutor-dashboard').classList.remove('visible');
+  updateContactUI();
+  renderCalendar();
+}
+
+// ── PARENT DASHBOARD ──
+function renderParentDashboard() {
+  const u = currentUser;
+  document.getElementById('dash-greeting').textContent = 'Hello, ' + u.firstName + '.';
+  const c = u.child;
+  document.getElementById('child-info-grid').innerHTML = `
+    <div class="info-item"><div class="label">Child's Name</div><div class="value">${c.firstName} ${c.lastName}</div></div>
+    <div class="info-item"><div class="label">Age</div><div class="value">${c.age}</div></div>
+    <div class="info-item"><div class="label">Subject</div><div class="value">${c.subject}</div></div>
+    <div class="info-item"><div class="label">Parent Phone</div><div class="value">${u.phone||'—'}</div></div>
+    <div class="info-item" style="grid-column:1/-1"><div class="label">Specific Needs</div><div class="value">${c.specific||'—'}</div></div>
+    ${c.questions ? `<div class="info-item" style="grid-column:1/-1"><div class="label">Questions</div><div class="value">${c.questions}</div></div>` : ''}
+  `;
+  const appts = getAppts().filter(a => a.email === u.email);
+  const div = document.getElementById('my-appointments');
+  div.innerHTML = appts.length === 0
+    ? '<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
+    : appts.map(a => {
+        const statusClass = a.status==='Confirmed' ? 'confirmed' : a.status==='Cancelled' ? 'cancelled' : 'pending-s';
+        return `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${statusClass}">${a.status}</span></div>`;
+      }).join('');
+  renderParentThread();
+}
+
+function renderParentThread() {
+  if (!currentUser || isTutor) return;
+  const thread = getThread(currentUser.email);
+  let changed = false;
+  thread.forEach(m => { if (m.from === 'tutor' && !m.readByParent) { m.readByParent = true; changed = true; } });
+  if (changed) saveThread(currentUser.email, thread);
+
+  const div = document.getElementById('parent-msg-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
+  } else {
+    div.innerHTML = thread.map(m => {
+      const isMine = m.from === 'parent';
+      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
+        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
+        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
+      </div>`;
+    }).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+  const badge = document.getElementById('parent-unread-badge');
+  const unread = countUnreadForParent(currentUser.email);
+  if (unread > 0) { badge.textContent = unread; badge.style.display=''; } else { badge.style.display='none'; }
+}
+
+function sendParentMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('parent-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(currentUser.email);
+  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
+  saveThread(currentUser.email, thread);
+  input.value = '';
+  renderParentThread();
+  updateTutorUnreadBadge();
+}
+
+// ── CONTACT SECTION (public, for logged-in parents) ──
+function updateContactUI() {
+  const loginPrompt = document.getElementById('contact-login-prompt');
+  const threadWrap  = document.getElementById('contact-thread-wrap');
+  const desc        = document.getElementById('contact-desc');
+  if (currentUser && !isTutor) {
+    loginPrompt.style.display = 'none';
+    threadWrap.style.display  = 'block';
+    desc.textContent = 'Send a message to Giuliana Reitzell directly.';
+    renderContactThread();
+  } else if (isTutor) {
+    loginPrompt.style.display = 'none';
+    threadWrap.style.display  = 'none';
+    desc.textContent = 'Manage family messages from your tutor portal above.';
+  } else {
+    loginPrompt.style.display = 'block';
+    threadWrap.style.display  = 'none';
+    desc.textContent = 'Have a question? Log in to send a message and I\'ll get back to you as soon as possible.';
+  }
+}
+
+function renderContactThread() {
+  if (!currentUser || isTutor) return;
+  const thread = getThread(currentUser.email);
+  const div = document.getElementById('contact-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
+  } else {
+    div.innerHTML = thread.map(m => {
+      const isMine = m.from === 'parent';
+      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
+        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
+        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
+      </div>`;
+    }).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+}
+
+function sendContactMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('contact-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(currentUser.email);
+  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
+  saveThread(currentUser.email, thread);
+  input.value = '';
+  renderContactThread();
+  renderParentThread(); // keep dashboard in sync
+  updateTutorUnreadBadge();
+}
+
+// ── TUTOR MESSAGING ──
+function renderTutorFamilySelector() {
+  const users = Object.values(getUsers());
+  const div = document.getElementById('tutor-family-selector');
+  if (users.length === 0) { div.innerHTML = '<p style="color:var(--text-muted);">No families registered yet.</p>'; return; }
+  div.innerHTML = users.map(u => {
+    const unread = countUnreadForTutor(u.email);
+    return `<div class="parent-row" style="cursor:pointer;" onclick="openTutorThread('${u.email}')">
+      <div class="parent-row-info">
+        <strong>${u.firstName} ${u.lastName}</strong>
+        <span>${u.email} · Child: ${u.child.firstName} ${u.child.lastName}</span>
+      </div>
+      <div style="display:flex;gap:.6rem;align-items:center;">
+        ${unread > 0 ? `<span class="msg-unread-badge">${unread} new</span>` : ''}
+        <button class="family-msg-btn" onclick="event.stopPropagation();openTutorThread('${u.email}')">Message</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openTutorThread(email) {
+  activeTutorThreadEmail = email;
+  const users = getUsers();
+  const u = users[email];
+  document.getElementById('tutor-msg-target-name').textContent = u ? u.firstName + ' ' + u.lastName : email;
+  document.getElementById('tutor-msg-area').style.display = 'block';
+  document.getElementById('tutor-family-selector').style.display = 'none';
+  renderTutorThread();
+}
+
+function closeTutorThread() {
+  activeTutorThreadEmail = null;
+  document.getElementById('tutor-msg-area').style.display = 'none';
+  document.getElementById('tutor-family-selector').style.display = 'block';
+  renderTutorFamilySelector();
+  updateTutorUnreadBadge();
+}
+
+function renderTutorThread() {
+  if (!activeTutorThreadEmail) return;
+  const thread = getThread(activeTutorThreadEmail);
+  let changed = false;
+  thread.forEach(m => { if (m.from === 'parent' && !m.readByTutor) { m.readByTutor = true; changed = true; } });
+  if (changed) saveThread(activeTutorThreadEmail, thread);
+
+  const div = document.getElementById('tutor-msg-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
+  } else {
+    const u = getUsers()[activeTutorThreadEmail];
+    const parentLabel = u
+      ? `${u.firstName} — ${u.child.firstName}, ${u.child.age}, ${u.child.subject}`
+      : 'Parent';
+    div.innerHTML = thread.map(m => {
+      const isMine = m.from === 'tutor';
+      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
+        ${!isMine ? `<div class="msg-sender-name">${parentLabel}</div>` : ''}
+        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
+      </div>`;
+    }).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+  updateTutorUnreadBadge();
+}
+
+function sendTutorMsg() {
+  if (!activeTutorThreadEmail) return;
+  const input = document.getElementById('tutor-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(activeTutorThreadEmail);
+  thread.push({id:Date.now(), from:'tutor', text, ts:new Date().toISOString(), readByTutor:true, readByParent:false});
+  saveThread(activeTutorThreadEmail, thread);
+  input.value = '';
+  renderTutorThread();
+  // If the parent is currently logged in and viewing the dashboard, update their view too
+  if (currentUser && currentUser.email === activeTutorThreadEmail) renderParentThread();
+}
+
+function updateTutorUnreadBadge() {
+  const total = totalTutorUnread();
+  const badge = document.getElementById('tutor-unread-total');
+  if (!badge) return;
+  if (total > 0) { badge.textContent = total; badge.style.display=''; } else { badge.style.display='none'; }
+}
+
+// ── TUTOR DASHBOARD ──
+function switchTutorTab(btn, panelId) {
+  document.querySelectorAll('.tutor-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tutor-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+  if (panelId === 'tp-families')     renderFamilies();
+  if (panelId === 'tp-appointments') renderApptRequests();
+  if (panelId === 'tp-reviews-mod')  renderPending();
+  if (panelId === 'tp-messages')     { renderTutorFamilySelector(); updateTutorUnreadBadge(); }
+}
+
+function renderTutorDashboard() { renderFamilies(); renderApptRequests(); renderPending(); updateTutorUnreadBadge(); }
+
+function renderFamilies() {
+  const entries = Object.values(getUsers());
+  const list = document.getElementById('families-list');
+  list.innerHTML = entries.length === 0
+    ? '<p style="color:var(--text-muted);">No families registered yet.</p>'
+    : entries.map(u => {
+        const unread = countUnreadForTutor(u.email);
+        return `<div class="parent-row">
+          <div class="parent-row-info">
+            <strong>${u.firstName} ${u.lastName}</strong>
+            <span>${u.email}${u.phone ? ' · ' + u.phone : ''}</span>
+            <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age} · ${u.child.subject}</span>
+            ${u.child.specific ? `<span>Needs help with: ${u.child.specific}</span>` : ''}
+            ${u.child.questions ? `<span style="font-style:italic;">Questions: "${u.child.questions}"</span>` : ''}
+            <span style="font-size:.75rem;margin-top:.2rem;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
+          </div>
+          <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+            ${unread > 0 ? `<span class="msg-unread-badge">${unread} new</span>` : ''}
+            <button class="family-msg-btn" onclick="switchTutorTab(document.querySelector('.tutor-tab:nth-child(4)'), 'tp-messages'); setTimeout(()=>openTutorThread('${u.email}'),50)">Message</button>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+function renderApptRequests() {
+  const appts = getAppts();
+  const list = document.getElementById('appt-requests-list');
+  list.innerHTML = appts.length === 0
+    ? '<p style="color:var(--text-muted);">No session requests yet.</p>'
+    : appts.map(a => `<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''} ${a.status==='Confirmed'?`<button class="btn-reject" onclick="cancelAppt(${a.id})">✕ Cancel</button>`:''}</div></div>`).join('');
+}
+
+function confirmAppt(id) {
+  const appts = getAppts(), a = appts.find(x => x.id === id);
+  if (a) { a.status = 'Confirmed'; saveAppts(appts); renderApptRequests(); renderCalendar(); showToast('Session confirmed!'); }
+}
+function declineAppt(id) { saveAppts(getAppts().filter(x => x.id !== id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
+function cancelAppt(id) {
+  if (!confirm('Are you sure you want to cancel this confirmed session?')) return;
+  const appts = getAppts(), a = appts.find(x => x.id === id);
+  if (a) { a.status = 'Cancelled'; saveAppts(appts); renderApptRequests(); renderCalendar(); if(currentUser && !isTutor) renderParentDashboard(); showToast('Session cancelled.'); }
+}
+
+// ── EDIT CHILD ──
+function openEditChild() {
+  const c = currentUser.child;
+  document.getElementById('ec-phone').value       = currentUser.phone || '';
+  document.getElementById('ec-child-first').value = c.firstName || '';
+  document.getElementById('ec-child-last').value  = c.lastName  || '';
+  document.getElementById('ec-age').value         = c.age;
+  document.getElementById('ec-subject').value     = c.subject;
+  document.getElementById('ec-specific').value    = c.specific  || '';
+  document.getElementById('ec-questions').value   = c.questions || '';
+  document.getElementById('edit-child-modal').classList.add('visible');
+}
+function saveChildInfo() {
+  currentUser.phone             = document.getElementById('ec-phone').value.trim();
+  currentUser.child.firstName   = document.getElementById('ec-child-first').value.trim();
+  currentUser.child.lastName    = document.getElementById('ec-child-last').value.trim();
+  currentUser.child.age         = document.getElementById('ec-age').value;
+  currentUser.child.subject     = document.getElementById('ec-subject').value.trim();
+  currentUser.child.specific    = document.getElementById('ec-specific').value.trim();
+  currentUser.child.questions   = document.getElementById('ec-questions').value.trim();
+  const users = getUsers(); users[currentUser.email] = currentUser; saveUsers(users);
+  document.getElementById('edit-child-modal').classList.remove('visible');
+  renderParentDashboard(); showToast('Information updated!');
+}
+
+// ── APPOINTMENTS ──
+function openApptRequest(dateStr) {
+  if (!currentUser || isTutor) { openLoginModal(); return; }
+  if (dateStr) document.getElementById('appt-date').value = dateStr;
+  document.getElementById('appt-modal').classList.add('visible');
+}
+function submitApptRequest() {
+  if (!currentUser) return;
+  const date = document.getElementById('appt-date').value;
+  if (!date) { showToast('Please select a date!'); return; }
+  const appts = getAppts();
+  appts.push({id:Date.now(), email:currentUser.email, parentName:currentUser.firstName+' '+currentUser.lastName, childName:currentUser.child.name, grade:currentUser.child.grade, date, time:document.getElementById('appt-time').value, subject:document.getElementById('appt-subject').value, notes:document.getElementById('appt-notes').value.trim(), status:'Pending', createdAt:new Date().toISOString()});
+  saveAppts(appts);
+  document.getElementById('appt-modal').classList.remove('visible');
+  document.getElementById('appt-date').value = ''; document.getElementById('appt-notes').value = '';
+  renderParentDashboard(); renderCalendar();
+  showToast('Session request sent! Giuliana Reitzell will confirm soon.');
+}
+
+// ── REVIEWS ──
+function renderApproved() {
+  const reviews = getApproved();
+  document.getElementById('approved-reviews').innerHTML = reviews.length === 0
+    ? '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet!</p>'
+    : reviews.map(r => `<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+  document.getElementById('hero-testimonials').innerHTML = reviews.slice(0,4).map(r => `<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+}
+
+let selectedStars = 0;
+document.getElementById('star-picker').addEventListener('click', e => {
+  if (e.target.dataset.val) { selectedStars = parseInt(e.target.dataset.val); document.querySelectorAll('#star-picker span').forEach((s,i) => s.classList.toggle('active', i < selectedStars)); }
+});
+
+function submitReview() {
+  const name = document.getElementById('r-name').value.trim(), text = document.getElementById('r-text').value.trim();
+  if (!name||!text||!selectedStars) { showToast('Please fill out all fields and pick a rating!'); return; }
+  const p = getPending();
+  p.push({id:Date.now(), name, stars:selectedStars, text, date:new Date().toISOString().slice(0,7)});
+  savePending(p);
+  document.getElementById('r-name').value = ''; document.getElementById('r-text').value = '';
+  selectedStars = 0; document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
+  showToast('Thank you for your review!');
+}
+
+function renderPending() {
+  const pending = getPending(), list = document.getElementById('pending-list');
+  list.innerHTML = pending.length === 0
+    ? '<p style="color:var(--text-muted);">No pending reviews — you\'re all caught up.</p>'
+    : pending.map(r => `<div class="pending-card"><div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div><div class="pending-actions"><button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button><button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button></div></div>`).join('');
+}
+function approveReview(id) {
+  let p = getPending(), idx = p.findIndex(r => r.id === id); if (idx === -1) return;
+  const [rev] = p.splice(idx, 1); savePending(p);
+  const a = getApproved(); a.unshift(rev); saveApproved(a);
+  renderPending(); renderApproved(); showToast('Review approved!');
+}
+function rejectReview(id) { savePending(getPending().filter(r => r.id !== id)); renderPending(); showToast('Review removed.'); }
+
+// ── CALENDAR ──
+let calDate = new Date();
+const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendar() {
+  const year = calDate.getFullYear(), month = calDate.getMonth(), today = new Date();
+  document.getElementById('cal-month-label').textContent = MONTHS[month] + ' ' + year;
+  const appts = getAppts().filter(a => a.status === 'Confirmed');
+  const myAppts    = currentUser && !isTutor ? appts.filter(a => a.email === currentUser.email) : [];
+  const otherAppts = currentUser && !isTutor ? appts.filter(a => a.email !== currentUser.email) : appts;
+  const toKey = d => `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const myDays    = new Set(myAppts.map(a => a.date));
+  const otherDays = new Set(otherAppts.map(a => a.date));
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+  const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month+1, 0).getDate();
+  for (let i=0;i<firstDay;i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+  for (let d=1;d<=daysInMonth;d++) {
+    const key = toKey(d);
+    const isToday = d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
+    const isMine = myDays.has(key), isOther = otherDays.has(key);
+    const cls = isMine ? 'my-appt' : isOther ? 'booked' : isToday ? 'today' : '';
+    grid.innerHTML += `<div class="cal-day ${cls}" onclick="selectCalDay(${d},${month},${year},'${key}',this)">${d}</div>`;
+  }
+}
+
+function selectCalDay(d, m, y, key, el) {
+  document.querySelectorAll('.cal-day').forEach(e => { if (!e.classList.contains('my-appt')&&!e.classList.contains('booked')) e.classList.remove('selected'); });
+  el.classList.add('selected');
+  const appts = getAppts().filter(a => a.status === 'Confirmed');
+  const mine  = currentUser&&!isTutor ? appts.filter(a => a.email===currentUser.email&&a.date===key) : [];
+  const other = appts.filter(a => a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
+  const note  = document.getElementById('cal-note');
+  const rw    = document.getElementById('cal-request-wrap');
+  if (mine.length > 0) {
+    note.textContent = `You have a session on ${MONTHS[m]} ${d} (${mine[0].time} · ${mine[0].subject}).`;
+    rw.style.display = 'none';
+  } else if (other.length > 0) {
+    note.textContent = `${MONTHS[m]} ${d} is already booked. Please choose another date.`;
+    rw.style.display = 'none';
+  } else {
+    note.textContent = `${MONTHS[m]} ${d}, ${y} is available.`;
+    if (currentUser && !isTutor) {
+      rw.style.display = 'block';
+      document.getElementById('cal-request-btn').onclick = () => openApptRequest(key);
+    } else if (!currentUser) {
+      note.innerHTML = `${MONTHS[m]} ${d} is available. <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request a session →</a>`;
+      rw.style.display = 'none';
+    }
+  }
+}
+
+function changeMonth(dir) { calDate = new Date(calDate.getFullYear(), calDate.getMonth()+dir, 1); renderCalendar(); }
+
+// ── UTILS ──
+function formatDate(s) { if (!s) return ''; const [y,m,d] = s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
+function formatTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3200); }
+
+// ── REFRESH & POLLING ──
+function refreshParentMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
+  document.getElementById('parent-new-msg-banner').classList.remove('visible');
+  renderParentThread();
+  renderContactThread();
+  // Also refresh appointments in case of cancellations
+  if (currentUser && !isTutor) renderParentDashboard();
+}
+
+function refreshTutorMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
+  document.getElementById('tutor-new-msg-banner').classList.remove('visible');
+  renderTutorThread();
+  renderTutorFamilySelector();
+  updateTutorUnreadBadge();
+}
+
+// Track last-seen message counts for polling
+let _lastParentMsgCount = 0;
+let _lastTutorMsgCount  = 0;
+
+function pollMessages() {
+  // Parent side: check for new tutor messages
+  if (currentUser && !isTutor) {
+    const thread = getThread(currentUser.email);
+    const newFromTutor = thread.filter(m => m.from === 'tutor' && !m.readByParent).length;
+    if (newFromTutor > _lastParentMsgCount) {
+      _lastParentMsgCount = newFromTutor;
+      const banner = document.getElementById('parent-new-msg-banner');
+      if (banner) banner.classList.add('visible');
+    }
+  }
+  // Tutor side: check for new parent messages
+  if (isTutor && activeTutorThreadEmail) {
+    const thread = getThread(activeTutorThreadEmail);
+    const newFromParent = thread.filter(m => m.from === 'parent' && !m.readByTutor).length;
+    if (newFromParent > _lastTutorMsgCount) {
+      _lastTutorMsgCount = newFromParent;
+      const banner = document.getElementById('tutor-new-msg-banner');
+      if (banner) banner.classList.add('visible');
+      updateTutorUnreadBadge();
+    }
+  }
+  // Update tutor unread badge even when not in thread
+  if (isTutor) updateTutorUnreadBadge();
+}
+
+// Poll every 5 seconds
+setInterval(pollMessages, 5000);
+
+// INIT
+seedReviews(); renderApproved(); renderCalendar(); updateContactUI();
+</script>
+</body>
+</html>
 
