@@ -57,12 +57,6 @@
   .about-inner{max-width:700px;}
   .about-inner p{font-size:1rem;line-height:1.85;color:var(--text-muted);font-weight:300;margin-top:1.5rem;}
 
-  /* ENROLL */
-  #enroll{padding:5rem 2rem;text-align:center;background:var(--white);}
-  .enroll-card{display:inline-block;background:linear-gradient(135deg,var(--pink-pale),var(--white));border:1px solid var(--border);border-radius:24px;padding:3rem 3.5rem;max-width:560px;width:100%;}
-  .enroll-card p{font-size:.95rem;color:var(--text-muted);line-height:1.7;margin:1rem 0 2rem;font-weight:300;}
-  .notice{font-size:.82rem;color:var(--text-muted);margin-top:.8rem;font-style:italic;}
-
   /* REVIEWS */
   #reviews{padding:5rem 2rem;background:var(--pink-pale);}
   .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto;}
@@ -79,6 +73,11 @@
   .star-picker{display:flex;gap:.4rem;margin-top:.3rem;}
   .star-picker span{font-size:1.6rem;cursor:pointer;color:#ddd;transition:color .15s;user-select:none;}
   .star-picker span.active{color:var(--accent);}
+
+  /* CONTACT SECTION */
+  #contact{padding:5rem 2rem;background:var(--pink-pale);text-align:center;}
+  .contact-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2.5rem;max-width:560px;margin:0 auto;}
+  .contact-card p{font-size:.95rem;color:var(--text-muted);line-height:1.7;margin-bottom:2rem;font-weight:300;}
 
   /* CALENDAR */
   #calendar{padding:5rem 2rem;background:var(--white);text-align:center;}
@@ -105,6 +104,7 @@
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(58,42,48,.45);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
   .modal-overlay.visible{display:flex;}
   .modal-box{background:var(--white);border-radius:24px;padding:2.5rem;width:90%;max-width:420px;box-shadow:0 24px 64px rgba(58,42,48,.18);position:relative;animation:popIn .3s ease;max-height:90vh;overflow-y:auto;}
+  .modal-box.wide{max-width:580px;}
   @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
   .modal-close{position:absolute;top:1.2rem;right:1.4rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);line-height:1;}
   .modal-tabs{display:flex;gap:.5rem;margin-bottom:1.8rem;border-bottom:1.5px solid var(--border);}
@@ -117,6 +117,23 @@
   .modal-box .form-group input,.modal-box .form-group select,.modal-box .form-group textarea{background:var(--pink-pale);}
   .modal-note{font-size:.78rem;color:var(--text-muted);text-align:center;margin-top:.8rem;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+
+  /* MESSAGING */
+  .msg-thread{max-height:320px;overflow-y:auto;border:1.5px solid var(--border);border-radius:14px;padding:1rem;background:var(--pink-pale);margin-bottom:1rem;display:flex;flex-direction:column;gap:.8rem;}
+  .msg-thread::-webkit-scrollbar{width:4px;}
+  .msg-thread::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  .msg-bubble{max-width:80%;padding:.7rem 1rem;border-radius:14px;font-size:.88rem;line-height:1.5;}
+  .msg-bubble.from-tutor{background:var(--accent);color:white;align-self:flex-end;border-bottom-right-radius:4px;}
+  .msg-bubble.from-parent{background:var(--white);color:var(--text);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+  .msg-bubble .msg-meta{font-size:.7rem;opacity:.65;margin-top:.3rem;}
+  .msg-compose{display:flex;gap:.6rem;}
+  .msg-compose input{flex:1;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.9rem;background:var(--pink-pale);outline:none;transition:border-color .2s;}
+  .msg-compose input:focus{border-color:var(--accent);background:var(--white);}
+  .msg-send-btn{background:var(--accent);color:white;border:none;border-radius:10px;padding:.7rem 1.2rem;cursor:pointer;font-size:.9rem;font-weight:500;font-family:inherit;transition:opacity .2s;white-space:nowrap;}
+  .msg-send-btn:hover{opacity:.85;}
+  .msg-unread-badge{background:var(--accent);color:white;border-radius:99px;font-size:.7rem;font-weight:700;padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle;}
+  .family-msg-btn{background:var(--pink-pale);color:var(--accent);border:1.5px solid var(--border);border-radius:8px;padding:.35rem .85rem;cursor:pointer;font-size:.8rem;font-family:inherit;font-weight:500;transition:background .2s;white-space:nowrap;}
+  .family-msg-btn:hover{background:var(--pink);}
 
   /* PARENT DASHBOARD */
   #parent-dashboard{display:none;padding:5rem 2rem;background:var(--pink-pale);}
@@ -148,9 +165,9 @@
   .tutor-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
   .tutor-panel{display:none;}
   .tutor-panel.active{display:block;}
-  .parent-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;}
-  .parent-row strong{font-size:.95rem;display:block;margin-bottom:.2rem;}
-  .parent-row span{font-size:.82rem;color:var(--text-muted);}
+  .parent-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+  .parent-row-info strong{font-size:.95rem;display:block;margin-bottom:.2rem;}
+  .parent-row-info span{font-size:.82rem;color:var(--text-muted);display:block;line-height:1.6;}
   .pending-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
   .pending-actions{display:flex;gap:.5rem;flex-shrink:0;}
   .btn-approve{background:var(--green);color:var(--green-text);border:none;border-radius:8px;padding:.4rem 1rem;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:500;}
@@ -174,8 +191,8 @@
   <ul class="nav-links">
     <li><a href="#home">Home</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#enroll">Enroll</a></li>
     <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#calendar">Calendar</a></li>
     <li>
       <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
@@ -193,7 +210,7 @@
   <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
   <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
   <div>
-    <a href="#enroll" class="btn-primary" style="animation:none;">Get Started</a>
+    <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Get Started</button>
     <a href="#about" class="btn-secondary">Learn More</a>
   </div>
   <div style="margin-top:4rem;width:100%;max-width:900px;text-align:center;">
@@ -206,22 +223,9 @@
 <section id="about">
   <div class="about-inner">
     <p class="section-label">About</p>
-    <h2 class="section-title">Hi, I'm Giuliana! </h2>
+    <h2 class="section-title">Hi, I'm Giuliana.</h2>
     <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I create a warm, supportive space where every child feels seen and capable.</p>
     <p style="margin-top:1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
-  </div>
-</section>
-
-<!-- ENROLL -->
-<section id="enroll">
-  <p class="section-label">Enrollment</p>
-  <h2 class="section-title">Ready to get started?</h2>
-  <div class="enroll-card">
-    <div style="font-size:2.5rem;margin-bottom:1rem;">📋</div>
-    <h3 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.5rem;">Tell me about your child</h3>
-    <p>Fill out the Google intake form, then create an account to track your sessions, view appointments, and stay connected.</p>
-    <a href="https://forms.google.com" target="_blank" class="btn-primary" style="animation:none;">Fill Out Intake Form →</a>
-    <p class="notice">🔒 Your information is private and never shared.</p>
   </div>
 </section>
 
@@ -248,6 +252,25 @@
     </div>
     <div class="form-group"><label>Your Review</label><textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea></div>
     <button class="btn-primary" onclick="submitReview()" style="animation:none;border:none;width:100%;text-align:center;">Submit Review</button>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2 class="section-title">Get in Touch</h2>
+  <div class="contact-card">
+    <p id="contact-desc">Have a question? Send a message and I'll get back to you as soon as possible. Log in to start a conversation.</p>
+    <div id="contact-login-prompt">
+      <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Log In to Message</button>
+    </div>
+    <div id="contact-thread-wrap" style="display:none;">
+      <div class="msg-thread" id="contact-thread"></div>
+      <div class="msg-compose">
+        <input type="text" id="contact-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendContactMsg()">
+        <button class="msg-send-btn" onclick="sendContactMsg()">Send</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -280,14 +303,22 @@
     <p class="section-label">Parent Portal</p>
     <h2 class="section-title" id="dash-greeting" style="margin-bottom:1.5rem;">My Dashboard</h2>
     <div class="dash-card">
-      <h4>👧 Child Information</h4>
+      <h4>Child Information</h4>
       <div class="info-grid" id="child-info-grid"></div>
-      <button onclick="openEditChild()" style="margin-top:1.2rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">✏️ Edit Info</button>
+      <button onclick="openEditChild()" style="margin-top:1.2rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
     </div>
     <div class="dash-card">
-      <h4>📅 My Appointments</h4>
+      <h4>My Appointments</h4>
       <div id="my-appointments"></div>
       <button onclick="openApptRequest()" style="margin-top:1.2rem;" class="request-btn">+ Request New Session</button>
+    </div>
+    <div class="dash-card">
+      <h4>Messages <span id="parent-unread-badge" style="display:none;" class="msg-unread-badge"></span></h4>
+      <div class="msg-thread" id="parent-msg-thread"></div>
+      <div class="msg-compose">
+        <input type="text" id="parent-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendParentMsg()">
+        <button class="msg-send-btn" onclick="sendParentMsg()">Send</button>
+      </div>
     </div>
   </div>
 </section>
@@ -296,29 +327,50 @@
 <section id="tutor-dashboard">
   <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
     <p class="section-label">Tutor Portal</p>
-    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back Giuliana! </h2>
+    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana Reitzell.</h2>
     <div class="tutor-tabs">
       <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
       <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
       <button class="tutor-tab" onclick="switchTutorTab(this,'tp-reviews-mod')">Review Moderation</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-messages')">Messages <span id="tutor-unread-total" style="display:none;" class="msg-unread-badge"></span></button>
     </div>
+
     <div id="tp-families" class="tutor-panel active">
       <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Registered Families</h4>
       <div id="families-list"></div>
     </div>
+
     <div id="tp-appointments" class="tutor-panel">
       <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Session Requests</h4>
       <div id="appt-requests-list"></div>
     </div>
+
     <div id="tp-reviews-mod" class="tutor-panel">
       <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Pending Reviews</h4>
       <div id="pending-list"></div>
+    </div>
+
+    <div id="tp-messages" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Family Messages</h4>
+      <div id="tutor-family-selector"></div>
+      <div id="tutor-msg-area" style="display:none;margin-top:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <strong id="tutor-msg-target-name" style="font-size:.95rem;"></strong>
+          <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back to all</button>
+        </div>
+        <div class="msg-thread" id="tutor-msg-thread"></div>
+        <div class="msg-compose">
+          <input type="text" id="tutor-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
+          <button class="msg-send-btn" onclick="sendTutorMsg()">Send</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <footer>
   <strong>Giuliana Reitzell ✦ Tutoring</strong>
+  <p>Personalized tutoring for every learner.</p>
 </footer>
 
 <!-- LOGIN / SIGNUP MODAL -->
@@ -330,41 +382,38 @@
       <button class="tab-btn" onclick="switchAuthTab('tab-signup',this)">Create Account</button>
       <button class="tab-btn" onclick="switchAuthTab('tab-tutor',this)" id="tutor-tab-btn" style="display:none;">Tutor</button>
     </div>
-    <!-- LOGIN -->
     <div class="tab-panel active" id="tab-login">
-      <h3>Welcome back </h3>
+      <h3>Welcome back.</h3>
       <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
       <div class="form-group"><label>Password</label><input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-primary" onclick="doLogin()" style="animation:none;border:none;width:100%;text-align:center;">Log In</button>
       <p class="modal-note">Giuliana? <a href="#" onclick="showTutorTab(event)" style="color:var(--accent);">Tutor login →</a></p>
     </div>
-    <!-- SIGNUP -->
     <div class="tab-panel" id="tab-signup">
       <h3>Create your account</h3>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;text-align:center;">Parent Information</p>
       <div class="form-row">
         <div class="form-group"><label>First Name</label><input type="text" id="su-first" placeholder="Jane"></div>
         <div class="form-group"><label>Last Name</label><input type="text" id="su-last" placeholder="Smith"></div>
       </div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="su-phone" placeholder="(555) 000-0000"></div>
       <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
       <div class="form-group"><label>Password</label><input type="password" id="su-pw" placeholder="Min. 6 characters"></div>
-      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">👧 Child's Information</p>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">Child's Information</p>
       <div class="form-row">
-        <div class="form-group"><label>Child's Name</label><input type="text" id="su-child-name" placeholder="Emma"></div>
+        <div class="form-group"><label>Child's First Name</label><input type="text" id="su-child-first" placeholder="Emma"></div>
+        <div class="form-group"><label>Child's Last Name</label><input type="text" id="su-child-last" placeholder="Smith"></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label>Age</label><input type="number" id="su-child-age" placeholder="9" min="4" max="18"></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="su-subject" placeholder="e.g. Algebra, Reading Comprehension…"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Grade</label>
-          <select id="su-grade"><option value="">Select…</option><option>Pre-K</option><option>Kindergarten</option><option>1st Grade</option><option>2nd Grade</option><option>3rd Grade</option><option>4th Grade</option><option>5th Grade</option><option>6th Grade</option><option>7th Grade</option><option>8th Grade</option><option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option></select>
-        </div>
-        <div class="form-group"><label>Subject</label>
-          <select id="su-subject"><option value="">Select…</option><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General / Multiple</option></select>
-        </div>
-      </div>
+      <div class="form-group"><label>What specifically do they need help with?</label><textarea id="su-specific" placeholder="e.g. Struggling with fractions and long division…" style="height:80px;"></textarea></div>
+      <div class="form-group"><label>Any questions for Giuliana? (optional)</label><textarea id="su-questions" placeholder="Feel free to ask anything!" style="height:80px;"></textarea></div>
       <button class="btn-primary" onclick="doSignup()" style="animation:none;border:none;width:100%;text-align:center;">Create Account</button>
     </div>
-    <!-- TUTOR -->
     <div class="tab-panel" id="tab-tutor">
-      <h3>Tutor Login 🌸</h3>
+      <h3>Tutor Login</h3>
       <div class="form-group"><label>Password</label><input type="password" id="tutor-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doTutorLogin()"></div>
       <button class="btn-primary" onclick="doTutorLogin()" style="animation:none;border:none;width:100%;text-align:center;">Enter</button>
       <p class="modal-note"><a href="#" onclick="switchAuthTab('tab-login',null);return false;" style="color:var(--text-muted);">← Back</a></p>
@@ -376,20 +425,20 @@
 <div class="modal-overlay" id="edit-child-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('edit-child-modal').classList.remove('visible')">×</button>
-    <h3>Edit Child Info</h3>
+    <h3>Edit Information</h3>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;">Parent</p>
+    <div class="form-group"><label>Phone Number</label><input type="tel" id="ec-phone"></div>
+    <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">Child</p>
     <div class="form-row">
-      <div class="form-group"><label>Child's Name</label><input type="text" id="ec-name"></div>
+      <div class="form-group"><label>First Name</label><input type="text" id="ec-child-first"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" id="ec-child-last"></div>
+    </div>
+    <div class="form-row">
       <div class="form-group"><label>Age</label><input type="number" id="ec-age" min="4" max="18"></div>
+      <div class="form-group"><label>Subject</label><input type="text" id="ec-subject" placeholder="e.g. Algebra…"></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Grade</label>
-        <select id="ec-grade"><option>Pre-K</option><option>Kindergarten</option><option>1st Grade</option><option>2nd Grade</option><option>3rd Grade</option><option>4th Grade</option><option>5th Grade</option><option>6th Grade</option><option>7th Grade</option><option>8th Grade</option><option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option></select>
-      </div>
-      <div class="form-group"><label>Subject</label>
-        <select id="ec-subject"><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General / Multiple</option></select>
-      </div>
-    </div>
-    <div class="form-group"><label>Notes for Giuliana</label><textarea id="ec-notes" placeholder="Any goals, needs, or things to know…"></textarea></div>
+    <div class="form-group"><label>What specifically do they need help with?</label><textarea id="ec-specific" style="height:80px;"></textarea></div>
+    <div class="form-group"><label>Questions for Giuliana (optional)</label><textarea id="ec-questions" style="height:80px;"></textarea></div>
     <button class="btn-primary" onclick="saveChildInfo()" style="animation:none;border:none;width:100%;text-align:center;">Save</button>
   </div>
 </div>
@@ -408,30 +457,39 @@
     </div>
     <div class="form-group"><label>Notes (optional)</label><textarea id="appt-notes" placeholder="Anything specific to focus on?"></textarea></div>
     <button class="btn-primary" onclick="submitApptRequest()" style="animation:none;border:none;width:100%;text-align:center;">Send Request</button>
-    <p class="modal-note">Giuliana will confirm within 24 hours! </p>
+    <p class="modal-note">Giuliana Reitzell will confirm within 24 hours.</p>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const TUTOR_PASSWORD = "giuliana2026"; // ← Change this!
+const TUTOR_PASSWORD = "giuliana2026";
 
-// DATA
 const db = { get:k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
-const getUsers=()=>db.get('gt_users')||{};
-const getApproved=()=>db.get('gt_approved')||[];
-const getPending=()=>db.get('gt_pending')||[];
-const getAppts=()=>db.get('gt_appts')||[];
-const saveUsers=v=>db.set('gt_users',v);
-const saveApproved=v=>db.set('gt_approved',v);
-const savePending=v=>db.set('gt_pending',v);
-const saveAppts=v=>db.set('gt_appts',v);
+const getUsers    = () => db.get('gt_users')    || {};
+const getApproved = () => db.get('gt_approved') || [];
+const getPending  = () => db.get('gt_pending')  || [];
+const getAppts    = () => db.get('gt_appts')    || [];
+const getMessages = () => db.get('gt_messages') || {}; // { email: [{id, from, text, ts, readByTutor, readByParent}] }
+const saveUsers    = v => db.set('gt_users', v);
+const saveApproved = v => db.set('gt_approved', v);
+const savePending  = v => db.set('gt_pending', v);
+const saveAppts    = v => db.set('gt_appts', v);
+const saveMessages = v => db.set('gt_messages', v);
 
-let currentUser=null, isTutor=false;
+let currentUser = null, isTutor = false;
+let activeTutorThreadEmail = null;
 
-function seedReviews(){
-  if(getApproved().length===0){
+// ── HELPERS ──
+function getThread(email) { const m = getMessages(); return m[email] || []; }
+function saveThread(email, arr) { const m = getMessages(); m[email] = arr; saveMessages(m); }
+function countUnreadForParent(email) { return getThread(email).filter(m => m.from === 'tutor' && !m.readByParent).length; }
+function countUnreadForTutor(email)  { return getThread(email).filter(m => m.from === 'parent' && !m.readByTutor).length; }
+function totalTutorUnread() { return Object.keys(getUsers()).reduce((s,e) => s + countUnreadForTutor(e), 0); }
+
+function seedReviews() {
+  if (getApproved().length === 0) {
     saveApproved([
       {name:"Sarah M.",stars:5,text:"Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!",date:"2025-02"},
       {name:"James & Priya L.",stars:5,text:"My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.",date:"2025-01"},
@@ -441,289 +499,476 @@ function seedReviews(){
   }
 }
 
-// AUTH
-function openLoginModal(){ document.getElementById('login-modal').classList.add('visible'); }
-function closeLoginModal(){ document.getElementById('login-modal').classList.remove('visible'); }
+// ── AUTH ──
+function openLoginModal() { document.getElementById('login-modal').classList.add('visible'); }
+function closeLoginModal() { document.getElementById('login-modal').classList.remove('visible'); }
 
-function switchAuthTab(id, btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+function switchAuthTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(btn) btn.classList.add('active');
+  if (btn) btn.classList.add('active');
 }
+function showTutorTab(e) { e.preventDefault(); document.getElementById('tutor-tab-btn').style.display=''; switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn')); }
 
-function showTutorTab(e){
-  e.preventDefault();
-  document.getElementById('tutor-tab-btn').style.display='';
-  switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn'));
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pw    = document.getElementById('login-pw').value;
+  const users = getUsers();
+  if (!users[email]) { showToast('No account found. Please sign up!'); return; }
+  if (users[email].password !== pw) { showToast('Incorrect password.'); return; }
+  currentUser = users[email]; isTutor = false; onLoggedIn();
 }
-
-function doLogin(){
-  const email=document.getElementById('login-email').value.trim().toLowerCase();
-  const pw=document.getElementById('login-pw').value;
-  const users=getUsers();
-  if(!users[email]){showToast('No account found. Please sign up!');return;}
-  if(users[email].password!==pw){showToast('Incorrect password.');return;}
-  currentUser=users[email]; isTutor=false;
+function doTutorLogin() {
+  if (document.getElementById('tutor-pw').value !== TUTOR_PASSWORD) { showToast('Incorrect password.'); return; }
+  isTutor = true; currentUser = {firstName:'Giuliana', lastName:'Reitzell', email:'__tutor__'};
   onLoggedIn();
 }
-
-function doTutorLogin(){
-  const pw=document.getElementById('tutor-pw').value;
-  if(pw!==TUTOR_PASSWORD){showToast('Incorrect password.');return;}
-  isTutor=true; currentUser={firstName:'Giuliana',email:'__tutor__'};
-  onLoggedIn();
+function doSignup() {
+  const first    = document.getElementById('su-first').value.trim();
+  const last     = document.getElementById('su-last').value.trim();
+  const phone    = document.getElementById('su-phone').value.trim();
+  const email    = document.getElementById('su-email').value.trim().toLowerCase();
+  const pw       = document.getElementById('su-pw').value;
+  const cFirst   = document.getElementById('su-child-first').value.trim();
+  const cLast    = document.getElementById('su-child-last').value.trim();
+  const cAge     = document.getElementById('su-child-age').value;
+  const subject  = document.getElementById('su-subject').value.trim();
+  const specific = document.getElementById('su-specific').value.trim();
+  const questions= document.getElementById('su-questions').value.trim();
+  if (!first||!last||!phone||!email||!pw||!cFirst||!cLast||!cAge||!subject||!specific) {
+    showToast('Please fill out all required fields!'); return;
+  }
+  if (pw.length < 6) { showToast('Password must be at least 6 characters.'); return; }
+  const users = getUsers();
+  if (users[email]) { showToast('An account with that email already exists.'); return; }
+  const user = {
+    firstName:first, lastName:last, phone, email, password:pw,
+    child:{ firstName:cFirst, lastName:cLast, age:cAge, subject, specific, questions },
+    createdAt: new Date().toISOString()
+  };
+  users[email] = user; saveUsers(users);
+  currentUser = user; isTutor = false; onLoggedIn();
 }
 
-function doSignup(){
-  const first=document.getElementById('su-first').value.trim();
-  const last=document.getElementById('su-last').value.trim();
-  const email=document.getElementById('su-email').value.trim().toLowerCase();
-  const pw=document.getElementById('su-pw').value;
-  const cName=document.getElementById('su-child-name').value.trim();
-  const cAge=document.getElementById('su-child-age').value;
-  const grade=document.getElementById('su-grade').value;
-  const subject=document.getElementById('su-subject').value;
-  if(!first||!last||!email||!pw||!cName||!cAge||!grade||!subject){showToast('Please fill out all fields!');return;}
-  if(pw.length<6){showToast('Password must be at least 6 characters.');return;}
-  const users=getUsers();
-  if(users[email]){showToast('An account with that email already exists.');return;}
-  const user={firstName:first,lastName:last,email,password:pw,child:{name:cName,age:cAge,grade,subject,notes:''},createdAt:new Date().toISOString()};
-  users[email]=user; saveUsers(users);
-  currentUser=user; isTutor=false;
-  onLoggedIn();
-}
-
-function onLoggedIn(){
+function onLoggedIn() {
   closeLoginModal();
-  document.getElementById('login-pw').value='';
-  document.getElementById('tutor-pw').value='';
+  document.getElementById('login-pw').value=''; document.getElementById('tutor-pw').value='';
   document.getElementById('nav-login-btn').style.display='none';
-  const info=document.getElementById('nav-user-info');
-  info.style.display='flex';
-  document.getElementById('nav-username').textContent=currentUser.firstName;
-  if(isTutor){
+  document.getElementById('nav-user-info').style.display='flex';
+  document.getElementById('nav-username').textContent = isTutor ? 'Giuliana Reitzell' : currentUser.firstName;
+  if (isTutor) {
     document.getElementById('tutor-dashboard').classList.add('visible');
     renderTutorDashboard();
     document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
   } else {
     document.getElementById('parent-dashboard').classList.add('visible');
     renderParentDashboard();
+    updateContactUI();
     document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
   }
   renderCalendar();
-  showToast('Welcome back, '+currentUser.firstName+'!');
+  showToast('Welcome back, ' + currentUser.firstName + '!');
 }
 
-function logout(){
-  currentUser=null; isTutor=false;
+function logout() {
+  currentUser = null; isTutor = false;
   document.getElementById('nav-login-btn').style.display='';
   document.getElementById('nav-user-info').style.display='none';
   document.getElementById('parent-dashboard').classList.remove('visible');
   document.getElementById('tutor-dashboard').classList.remove('visible');
+  updateContactUI();
   renderCalendar();
 }
 
-// PARENT DASHBOARD
-function renderParentDashboard(){
-  const u=currentUser;
-  document.getElementById('dash-greeting').textContent='Hello, '+u.firstName+'!';
-  const c=u.child;
-  document.getElementById('child-info-grid').innerHTML=`
-    <div class="info-item"><div class="label">Child's Name</div><div class="value">${c.name}</div></div>
+// ── PARENT DASHBOARD ──
+function renderParentDashboard() {
+  const u = currentUser;
+  document.getElementById('dash-greeting').textContent = 'Hello, ' + u.firstName + '.';
+  const c = u.child;
+  document.getElementById('child-info-grid').innerHTML = `
+    <div class="info-item"><div class="label">Child's Name</div><div class="value">${c.firstName} ${c.lastName}</div></div>
     <div class="info-item"><div class="label">Age</div><div class="value">${c.age}</div></div>
-    <div class="info-item"><div class="label">Grade</div><div class="value">${c.grade}</div></div>
     <div class="info-item"><div class="label">Subject</div><div class="value">${c.subject}</div></div>
-    ${c.notes?`<div class="info-item" style="grid-column:1/-1"><div class="label">Notes</div><div class="value">${c.notes}</div></div>`:''}
+    <div class="info-item"><div class="label">Parent Phone</div><div class="value">${u.phone||'—'}</div></div>
+    <div class="info-item" style="grid-column:1/-1"><div class="label">Specific Needs</div><div class="value">${c.specific||'—'}</div></div>
+    ${c.questions ? `<div class="info-item" style="grid-column:1/-1"><div class="label">Questions</div><div class="value">${c.questions}</div></div>` : ''}
   `;
-  const appts=getAppts().filter(a=>a.email===u.email);
-  const div=document.getElementById('my-appointments');
-  div.innerHTML=appts.length===0
-    ?'<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
-    :appts.map(a=>`<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span></div>`).join('');
+  const appts = getAppts().filter(a => a.email === u.email);
+  const div = document.getElementById('my-appointments');
+  div.innerHTML = appts.length === 0
+    ? '<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
+    : appts.map(a => `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span></div>`).join('');
+  renderParentThread();
 }
 
-function openEditChild(){
-  const c=currentUser.child;
-  document.getElementById('ec-name').value=c.name;
-  document.getElementById('ec-age').value=c.age;
-  document.getElementById('ec-grade').value=c.grade;
-  document.getElementById('ec-subject').value=c.subject;
-  document.getElementById('ec-notes').value=c.notes||'';
-  document.getElementById('edit-child-modal').classList.add('visible');
+function renderParentThread() {
+  if (!currentUser || isTutor) return;
+  const thread = getThread(currentUser.email);
+  // Mark tutor messages as read
+  let changed = false;
+  thread.forEach(m => { if (m.from === 'tutor' && !m.readByParent) { m.readByParent = true; changed = true; } });
+  if (changed) saveThread(currentUser.email, thread);
+
+  const div = document.getElementById('parent-msg-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
+  } else {
+    div.innerHTML = thread.map(m => `
+      <div class="msg-bubble ${m.from==='tutor'?'from-tutor':'from-parent'}">
+        ${m.text}
+        <div class="msg-meta">${formatTime(m.ts)}</div>
+      </div>`).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+  // Update unread badge
+  const badge = document.getElementById('parent-unread-badge');
+  const unread = countUnreadForParent(currentUser.email);
+  if (unread > 0) { badge.textContent = unread; badge.style.display=''; } else { badge.style.display='none'; }
 }
 
-function saveChildInfo(){
-  currentUser.child.name=document.getElementById('ec-name').value.trim();
-  currentUser.child.age=document.getElementById('ec-age').value;
-  currentUser.child.grade=document.getElementById('ec-grade').value;
-  currentUser.child.subject=document.getElementById('ec-subject').value;
-  currentUser.child.notes=document.getElementById('ec-notes').value.trim();
-  const users=getUsers(); users[currentUser.email]=currentUser; saveUsers(users);
-  document.getElementById('edit-child-modal').classList.remove('visible');
-  renderParentDashboard(); showToast('Child info updated! ✨');
+function sendParentMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('parent-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(currentUser.email);
+  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
+  saveThread(currentUser.email, thread);
+  input.value = '';
+  renderParentThread();
+  updateTutorUnreadBadge();
 }
 
-// APPOINTMENTS
-function openApptRequest(dateStr){
-  if(!currentUser||isTutor){openLoginModal();return;}
-  if(dateStr) document.getElementById('appt-date').value=dateStr;
-  document.getElementById('appt-modal').classList.add('visible');
-}
-
-function submitApptRequest(){
-  if(!currentUser) return;
-  const date=document.getElementById('appt-date').value;
-  const time=document.getElementById('appt-time').value;
-  const subject=document.getElementById('appt-subject').value;
-  const notes=document.getElementById('appt-notes').value.trim();
-  if(!date){showToast('Please select a date!');return;}
-  const appts=getAppts();
-  appts.push({id:Date.now(),email:currentUser.email,parentName:currentUser.firstName+' '+currentUser.lastName,childName:currentUser.child.name,grade:currentUser.child.grade,date,time,subject,notes,status:'Pending',createdAt:new Date().toISOString()});
-  saveAppts(appts);
-  document.getElementById('appt-modal').classList.remove('visible');
-  document.getElementById('appt-date').value='';
-  document.getElementById('appt-notes').value='';
-  renderParentDashboard(); renderCalendar();
-  showToast('Session request sent! Giuliana will confirm soon! ');
-}
-
-// TUTOR DASHBOARD
-function switchTutorTab(btn, panelId){
-  document.querySelectorAll('.tutor-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tutor-panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(panelId).classList.add('active');
-  if(panelId==='tp-families') renderFamilies();
-  if(panelId==='tp-appointments') renderApptRequests();
-  if(panelId==='tp-reviews-mod') renderPending();
-}
-
-function renderTutorDashboard(){ renderFamilies(); renderApptRequests(); renderPending(); }
-
-function renderFamilies(){
-  const entries=Object.values(getUsers());
-  const list=document.getElementById('families-list');
-  list.innerHTML=entries.length===0
-    ?'<p style="color:var(--text-muted);">No families registered yet.</p>'
-    :entries.map(u=>`<div class="parent-row"><strong>${u.firstName} ${u.lastName}</strong><span>${u.email}</span><span>Child: ${u.child.name} · ${u.child.grade} · ${u.child.subject}</span>${u.child.notes?`<span style="font-style:italic;">"${u.child.notes}"</span>`:''}<span style="font-size:.75rem;margin-top:.2rem;display:block;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span></div>`).join('');
-}
-
-function renderApptRequests(){
-  const appts=getAppts();
-  const list=document.getElementById('appt-requests-list');
-  list.innerHTML=appts.length===0
-    ?'<p style="color:var(--text-muted);">No session requests yet.</p>'
-    :appts.map(a=>`<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''}</div></div>`).join('');
-}
-
-function confirmAppt(id){
-  const appts=getAppts(); const a=appts.find(x=>x.id===id);
-  if(a){a.status='Confirmed';saveAppts(appts);renderApptRequests();renderCalendar();showToast('Session confirmed! ✨');}
-}
-function declineAppt(id){ saveAppts(getAppts().filter(x=>x.id!==id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
-
-// REVIEWS
-function renderApproved(){
-  const reviews=getApproved();
-  document.getElementById('approved-reviews').innerHTML=reviews.length===0
-    ?'<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet!</p>'
-    :reviews.map(r=>`<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
-  document.getElementById('hero-testimonials').innerHTML=reviews.slice(0,4).map(r=>`<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
-}
-
-let selectedStars=0;
-document.getElementById('star-picker').addEventListener('click',e=>{
-  if(e.target.dataset.val){ selectedStars=parseInt(e.target.dataset.val); document.querySelectorAll('#star-picker span').forEach((s,i)=>s.classList.toggle('active',i<selectedStars)); }
-});
-
-function submitReview(){
-  const name=document.getElementById('r-name').value.trim();
-  const text=document.getElementById('r-text').value.trim();
-  if(!name||!text||!selectedStars){showToast('Please fill out all fields and pick a rating!');return;}
-  const p=getPending(); p.push({id:Date.now(),name,stars:selectedStars,text,date:new Date().toISOString().slice(0,7)});
-  savePending(p); document.getElementById('r-name').value=''; document.getElementById('r-text').value='';
-  selectedStars=0; document.querySelectorAll('#star-picker span').forEach(s=>s.classList.remove('active'));
-  showToast('Thank you for your review!');
-}
-
-function renderPending(){
-  const pending=getPending(); const list=document.getElementById('pending-list');
-  list.innerHTML=pending.length===0
-    ?'<p style="color:var(--text-muted);">No pending reviews — you\'re all caught up ✨</p>'
-    :pending.map(r=>`<div class="pending-card"><div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div><div class="pending-actions"><button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button><button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button></div></div>`).join('');
-}
-
-function approveReview(id){
-  let p=getPending(); const idx=p.findIndex(r=>r.id===id); if(idx===-1) return;
-  const [rev]=p.splice(idx,1); savePending(p);
-  const a=getApproved(); a.unshift(rev); saveApproved(a);
-  renderPending(); renderApproved(); showToast('Review approved! ✨');
-}
-function rejectReview(id){ savePending(getPending().filter(r=>r.id!==id)); renderPending(); showToast('Review removed.'); }
-
-// CALENDAR
-let calDate=new Date(), selectedCalDate=null;
-const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-function renderCalendar(){
-  const year=calDate.getFullYear(), month=calDate.getMonth(), today=new Date();
-  document.getElementById('cal-month-label').textContent=MONTHS[month]+' '+year;
-  const appts=getAppts().filter(a=>a.status==='Confirmed');
-  const myAppts=currentUser&&!isTutor?appts.filter(a=>a.email===currentUser.email):[];
-  const otherAppts=currentUser&&!isTutor?appts.filter(a=>a.email!==currentUser.email):appts;
-  const toKey=d=>`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const myDays=new Set(myAppts.map(a=>a.date));
-  const otherDays=new Set(otherAppts.map(a=>a.date));
-  const grid=document.getElementById('cal-grid');
-  grid.innerHTML=DAYS.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
-  const firstDay=new Date(year,month,1).getDay(), daysInMonth=new Date(year,month+1,0).getDate();
-  for(let i=0;i<firstDay;i++) grid.innerHTML+=`<div class="cal-day empty"></div>`;
-  for(let d=1;d<=daysInMonth;d++){
-    const key=toKey(d);
-    const isToday=d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
-    const isMine=myDays.has(key), isOther=otherDays.has(key);
-    let cls=isMine?'my-appt':isOther?'booked':isToday?'today':'';
-    grid.innerHTML+=`<div class="cal-day ${cls}" data-key="${key}" onclick="selectCalDay(${d},${month},${year},'${key}',this)">${d}</div>`;
+// ── CONTACT SECTION (public, for logged-in parents) ──
+function updateContactUI() {
+  const loginPrompt = document.getElementById('contact-login-prompt');
+  const threadWrap  = document.getElementById('contact-thread-wrap');
+  const desc        = document.getElementById('contact-desc');
+  if (currentUser && !isTutor) {
+    loginPrompt.style.display = 'none';
+    threadWrap.style.display  = 'block';
+    desc.textContent = 'Send a message to Giuliana Reitzell directly.';
+    renderContactThread();
+  } else if (isTutor) {
+    loginPrompt.style.display = 'none';
+    threadWrap.style.display  = 'none';
+    desc.textContent = 'Manage family messages from your tutor portal above.';
+  } else {
+    loginPrompt.style.display = 'block';
+    threadWrap.style.display  = 'none';
+    desc.textContent = 'Have a question? Log in to send a message and I\'ll get back to you as soon as possible.';
   }
 }
 
-function selectCalDay(d,m,y,key,el){
-  document.querySelectorAll('.cal-day').forEach(e=>{if(!e.classList.contains('my-appt')&&!e.classList.contains('booked'))e.classList.remove('selected');});
-  el.classList.add('selected');
-  selectedCalDate=key;
-  const appts=getAppts().filter(a=>a.status==='Confirmed');
-  const mine=currentUser&&!isTutor?appts.filter(a=>a.email===currentUser.email&&a.date===key):[];
-  const other=appts.filter(a=>a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
-  const note=document.getElementById('cal-note');
-  const rw=document.getElementById('cal-request-wrap');
-  if(mine.length>0){
-    note.textContent=`You have a session on ${MONTHS[m]} ${d}! (${mine[0].time} · ${mine[0].subject})`;
-    rw.style.display='none';
-  } else if(other.length>0){
-    note.textContent=`${MONTHS[m]} ${d} is already booked. Please choose another date!`;
-    rw.style.display='none';
+function renderContactThread() {
+  if (!currentUser || isTutor) return;
+  const thread = getThread(currentUser.email);
+  const div = document.getElementById('contact-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
   } else {
-    note.textContent=`${MONTHS[m]} ${d}, ${y} is available!`;
-    if(currentUser&&!isTutor){
-      rw.style.display='block';
-      document.getElementById('cal-request-btn').onclick=()=>openApptRequest(key);
-    } else if(!currentUser){
-      note.innerHTML=`${MONTHS[m]} ${d} is available! <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request →</a>`;
-      rw.style.display='none';
+    div.innerHTML = thread.map(m => `
+      <div class="msg-bubble ${m.from==='tutor'?'from-tutor':'from-parent'}">
+        ${m.text}
+        <div class="msg-meta">${formatTime(m.ts)}</div>
+      </div>`).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+}
+
+function sendContactMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('contact-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(currentUser.email);
+  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
+  saveThread(currentUser.email, thread);
+  input.value = '';
+  renderContactThread();
+  renderParentThread(); // keep dashboard in sync
+  updateTutorUnreadBadge();
+}
+
+// ── TUTOR MESSAGING ──
+function renderTutorFamilySelector() {
+  const users = Object.values(getUsers());
+  const div = document.getElementById('tutor-family-selector');
+  if (users.length === 0) { div.innerHTML = '<p style="color:var(--text-muted);">No families registered yet.</p>'; return; }
+  div.innerHTML = users.map(u => {
+    const unread = countUnreadForTutor(u.email);
+    return `<div class="parent-row" style="cursor:pointer;" onclick="openTutorThread('${u.email}')">
+      <div class="parent-row-info">
+        <strong>${u.firstName} ${u.lastName}</strong>
+        <span>${u.email} · Child: ${u.child.name}</span>
+      </div>
+      <div style="display:flex;gap:.6rem;align-items:center;">
+        ${unread > 0 ? `<span class="msg-unread-badge">${unread} new</span>` : ''}
+        <button class="family-msg-btn" onclick="event.stopPropagation();openTutorThread('${u.email}')">Message</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openTutorThread(email) {
+  activeTutorThreadEmail = email;
+  const users = getUsers();
+  const u = users[email];
+  document.getElementById('tutor-msg-target-name').textContent = u ? u.firstName + ' ' + u.lastName : email;
+  document.getElementById('tutor-msg-area').style.display = 'block';
+  document.getElementById('tutor-family-selector').style.display = 'none';
+  renderTutorThread();
+}
+
+function closeTutorThread() {
+  activeTutorThreadEmail = null;
+  document.getElementById('tutor-msg-area').style.display = 'none';
+  document.getElementById('tutor-family-selector').style.display = 'block';
+  renderTutorFamilySelector();
+  updateTutorUnreadBadge();
+}
+
+function renderTutorThread() {
+  if (!activeTutorThreadEmail) return;
+  const thread = getThread(activeTutorThreadEmail);
+  // Mark parent messages as read
+  let changed = false;
+  thread.forEach(m => { if (m.from === 'parent' && !m.readByTutor) { m.readByTutor = true; changed = true; } });
+  if (changed) saveThread(activeTutorThreadEmail, thread);
+
+  const div = document.getElementById('tutor-msg-thread');
+  if (thread.length === 0) {
+    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
+  } else {
+    div.innerHTML = thread.map(m => `
+      <div class="msg-bubble ${m.from==='tutor'?'from-tutor':'from-parent'}">
+        ${m.text}
+        <div class="msg-meta">${formatTime(m.ts)}</div>
+      </div>`).join('');
+    div.scrollTop = div.scrollHeight;
+  }
+  updateTutorUnreadBadge();
+}
+
+function sendTutorMsg() {
+  if (!activeTutorThreadEmail) return;
+  const input = document.getElementById('tutor-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(activeTutorThreadEmail);
+  thread.push({id:Date.now(), from:'tutor', text, ts:new Date().toISOString(), readByTutor:true, readByParent:false});
+  saveThread(activeTutorThreadEmail, thread);
+  input.value = '';
+  renderTutorThread();
+  // If the parent is currently logged in and viewing the dashboard, update their view too
+  if (currentUser && currentUser.email === activeTutorThreadEmail) renderParentThread();
+}
+
+function updateTutorUnreadBadge() {
+  const total = totalTutorUnread();
+  const badge = document.getElementById('tutor-unread-total');
+  if (!badge) return;
+  if (total > 0) { badge.textContent = total; badge.style.display=''; } else { badge.style.display='none'; }
+}
+
+// ── TUTOR DASHBOARD ──
+function switchTutorTab(btn, panelId) {
+  document.querySelectorAll('.tutor-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tutor-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+  if (panelId === 'tp-families')     renderFamilies();
+  if (panelId === 'tp-appointments') renderApptRequests();
+  if (panelId === 'tp-reviews-mod')  renderPending();
+  if (panelId === 'tp-messages')     { renderTutorFamilySelector(); updateTutorUnreadBadge(); }
+}
+
+function renderTutorDashboard() { renderFamilies(); renderApptRequests(); renderPending(); updateTutorUnreadBadge(); }
+
+function renderFamilies() {
+  const entries = Object.values(getUsers());
+  const list = document.getElementById('families-list');
+  list.innerHTML = entries.length === 0
+    ? '<p style="color:var(--text-muted);">No families registered yet.</p>'
+    : entries.map(u => {
+        const unread = countUnreadForTutor(u.email);
+        return `<div class="parent-row">
+          <div class="parent-row-info">
+            <strong>${u.firstName} ${u.lastName}</strong>
+            <span>${u.email}${u.phone ? ' · ' + u.phone : ''}</span>
+            <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age} · ${u.child.subject}</span>
+            ${u.child.specific ? `<span>Needs help with: ${u.child.specific}</span>` : ''}
+            ${u.child.questions ? `<span style="font-style:italic;">Questions: "${u.child.questions}"</span>` : ''}
+            <span style="font-size:.75rem;margin-top:.2rem;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
+          </div>
+          <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+            ${unread > 0 ? `<span class="msg-unread-badge">${unread} new</span>` : ''}
+            <button class="family-msg-btn" onclick="switchTutorTab(document.querySelector('.tutor-tab:nth-child(4)'), 'tp-messages'); setTimeout(()=>openTutorThread('${u.email}'),50)">Message</button>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+function renderApptRequests() {
+  const appts = getAppts();
+  const list = document.getElementById('appt-requests-list');
+  list.innerHTML = appts.length === 0
+    ? '<p style="color:var(--text-muted);">No session requests yet.</p>'
+    : appts.map(a => `<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''}</div></div>`).join('');
+}
+
+function confirmAppt(id) {
+  const appts = getAppts(), a = appts.find(x => x.id === id);
+  if (a) { a.status = 'Confirmed'; saveAppts(appts); renderApptRequests(); renderCalendar(); showToast('Session confirmed!'); }
+}
+function declineAppt(id) { saveAppts(getAppts().filter(x => x.id !== id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
+
+// ── EDIT CHILD ──
+function openEditChild() {
+  const c = currentUser.child;
+  document.getElementById('ec-phone').value       = currentUser.phone || '';
+  document.getElementById('ec-child-first').value = c.firstName || '';
+  document.getElementById('ec-child-last').value  = c.lastName  || '';
+  document.getElementById('ec-age').value         = c.age;
+  document.getElementById('ec-subject').value     = c.subject;
+  document.getElementById('ec-specific').value    = c.specific  || '';
+  document.getElementById('ec-questions').value   = c.questions || '';
+  document.getElementById('edit-child-modal').classList.add('visible');
+}
+function saveChildInfo() {
+  currentUser.phone             = document.getElementById('ec-phone').value.trim();
+  currentUser.child.firstName   = document.getElementById('ec-child-first').value.trim();
+  currentUser.child.lastName    = document.getElementById('ec-child-last').value.trim();
+  currentUser.child.age         = document.getElementById('ec-age').value;
+  currentUser.child.subject     = document.getElementById('ec-subject').value.trim();
+  currentUser.child.specific    = document.getElementById('ec-specific').value.trim();
+  currentUser.child.questions   = document.getElementById('ec-questions').value.trim();
+  const users = getUsers(); users[currentUser.email] = currentUser; saveUsers(users);
+  document.getElementById('edit-child-modal').classList.remove('visible');
+  renderParentDashboard(); showToast('Information updated!');
+}
+
+// ── APPOINTMENTS ──
+function openApptRequest(dateStr) {
+  if (!currentUser || isTutor) { openLoginModal(); return; }
+  if (dateStr) document.getElementById('appt-date').value = dateStr;
+  document.getElementById('appt-modal').classList.add('visible');
+}
+function submitApptRequest() {
+  if (!currentUser) return;
+  const date = document.getElementById('appt-date').value;
+  if (!date) { showToast('Please select a date!'); return; }
+  const appts = getAppts();
+  appts.push({id:Date.now(), email:currentUser.email, parentName:currentUser.firstName+' '+currentUser.lastName, childName:currentUser.child.name, grade:currentUser.child.grade, date, time:document.getElementById('appt-time').value, subject:document.getElementById('appt-subject').value, notes:document.getElementById('appt-notes').value.trim(), status:'Pending', createdAt:new Date().toISOString()});
+  saveAppts(appts);
+  document.getElementById('appt-modal').classList.remove('visible');
+  document.getElementById('appt-date').value = ''; document.getElementById('appt-notes').value = '';
+  renderParentDashboard(); renderCalendar();
+  showToast('Session request sent! Giuliana Reitzell will confirm soon.');
+}
+
+// ── REVIEWS ──
+function renderApproved() {
+  const reviews = getApproved();
+  document.getElementById('approved-reviews').innerHTML = reviews.length === 0
+    ? '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet!</p>'
+    : reviews.map(r => `<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+  document.getElementById('hero-testimonials').innerHTML = reviews.slice(0,4).map(r => `<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+}
+
+let selectedStars = 0;
+document.getElementById('star-picker').addEventListener('click', e => {
+  if (e.target.dataset.val) { selectedStars = parseInt(e.target.dataset.val); document.querySelectorAll('#star-picker span').forEach((s,i) => s.classList.toggle('active', i < selectedStars)); }
+});
+
+function submitReview() {
+  const name = document.getElementById('r-name').value.trim(), text = document.getElementById('r-text').value.trim();
+  if (!name||!text||!selectedStars) { showToast('Please fill out all fields and pick a rating!'); return; }
+  const p = getPending();
+  p.push({id:Date.now(), name, stars:selectedStars, text, date:new Date().toISOString().slice(0,7)});
+  savePending(p);
+  document.getElementById('r-name').value = ''; document.getElementById('r-text').value = '';
+  selectedStars = 0; document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
+  showToast('Thank you for your review!');
+}
+
+function renderPending() {
+  const pending = getPending(), list = document.getElementById('pending-list');
+  list.innerHTML = pending.length === 0
+    ? '<p style="color:var(--text-muted);">No pending reviews — you\'re all caught up.</p>'
+    : pending.map(r => `<div class="pending-card"><div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div><div class="pending-actions"><button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button><button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button></div></div>`).join('');
+}
+function approveReview(id) {
+  let p = getPending(), idx = p.findIndex(r => r.id === id); if (idx === -1) return;
+  const [rev] = p.splice(idx, 1); savePending(p);
+  const a = getApproved(); a.unshift(rev); saveApproved(a);
+  renderPending(); renderApproved(); showToast('Review approved!');
+}
+function rejectReview(id) { savePending(getPending().filter(r => r.id !== id)); renderPending(); showToast('Review removed.'); }
+
+// ── CALENDAR ──
+let calDate = new Date();
+const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendar() {
+  const year = calDate.getFullYear(), month = calDate.getMonth(), today = new Date();
+  document.getElementById('cal-month-label').textContent = MONTHS[month] + ' ' + year;
+  const appts = getAppts().filter(a => a.status === 'Confirmed');
+  const myAppts    = currentUser && !isTutor ? appts.filter(a => a.email === currentUser.email) : [];
+  const otherAppts = currentUser && !isTutor ? appts.filter(a => a.email !== currentUser.email) : appts;
+  const toKey = d => `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const myDays    = new Set(myAppts.map(a => a.date));
+  const otherDays = new Set(otherAppts.map(a => a.date));
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+  const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month+1, 0).getDate();
+  for (let i=0;i<firstDay;i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+  for (let d=1;d<=daysInMonth;d++) {
+    const key = toKey(d);
+    const isToday = d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
+    const isMine = myDays.has(key), isOther = otherDays.has(key);
+    const cls = isMine ? 'my-appt' : isOther ? 'booked' : isToday ? 'today' : '';
+    grid.innerHTML += `<div class="cal-day ${cls}" onclick="selectCalDay(${d},${month},${year},'${key}',this)">${d}</div>`;
+  }
+}
+
+function selectCalDay(d, m, y, key, el) {
+  document.querySelectorAll('.cal-day').forEach(e => { if (!e.classList.contains('my-appt')&&!e.classList.contains('booked')) e.classList.remove('selected'); });
+  el.classList.add('selected');
+  const appts = getAppts().filter(a => a.status === 'Confirmed');
+  const mine  = currentUser&&!isTutor ? appts.filter(a => a.email===currentUser.email&&a.date===key) : [];
+  const other = appts.filter(a => a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
+  const note  = document.getElementById('cal-note');
+  const rw    = document.getElementById('cal-request-wrap');
+  if (mine.length > 0) {
+    note.textContent = `You have a session on ${MONTHS[m]} ${d} (${mine[0].time} · ${mine[0].subject}).`;
+    rw.style.display = 'none';
+  } else if (other.length > 0) {
+    note.textContent = `${MONTHS[m]} ${d} is already booked. Please choose another date.`;
+    rw.style.display = 'none';
+  } else {
+    note.textContent = `${MONTHS[m]} ${d}, ${y} is available.`;
+    if (currentUser && !isTutor) {
+      rw.style.display = 'block';
+      document.getElementById('cal-request-btn').onclick = () => openApptRequest(key);
+    } else if (!currentUser) {
+      note.innerHTML = `${MONTHS[m]} ${d} is available. <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request a session →</a>`;
+      rw.style.display = 'none';
     }
   }
 }
 
-function changeMonth(dir){ calDate=new Date(calDate.getFullYear(),calDate.getMonth()+dir,1); renderCalendar(); }
+function changeMonth(dir) { calDate = new Date(calDate.getFullYear(), calDate.getMonth()+dir, 1); renderCalendar(); }
 
-function formatDate(s){ if(!s)return''; const[y,m,d]=s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
-
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
+// ── UTILS ──
+function formatDate(s) { if (!s) return ''; const [y,m,d] = s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
+function formatTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3200); }
 
 // INIT
-seedReviews(); renderApproved(); renderCalendar();
+seedReviews(); renderApproved(); renderCalendar(); updateContactUI();
 </script>
 </body>
 </html>
