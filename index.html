@@ -191,8 +191,49 @@
   .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:white;padding:.8rem 2rem;border-radius:99px;font-size:.88rem;transition:transform .3s ease;z-index:9999;white-space:nowrap;}
   .toast.show{transform:translateX(-50%) translateY(0);}
 
+  /* PROFILE DROPDOWN */
+  #profile-avatar-btn{background:var(--pink);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;padding:0;}
+  #profile-avatar-btn:hover{background:var(--pink-deep);}
+  #profile-icon{width:18px;height:18px;color:var(--accent);}
+  #profile-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;background:var(--white);border:1px solid var(--border);border-radius:14px;min-width:180px;box-shadow:0 8px 32px rgba(58,42,48,.12);z-index:200;overflow:hidden;animation:popIn .2s ease;}
+  #profile-dropdown.open{display:block;}
+  #profile-dropdown-name{padding:.9rem 1.1rem .5rem;font-size:.82rem;color:var(--text-muted);font-weight:500;}
+  .profile-dropdown-divider{height:1px;background:var(--border);margin:.2rem 0;}
+  .profile-dropdown-item{width:100%;background:none;border:none;padding:.7rem 1.1rem;text-align:left;font-family:inherit;font-size:.88rem;color:var(--text);cursor:pointer;transition:background .15s;}
+  .profile-dropdown-item:hover{background:var(--pink-pale);}
+  .profile-dropdown-item.danger{color:var(--red-text);}
+  .profile-dropdown-item.danger:hover{background:var(--red-bg);}
+
+  /* ACCOUNT PANEL (slide-in from right) */
+  #account-panel-overlay{display:none;position:fixed;inset:0;background:rgba(58,42,48,.35);backdrop-filter:blur(4px);z-index:300;}
+  #account-panel-overlay.visible{display:block;}
+  #account-panel{position:fixed;top:0;right:-100%;width:min(480px,100%);height:100%;background:var(--white);box-shadow:-8px 0 40px rgba(58,42,48,.12);z-index:301;overflow-y:auto;transition:right .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+  #account-panel.open{right:0;}
+  .panel-header{display:flex;align-items:center;justify-content:space-between;padding:1.4rem 1.6rem;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:1;}
+  .panel-header h2{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;}
+  .panel-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-muted);line-height:1;padding:.2rem;}
+  .panel-body{padding:1.6rem;flex:1;}
+  .panel-section{margin-bottom:2rem;}
+  .panel-section-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;margin-bottom:1rem;color:var(--text);}
+  .panel-card{background:var(--pink-pale);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:.8rem;}
+  .panel-card h5{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:500;margin-bottom:.6rem;}
+  .panel-info-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;padding:.25rem 0;border-bottom:1px solid var(--border);}
+  .panel-info-row:last-child{border-bottom:none;}
+  .panel-info-row span:first-child{color:var(--text-muted);font-size:.8rem;}
+  .panel-info-row span:last-child{color:var(--text);font-weight:400;}
+  .panel-appt-item{display:flex;align-items:center;gap:.8rem;padding:.6rem 0;border-bottom:1px solid var(--border);}
+  .panel-appt-item:last-child{border-bottom:none;}
+  .panel-appt-date{background:var(--pink);color:var(--accent);border-radius:8px;padding:.3rem .65rem;font-size:.78rem;font-weight:500;white-space:nowrap;}
+  .panel-danger-zone{border:1.5px solid var(--red-bg);border-radius:14px;padding:1.2rem;margin-top:1rem;}
+  .panel-danger-zone p{font-size:.82rem;color:var(--text-muted);margin-bottom:.8rem;line-height:1.5;}
+  .btn-danger{background:var(--red-bg);color:var(--red-text);border:none;border-radius:8px;padding:.55rem 1.2rem;font-size:.85rem;font-family:inherit;font-weight:500;cursor:pointer;transition:opacity .2s;}
+  .btn-danger:hover{opacity:.8;}
+  .tutor-family-row{background:var(--pink-pale);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.7rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+  .tutor-family-row-info strong{font-size:.9rem;display:block;margin-bottom:.15rem;}
+  .tutor-family-row-info span{font-size:.78rem;color:var(--text-muted);display:block;line-height:1.5;}
+
   @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-  @media(max-width:600px){nav{padding:1rem 1.2rem;}.nav-links{gap:.8rem;}.enroll-card{padding:2rem 1.2rem;}.form-row{grid-template-columns:1fr;}}
+  @media(max-width:600px){nav{padding:1rem 1.2rem;}.nav-links{gap:.8rem;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -207,9 +248,17 @@
     <li><a href="#calendar">Calendar</a></li>
     <li>
       <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
-      <div id="nav-user-info">
-        <span>Hi, <strong id="nav-username"></strong></span>
-        <button id="nav-logout" onclick="logout()">Log out</button>
+      <!-- Profile dropdown (shown when logged in) -->
+      <div id="profile-menu-wrap" style="display:none;position:relative;">
+        <button id="profile-avatar-btn" onclick="toggleProfileMenu()" aria-label="Account menu">
+          <svg id="profile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </button>
+        <div id="profile-dropdown">
+          <div id="profile-dropdown-name"></div>
+          <div class="profile-dropdown-divider"></div>
+          <button class="profile-dropdown-item" onclick="openAccountPanel()">My Account</button>
+          <button class="profile-dropdown-item danger" onclick="logout()">Log Out</button>
+        </div>
       </div>
     </li>
   </ul>
@@ -308,7 +357,21 @@
   </div>
 </section>
 
-<!-- PARENT DASHBOARD -->
+<!-- ACCOUNT PANEL OVERLAY -->
+<div id="account-panel-overlay" onclick="closeAccountPanel()"></div>
+
+<!-- ACCOUNT PANEL (slide-in) -->
+<div id="account-panel">
+  <div class="panel-header">
+    <h2 id="panel-title">My Account</h2>
+    <button class="panel-close" onclick="closeAccountPanel()">×</button>
+  </div>
+  <div class="panel-body" id="panel-body">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- PARENT DASHBOARD (page section, still exists for scroll anchor) -->
 <section id="parent-dashboard">
   <div class="dash-wrap">
     <p class="section-label">Parent Portal</p>
@@ -579,9 +642,11 @@ function doSignup() {
 function onLoggedIn() {
   closeLoginModal();
   document.getElementById('login-pw').value=''; document.getElementById('tutor-pw').value='';
+  // Show profile icon, hide login button
   document.getElementById('nav-login-btn').style.display='none';
-  document.getElementById('nav-user-info').style.display='flex';
-  document.getElementById('nav-username').textContent = isTutor ? 'Giuliana Reitzell' : currentUser.firstName;
+  document.getElementById('profile-menu-wrap').style.display='';
+  const displayName = isTutor ? 'Giuliana Reitzell' : `${currentUser.firstName} ${currentUser.lastName}`;
+  document.getElementById('profile-dropdown-name').textContent = displayName;
   if (isTutor) {
     document.getElementById('tutor-dashboard').classList.add('visible');
     renderTutorDashboard();
@@ -597,9 +662,11 @@ function onLoggedIn() {
 }
 
 function logout() {
+  closeAccountPanel();
+  closeProfileMenu();
   currentUser = null; isTutor = false;
   document.getElementById('nav-login-btn').style.display='';
-  document.getElementById('nav-user-info').style.display='none';
+  document.getElementById('profile-menu-wrap').style.display='none';
   document.getElementById('parent-dashboard').classList.remove('visible');
   document.getElementById('tutor-dashboard').classList.remove('visible');
   updateContactUI();
@@ -1058,9 +1125,204 @@ function pollMessages() {
 // Poll every 5 seconds
 setInterval(pollMessages, 5000);
 
+// ── PROFILE DROPDOWN ──
+function toggleProfileMenu() {
+  document.getElementById('profile-dropdown').classList.toggle('open');
+}
+function closeProfileMenu() {
+  document.getElementById('profile-dropdown').classList.remove('open');
+}
+// Close dropdown on outside click
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('profile-menu-wrap');
+  if (wrap && !wrap.contains(e.target)) closeProfileMenu();
+});
+
+// ── ACCOUNT PANEL ──
+function openAccountPanel() {
+  closeProfileMenu();
+  const panel = document.getElementById('account-panel');
+  const overlay = document.getElementById('account-panel-overlay');
+  overlay.classList.add('visible');
+  panel.classList.add('open');
+  renderAccountPanel();
+}
+
+function closeAccountPanel() {
+  document.getElementById('account-panel').classList.remove('open');
+  document.getElementById('account-panel-overlay').classList.remove('visible');
+}
+
+function renderAccountPanel() {
+  const body = document.getElementById('panel-body');
+  const title = document.getElementById('panel-title');
+
+  if (isTutor) {
+    title.textContent = 'Tutor Account';
+    renderTutorAccountPanel(body);
+  } else if (currentUser) {
+    title.textContent = 'My Account';
+    renderParentAccountPanel(body);
+  }
+}
+
+function renderParentAccountPanel(body) {
+  const u = currentUser;
+  const c = u.child;
+  const appts = getAppts().filter(a => a.email === u.email);
+
+  body.innerHTML = `
+    <div class="panel-section">
+      <p class="panel-section-title">Your Information</p>
+      <div class="panel-card">
+        <h5>Parent</h5>
+        <div class="panel-info-row"><span>Name</span><span>${u.firstName} ${u.lastName}</span></div>
+        <div class="panel-info-row"><span>Email</span><span>${u.email}</span></div>
+        <div class="panel-info-row"><span>Phone</span><span>${u.phone || '—'}</span></div>
+      </div>
+      <div class="panel-card">
+        <h5>Child</h5>
+        <div class="panel-info-row"><span>Name</span><span>${c.firstName} ${c.lastName}</span></div>
+        <div class="panel-info-row"><span>Age</span><span>${c.age}</span></div>
+        <div class="panel-info-row"><span>Subject</span><span>${c.subject}</span></div>
+        <div class="panel-info-row"><span>Needs help with</span><span style="text-align:right;max-width:55%;">${c.specific || '—'}</span></div>
+      </div>
+      <button onclick="openEditChild()" style="margin-top:.5rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
+    </div>
+
+    <div class="panel-section">
+      <p class="panel-section-title">My Appointments</p>
+      ${appts.length === 0
+        ? '<p style="color:var(--text-muted);font-size:.88rem;">No sessions yet.</p>'
+        : appts.map(a => {
+            const statusClass = a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';
+            return `<div class="panel-appt-item">
+              <div class="panel-appt-date">${formatDate(a.date)}</div>
+              <div style="flex:1;"><div style="font-size:.88rem;font-weight:500;">${a.time} · ${a.subject}</div><div style="font-size:.78rem;color:var(--text-muted);">${a.notes||'No notes'}</div></div>
+              <span class="appt-status ${statusClass}">${a.status}</span>
+            </div>`;
+          }).join('')
+      }
+      <button onclick="openApptRequest();closeAccountPanel();" style="margin-top:.8rem;" class="request-btn" style="font-size:.82rem;">+ Request Session</button>
+    </div>
+
+    <div class="panel-section">
+      <p class="panel-section-title">Messages</p>
+      <div class="new-msg-banner" id="panel-new-msg-banner" style="display:none;"></div>
+      <div class="msg-thread" id="panel-msg-thread" style="max-height:240px;"></div>
+      <div class="msg-compose" style="margin-top:.6rem;">
+        <input type="text" id="panel-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendPanelMsg()">
+        <button class="msg-send-btn" onclick="sendPanelMsg()">Send</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <p class="panel-section-title">Account</p>
+      <div class="panel-danger-zone">
+        <p>Deleting your account will permanently remove all your data, including appointments and messages. This cannot be undone.</p>
+        <button class="btn-danger" onclick="deleteAccount()">Delete My Account</button>
+      </div>
+    </div>
+  `;
+  renderPanelThread();
+}
+
+function renderTutorAccountPanel(body) {
+  const users = Object.values(getUsers());
+  body.innerHTML = `
+    <div class="panel-section">
+      <p class="panel-section-title">Registered Students</p>
+      ${users.length === 0
+        ? '<p style="color:var(--text-muted);font-size:.88rem;">No families registered yet.</p>'
+        : users.map(u => `
+          <div class="tutor-family-row">
+            <div class="tutor-family-row-info">
+              <strong>${u.firstName} ${u.lastName}</strong>
+              <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age}</span>
+              <span>${u.child.subject}${u.child.specific ? ' — ' + u.child.specific : ''}</span>
+            </div>
+            <button class="btn-danger" style="font-size:.78rem;padding:.4rem .8rem;" onclick="removeStudent('${u.email}')">Remove</button>
+          </div>`).join('')
+      }
+    </div>
+    <div class="panel-section">
+      <p class="panel-section-title" style="color:var(--text-muted);font-size:.82rem;">Logged in as Giuliana Reitzell</p>
+    </div>
+  `;
+}
+
+// ── PANEL MESSAGE THREAD ──
+function renderPanelThread() {
+  const threadEl = document.getElementById('panel-msg-thread');
+  if (!threadEl || !currentUser) return;
+  const thread = getThread(currentUser.email);
+  let changed = false;
+  thread.forEach(m => { if (m.from === 'tutor' && !m.readByParent) { m.readByParent = true; changed = true; } });
+  if (changed) saveThread(currentUser.email, thread);
+
+  if (thread.length === 0) {
+    threadEl.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
+  } else {
+    threadEl.innerHTML = thread.map(m => {
+      const isMine = m.from === 'parent';
+      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
+        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
+        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
+      </div>`;
+    }).join('');
+    threadEl.scrollTop = threadEl.scrollHeight;
+  }
+  // Also sync main dashboard thread
+  renderParentThread();
+}
+
+function sendPanelMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('panel-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = getThread(currentUser.email);
+  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
+  saveThread(currentUser.email, thread);
+  input.value = '';
+  renderPanelThread();
+  renderContactThread();
+  updateTutorUnreadBadge();
+}
+
+// ── REMOVE STUDENT (tutor) ──
+function removeStudent(email) {
+  if (!confirm('Remove this family? This will permanently delete their account, appointments, and messages.')) return;
+  const users = getUsers();
+  delete users[email];
+  saveUsers(users);
+  // Also remove their appointments and messages
+  saveAppts(getAppts().filter(a => a.email !== email));
+  const msgs = getMessages();
+  delete msgs[email];
+  saveMessages(msgs);
+  renderTutorAccountPanel(document.getElementById('panel-body'));
+  renderTutorDashboard();
+  showToast('Family removed.');
+}
+
+// ── DELETE ACCOUNT (parent) ──
+function deleteAccount() {
+  if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
+  const email = currentUser.email;
+  const users = getUsers();
+  delete users[email];
+  saveUsers(users);
+  saveAppts(getAppts().filter(a => a.email !== email));
+  const msgs = getMessages();
+  delete msgs[email];
+  saveMessages(msgs);
+  logout();
+  showToast('Your account has been deleted.');
+}
+
 // INIT
 seedReviews(); renderApproved(); renderCalendar(); updateContactUI();
 </script>
 </body>
 </html>
-
