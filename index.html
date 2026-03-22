@@ -551,43 +551,124 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-const TUTOR_PASSWORD = "giuliana2026";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, addDoc, updateDoc, query, where, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const db = { get:k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
-const getUsers    = () => db.get('gt_users')    || {};
-const getApproved = () => db.get('gt_approved') || [];
-const getPending  = () => db.get('gt_pending')  || [];
-const getAppts    = () => db.get('gt_appts')    || [];
-const getMessages = () => db.get('gt_messages') || {}; // { email: [{id, from, text, ts, readByTutor, readByParent}] }
-const saveUsers    = v => db.set('gt_users', v);
-const saveApproved = v => db.set('gt_approved', v);
-const savePending  = v => db.set('gt_pending', v);
-const saveAppts    = v => db.set('gt_appts', v);
-const saveMessages = v => db.set('gt_messages', v);
+const firebaseConfig = {
+  apiKey: "AIzaSyDRb7hex4XTSCcqHtrKdBbileDoZnzq2Xs",
+  authDomain: "tutoring-b8a75.firebaseapp.com",
+  projectId: "tutoring-b8a75",
+  storageBucket: "tutoring-b8a75.firebasestorage.app",
+  messagingSenderId: "731758064393",
+  appId: "1:731758064393:web:45d096d47ef02dc542d9d8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const TUTOR_PASSWORD = "giuliana2026";
 
 let currentUser = null, isTutor = false;
 let activeTutorThreadEmail = null;
+let unsubMessages = null; // live listener unsub
 
-// ── HELPERS ──
-function getThread(email) { const m = getMessages(); return m[email] || []; }
-function saveThread(email, arr) { const m = getMessages(); m[email] = arr; saveMessages(m); }
-function countUnreadForParent(email) { return getThread(email).filter(m => m.from === 'tutor' && !m.readByParent).length; }
-function countUnreadForTutor(email)  { return getThread(email).filter(m => m.from === 'parent' && !m.readByTutor).length; }
-function totalTutorUnread() { return Object.keys(getUsers()).reduce((s,e) => s + countUnreadForTutor(e), 0); }
+// ══════════════════════════════════════════
+//  FIRESTORE HELPERS
+// ══════════════════════════════════════════
 
-function seedReviews() {
-  if (getApproved().length === 0) {
-    saveApproved([
-      {name:"Sarah M.",stars:5,text:"Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!",date:"2025-02"},
-      {name:"James & Priya L.",stars:5,text:"My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.",date:"2025-01"},
-      {name:"Tanya R.",stars:5,text:"Our daughter jumped two reading levels in one semester. We couldn't be more grateful.",date:"2024-12"},
-      {name:"Michelle K.",stars:5,text:"She tailors every session to where my child is at. It's clear she truly cares about her students.",date:"2024-11"},
-    ]);
+async function fsGetUser(email) {
+  const snap = await getDoc(doc(db, 'users', email));
+  return snap.exists() ? snap.data() : null;
+}
+async function fsSetUser(email, data) {
+  await setDoc(doc(db, 'users', email), data);
+}
+async function fsDeleteUser(email) {
+  await deleteDoc(doc(db, 'users', email));
+}
+async function fsGetAllUsers() {
+  const snap = await getDocs(collection(db, 'users'));
+  return snap.docs.map(d => d.data());
+}
+
+async function fsGetApproved() {
+  const snap = await getDocs(query(collection(db, 'reviews'), where('status','==','approved'), orderBy('createdAt','desc')));
+  return snap.docs.map(d => ({id: d.id, ...d.data()}));
+}
+async function fsGetPending() {
+  const snap = await getDocs(query(collection(db, 'reviews'), where('status','==','pending'), orderBy('createdAt','desc')));
+  return snap.docs.map(d => ({id: d.id, ...d.data()}));
+}
+async function fsApproveReview(id) {
+  await updateDoc(doc(db, 'reviews', id), {status: 'approved'});
+}
+async function fsRejectReview(id) {
+  await deleteDoc(doc(db, 'reviews', id));
+}
+async function fsAddReview(data) {
+  await addDoc(collection(db, 'reviews'), {...data, status:'pending', createdAt: serverTimestamp()});
+}
+
+async function fsGetAppts(emailFilter) {
+  let q = emailFilter
+    ? query(collection(db,'appointments'), where('email','==',emailFilter), orderBy('createdAt','desc'))
+    : query(collection(db,'appointments'), orderBy('createdAt','desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({id: d.id, ...d.data()}));
+}
+async function fsAddAppt(data) {
+  await addDoc(collection(db,'appointments'), {...data, createdAt: serverTimestamp()});
+}
+async function fsUpdateAppt(id, data) {
+  await updateDoc(doc(db,'appointments',id), data);
+}
+async function fsDeleteAppt(id) {
+  await deleteDoc(doc(db,'appointments',id));
+}
+
+async function fsGetMessages(email) {
+  const snap = await getDocs(query(collection(db,'messages',email,'thread'), orderBy('ts','asc')));
+  return snap.docs.map(d => ({id: d.id, ...d.data()}));
+}
+async function fsAddMessage(email, data) {
+  await addDoc(collection(db,'messages',email,'thread'), {...data, ts: serverTimestamp()});
+}
+async function fsMarkMessagesRead(email, fromRole) {
+  const snap = await getDocs(query(collection(db,'messages',email,'thread'), where('from','==',fromRole)));
+  const field = fromRole === 'tutor' ? 'readByParent' : 'readByTutor';
+  const unread = snap.docs.filter(d => !d.data()[field]);
+  await Promise.all(unread.map(d => updateDoc(d.ref, {[field]: true})));
+}
+async function fsDeleteAllMessages(email) {
+  const snap = await getDocs(collection(db,'messages',email,'thread'));
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+}
+async function fsCountUnread(email, fromRole) {
+  const field = fromRole === 'tutor' ? 'readByParent' : 'readByTutor';
+  const snap = await getDocs(query(collection(db,'messages',email,'thread'), where('from','==',fromRole), where(field,'==',false)));
+  return snap.size;
+}
+
+// ══════════════════════════════════════════
+//  REVIEWS SEED (runs once if collection empty)
+// ══════════════════════════════════════════
+async function seedReviews() {
+  const snap = await getDocs(collection(db,'reviews'));
+  if (snap.empty) {
+    const seeds = [
+      {name:"Sarah M.",stars:5,text:"Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!"},
+      {name:"James & Priya L.",stars:5,text:"My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective."},
+      {name:"Tanya R.",stars:5,text:"Our daughter jumped two reading levels in one semester. We couldn't be more grateful."},
+      {name:"Michelle K.",stars:5,text:"She tailors every session to where my child is at. It's clear she truly cares about her students."},
+    ];
+    await Promise.all(seeds.map(s => addDoc(collection(db,'reviews'), {...s, status:'approved', createdAt: serverTimestamp()})));
   }
 }
 
-// ── AUTH ──
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
 function openLoginModal() { document.getElementById('login-modal').classList.add('visible'); }
 function closeLoginModal() { document.getElementById('login-modal').classList.remove('visible'); }
 
@@ -597,22 +678,29 @@ function switchAuthTab(id, btn) {
   document.getElementById(id).classList.add('active');
   if (btn) btn.classList.add('active');
 }
-function showTutorTab(e) { e.preventDefault(); document.getElementById('tutor-tab-btn').style.display=''; switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn')); }
+function showTutorTab(e) {
+  e.preventDefault();
+  document.getElementById('tutor-tab-btn').style.display='';
+  switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn'));
+}
 
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const pw    = document.getElementById('login-pw').value;
-  const users = getUsers();
-  if (!users[email]) { showToast('No account found. Please sign up!'); return; }
-  if (users[email].password !== pw) { showToast('Incorrect password.'); return; }
-  currentUser = users[email]; isTutor = false; onLoggedIn();
+  showToast('Signing in...');
+  const user = await fsGetUser(email);
+  if (!user) { showToast('No account found. Please sign up!'); return; }
+  if (user.password !== pw) { showToast('Incorrect password.'); return; }
+  currentUser = user; isTutor = false; onLoggedIn();
 }
+
 function doTutorLogin() {
   if (document.getElementById('tutor-pw').value !== TUTOR_PASSWORD) { showToast('Incorrect password.'); return; }
   isTutor = true; currentUser = {firstName:'Giuliana', lastName:'Reitzell', email:'__tutor__'};
   onLoggedIn();
 }
-function doSignup() {
+
+async function doSignup() {
   const first    = document.getElementById('su-first').value.trim();
   const last     = document.getElementById('su-last').value.trim();
   const phone    = document.getElementById('su-phone').value.trim();
@@ -628,33 +716,35 @@ function doSignup() {
     showToast('Please fill out all required fields!'); return;
   }
   if (pw.length < 6) { showToast('Password must be at least 6 characters.'); return; }
-  const users = getUsers();
-  if (users[email]) { showToast('An account with that email already exists.'); return; }
+  showToast('Creating account...');
+  const existing = await fsGetUser(email);
+  if (existing) { showToast('An account with that email already exists.'); return; }
   const user = {
     firstName:first, lastName:last, phone, email, password:pw,
     child:{ firstName:cFirst, lastName:cLast, age:cAge, subject, specific, questions },
     createdAt: new Date().toISOString()
   };
-  users[email] = user; saveUsers(users);
+  await fsSetUser(email, user);
   currentUser = user; isTutor = false; onLoggedIn();
 }
 
-function onLoggedIn() {
+async function onLoggedIn() {
   closeLoginModal();
-  document.getElementById('login-pw').value=''; document.getElementById('tutor-pw').value='';
-  // Show profile icon, hide login button
+  document.getElementById('login-pw').value='';
+  document.getElementById('tutor-pw').value='';
   document.getElementById('nav-login-btn').style.display='none';
   document.getElementById('profile-menu-wrap').style.display='';
   const displayName = isTutor ? 'Giuliana Reitzell' : `${currentUser.firstName} ${currentUser.lastName}`;
   document.getElementById('profile-dropdown-name').textContent = displayName;
   if (isTutor) {
     document.getElementById('tutor-dashboard').classList.add('visible');
-    renderTutorDashboard();
+    await renderTutorDashboard();
     document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
   } else {
     document.getElementById('parent-dashboard').classList.add('visible');
-    renderParentDashboard();
+    await renderParentDashboard();
     updateContactUI();
+    startParentMessageListener();
     document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
   }
   renderCalendar();
@@ -662,9 +752,10 @@ function onLoggedIn() {
 }
 
 function logout() {
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
   closeAccountPanel();
   closeProfileMenu();
-  currentUser = null; isTutor = false;
+  currentUser = null; isTutor = false; activeTutorThreadEmail = null;
   document.getElementById('nav-login-btn').style.display='';
   document.getElementById('profile-menu-wrap').style.display='none';
   document.getElementById('parent-dashboard').classList.remove('visible');
@@ -673,8 +764,42 @@ function logout() {
   renderCalendar();
 }
 
-// ── PARENT DASHBOARD ──
-function renderParentDashboard() {
+// ══════════════════════════════════════════
+//  LIVE MESSAGE LISTENER (parent side)
+// ══════════════════════════════════════════
+function startParentMessageListener() {
+  if (!currentUser || isTutor) return;
+  if (unsubMessages) unsubMessages();
+  const threadRef = collection(db, 'messages', currentUser.email, 'thread');
+  unsubMessages = onSnapshot(query(threadRef, orderBy('ts','asc')), (snap) => {
+    const msgs = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    const hasNewFromTutor = msgs.some(m => m.from === 'tutor' && !m.readByParent);
+    if (hasNewFromTutor) {
+      const banner = document.getElementById('parent-new-msg-banner');
+      if (banner) banner.classList.add('visible');
+      const panelBanner = document.getElementById('panel-new-msg-banner');
+      if (panelBanner) { panelBanner.textContent = 'New message from Giuliana — tap to load'; panelBanner.style.display='block'; }
+    }
+    renderParentThreadFromData(msgs);
+    renderPanelThreadFromData(msgs);
+    renderContactThreadFromData(msgs);
+  });
+}
+
+function startTutorMessageListener(email) {
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+  const threadRef = collection(db, 'messages', email, 'thread');
+  unsubMessages = onSnapshot(query(threadRef, orderBy('ts','asc')), (snap) => {
+    const msgs = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderTutorThreadFromData(msgs, email);
+    updateTutorUnreadBadge();
+  });
+}
+
+// ══════════════════════════════════════════
+//  PARENT DASHBOARD
+// ══════════════════════════════════════════
+async function renderParentDashboard() {
   const u = currentUser;
   document.getElementById('dash-greeting').textContent = 'Hello, ' + u.firstName + '.';
   const c = u.child;
@@ -684,58 +809,132 @@ function renderParentDashboard() {
     <div class="info-item"><div class="label">Subject</div><div class="value">${c.subject}</div></div>
     <div class="info-item"><div class="label">Parent Phone</div><div class="value">${u.phone||'—'}</div></div>
     <div class="info-item" style="grid-column:1/-1"><div class="label">Specific Needs</div><div class="value">${c.specific||'—'}</div></div>
-    ${c.questions ? `<div class="info-item" style="grid-column:1/-1"><div class="label">Questions</div><div class="value">${c.questions}</div></div>` : ''}
+    ${c.questions?`<div class="info-item" style="grid-column:1/-1"><div class="label">Questions</div><div class="value">${c.questions}</div></div>`:''}
   `;
-  const appts = getAppts().filter(a => a.email === u.email);
+  const appts = await fsGetAppts(u.email);
   const div = document.getElementById('my-appointments');
   div.innerHTML = appts.length === 0
     ? '<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
     : appts.map(a => {
-        const statusClass = a.status==='Confirmed' ? 'confirmed' : a.status==='Cancelled' ? 'cancelled' : 'pending-s';
-        return `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${statusClass}">${a.status}</span></div>`;
+        const sc = a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';
+        return `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${sc}">${a.status}</span></div>`;
       }).join('');
-  renderParentThread();
 }
 
-function renderParentThread() {
-  if (!currentUser || isTutor) return;
-  const thread = getThread(currentUser.email);
-  let changed = false;
-  thread.forEach(m => { if (m.from === 'tutor' && !m.readByParent) { m.readByParent = true; changed = true; } });
-  if (changed) saveThread(currentUser.email, thread);
+// ══════════════════════════════════════════
+//  MESSAGE RENDER HELPERS
+// ══════════════════════════════════════════
+function buildMsgHTML(msgs, viewerIsParent, parentLabel) {
+  if (!msgs || msgs.length === 0) return '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
+  return msgs.map(m => {
+    const isMine = viewerIsParent ? m.from === 'parent' : m.from === 'tutor';
+    const label  = isMine ? '' : (viewerIsParent ? 'Giuliana' : parentLabel);
+    const ts = m.ts?.toDate ? formatTime(m.ts.toDate().toISOString()) : (m.ts ? formatTime(m.ts) : '');
+    return `<div class="msg-row ${isMine?'mine':'theirs'}">
+      ${label ? `<div class="msg-sender-name">${label}</div>` : ''}
+      <div class="msg-bubble">${m.text}<div class="msg-meta">${ts}</div></div>
+    </div>`;
+  }).join('');
+}
 
+function renderParentThreadFromData(msgs) {
   const div = document.getElementById('parent-msg-thread');
-  if (thread.length === 0) {
-    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
-  } else {
-    div.innerHTML = thread.map(m => {
-      const isMine = m.from === 'parent';
-      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
-        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
-        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
-      </div>`;
-    }).join('');
-    div.scrollTop = div.scrollHeight;
-  }
+  if (!div) return;
+  div.innerHTML = buildMsgHTML(msgs, true, '');
+  div.scrollTop = div.scrollHeight;
+  const unread = msgs.filter(m => m.from === 'tutor' && !m.readByParent).length;
   const badge = document.getElementById('parent-unread-badge');
-  const unread = countUnreadForParent(currentUser.email);
-  if (unread > 0) { badge.textContent = unread; badge.style.display=''; } else { badge.style.display='none'; }
+  if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? '' : 'none'; }
 }
 
-function sendParentMsg() {
+function renderPanelThreadFromData(msgs) {
+  const div = document.getElementById('panel-msg-thread');
+  if (!div) return;
+  div.innerHTML = buildMsgHTML(msgs, true, '');
+  div.scrollTop = div.scrollHeight;
+}
+
+function renderContactThreadFromData(msgs) {
+  const div = document.getElementById('contact-thread');
+  if (!div) return;
+  div.innerHTML = buildMsgHTML(msgs, true, '');
+  div.scrollTop = div.scrollHeight;
+}
+
+function renderTutorThreadFromData(msgs, email) {
+  if (activeTutorThreadEmail !== email) return;
+  const u = _cachedUsers ? _cachedUsers[email] : null;
+  const label = u ? `${u.firstName} — ${u.child.firstName}, ${u.child.age}, ${u.child.subject}` : 'Parent';
+  const div = document.getElementById('tutor-msg-thread');
+  if (!div) return;
+  div.innerHTML = buildMsgHTML(msgs, false, label);
+  div.scrollTop = div.scrollHeight;
+}
+
+// Cache users to avoid repeated fetches in live listeners
+let _cachedUsers = null;
+
+async function refreshUserCache() {
+  const all = await fsGetAllUsers();
+  _cachedUsers = {};
+  all.forEach(u => { _cachedUsers[u.email] = u; });
+}
+
+// ══════════════════════════════════════════
+//  SEND MESSAGES
+// ══════════════════════════════════════════
+async function sendParentMsg() {
   if (!currentUser || isTutor) return;
   const input = document.getElementById('parent-msg-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const thread = getThread(currentUser.email);
-  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
-  saveThread(currentUser.email, thread);
+  const text = input.value.trim(); if (!text) return;
   input.value = '';
-  renderParentThread();
-  updateTutorUnreadBadge();
+  await fsAddMessage(currentUser.email, {from:'parent', text, readByTutor:false, readByParent:true});
 }
 
-// ── CONTACT SECTION (public, for logged-in parents) ──
+async function sendContactMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('contact-msg-input');
+  const text = input.value.trim(); if (!text) return;
+  input.value = '';
+  await fsAddMessage(currentUser.email, {from:'parent', text, readByTutor:false, readByParent:true});
+}
+
+async function sendPanelMsg() {
+  if (!currentUser || isTutor) return;
+  const input = document.getElementById('panel-msg-input');
+  const text = input.value.trim(); if (!text) return;
+  input.value = '';
+  await fsAddMessage(currentUser.email, {from:'parent', text, readByTutor:false, readByParent:true});
+}
+
+async function sendTutorMsg() {
+  if (!activeTutorThreadEmail) return;
+  const input = document.getElementById('tutor-msg-input');
+  const text = input.value.trim(); if (!text) return;
+  input.value = '';
+  await fsAddMessage(activeTutorThreadEmail, {from:'tutor', text, readByTutor:true, readByParent:false});
+  fsMarkMessagesRead(activeTutorThreadEmail, 'parent');
+}
+
+// ══════════════════════════════════════════
+//  REFRESH BUTTONS
+// ══════════════════════════════════════════
+function refreshParentMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),500); }
+  const banner = document.getElementById('parent-new-msg-banner');
+  if (banner) banner.classList.remove('visible');
+  // The live listener handles updates automatically; this just clears the banner
+}
+
+function refreshTutorMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),500); }
+  const banner = document.getElementById('tutor-new-msg-banner');
+  if (banner) banner.classList.remove('visible');
+}
+
+// ══════════════════════════════════════════
+//  CONTACT SECTION
+// ══════════════════════════════════════════
 function updateContactUI() {
   const loginPrompt = document.getElementById('contact-login-prompt');
   const threadWrap  = document.getElementById('contact-thread-wrap');
@@ -744,7 +943,6 @@ function updateContactUI() {
     loginPrompt.style.display = 'none';
     threadWrap.style.display  = 'block';
     desc.textContent = 'Send a message to Giuliana Reitzell directly.';
-    renderContactThread();
   } else if (isTutor) {
     loginPrompt.style.display = 'none';
     threadWrap.style.display  = 'none';
@@ -752,49 +950,24 @@ function updateContactUI() {
   } else {
     loginPrompt.style.display = 'block';
     threadWrap.style.display  = 'none';
-    desc.textContent = 'Have a question? Log in to send a message and I\'ll get back to you as soon as possible.';
+    desc.textContent = "Have a question? Log in to send a message and I'll get back to you as soon as possible.";
   }
 }
 
-function renderContactThread() {
-  if (!currentUser || isTutor) return;
-  const thread = getThread(currentUser.email);
-  const div = document.getElementById('contact-thread');
-  if (thread.length === 0) {
-    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet. Send one below!</p>';
-  } else {
-    div.innerHTML = thread.map(m => {
-      const isMine = m.from === 'parent';
-      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
-        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
-        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
-      </div>`;
-    }).join('');
-    div.scrollTop = div.scrollHeight;
-  }
-}
-
-function sendContactMsg() {
-  if (!currentUser || isTutor) return;
-  const input = document.getElementById('contact-msg-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const thread = getThread(currentUser.email);
-  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
-  saveThread(currentUser.email, thread);
-  input.value = '';
-  renderContactThread();
-  renderParentThread(); // keep dashboard in sync
-  updateTutorUnreadBadge();
-}
-
-// ── TUTOR MESSAGING ──
-function renderTutorFamilySelector() {
-  const users = Object.values(getUsers());
+// ══════════════════════════════════════════
+//  TUTOR MESSAGING
+// ══════════════════════════════════════════
+async function renderTutorFamilySelector() {
+  const users = await fsGetAllUsers();
+  _cachedUsers = {};
+  users.forEach(u => { _cachedUsers[u.email] = u; });
   const div = document.getElementById('tutor-family-selector');
+  if (!div) return;
   if (users.length === 0) { div.innerHTML = '<p style="color:var(--text-muted);">No families registered yet.</p>'; return; }
-  div.innerHTML = users.map(u => {
-    const unread = countUnreadForTutor(u.email);
+  // Get unread counts
+  const unreadCounts = await Promise.all(users.map(u => fsCountUnread(u.email, 'parent')));
+  div.innerHTML = users.map((u, i) => {
+    const unread = unreadCounts[i];
     return `<div class="parent-row" style="cursor:pointer;" onclick="openTutorThread('${u.email}')">
       <div class="parent-row-info">
         <strong>${u.firstName} ${u.lastName}</strong>
@@ -808,17 +981,19 @@ function renderTutorFamilySelector() {
   }).join('');
 }
 
-function openTutorThread(email) {
+async function openTutorThread(email) {
   activeTutorThreadEmail = email;
-  const users = getUsers();
-  const u = users[email];
+  if (!_cachedUsers) await refreshUserCache();
+  const u = _cachedUsers[email];
   document.getElementById('tutor-msg-target-name').textContent = u ? u.firstName + ' ' + u.lastName : email;
   document.getElementById('tutor-msg-area').style.display = 'block';
   document.getElementById('tutor-family-selector').style.display = 'none';
-  renderTutorThread();
+  startTutorMessageListener(email);
+  fsMarkMessagesRead(email, 'parent');
 }
 
 function closeTutorThread() {
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
   activeTutorThreadEmail = null;
   document.getElementById('tutor-msg-area').style.display = 'none';
   document.getElementById('tutor-family-selector').style.display = 'block';
@@ -826,55 +1001,18 @@ function closeTutorThread() {
   updateTutorUnreadBadge();
 }
 
-function renderTutorThread() {
-  if (!activeTutorThreadEmail) return;
-  const thread = getThread(activeTutorThreadEmail);
-  let changed = false;
-  thread.forEach(m => { if (m.from === 'parent' && !m.readByTutor) { m.readByTutor = true; changed = true; } });
-  if (changed) saveThread(activeTutorThreadEmail, thread);
-
-  const div = document.getElementById('tutor-msg-thread');
-  if (thread.length === 0) {
-    div.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
-  } else {
-    const u = getUsers()[activeTutorThreadEmail];
-    const parentLabel = u
-      ? `${u.firstName} — ${u.child.firstName}, ${u.child.age}, ${u.child.subject}`
-      : 'Parent';
-    div.innerHTML = thread.map(m => {
-      const isMine = m.from === 'tutor';
-      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
-        ${!isMine ? `<div class="msg-sender-name">${parentLabel}</div>` : ''}
-        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
-      </div>`;
-    }).join('');
-    div.scrollTop = div.scrollHeight;
-  }
-  updateTutorUnreadBadge();
-}
-
-function sendTutorMsg() {
-  if (!activeTutorThreadEmail) return;
-  const input = document.getElementById('tutor-msg-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const thread = getThread(activeTutorThreadEmail);
-  thread.push({id:Date.now(), from:'tutor', text, ts:new Date().toISOString(), readByTutor:true, readByParent:false});
-  saveThread(activeTutorThreadEmail, thread);
-  input.value = '';
-  renderTutorThread();
-  // If the parent is currently logged in and viewing the dashboard, update their view too
-  if (currentUser && currentUser.email === activeTutorThreadEmail) renderParentThread();
-}
-
-function updateTutorUnreadBadge() {
-  const total = totalTutorUnread();
+async function updateTutorUnreadBadge() {
+  if (!isTutor) return;
+  const users = await fsGetAllUsers();
+  const counts = await Promise.all(users.map(u => fsCountUnread(u.email, 'parent')));
+  const total = counts.reduce((s,c)=>s+c,0);
   const badge = document.getElementById('tutor-unread-total');
-  if (!badge) return;
-  if (total > 0) { badge.textContent = total; badge.style.display=''; } else { badge.style.display='none'; }
+  if (badge) { badge.textContent = total; badge.style.display = total > 0 ? '' : 'none'; }
 }
 
-// ── TUTOR DASHBOARD ──
+// ══════════════════════════════════════════
+//  TUTOR DASHBOARD
+// ══════════════════════════════════════════
 function switchTutorTab(btn, panelId) {
   document.querySelectorAll('.tutor-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tutor-panel').forEach(p => p.classList.remove('active'));
@@ -886,52 +1024,108 @@ function switchTutorTab(btn, panelId) {
   if (panelId === 'tp-messages')     { renderTutorFamilySelector(); updateTutorUnreadBadge(); }
 }
 
-function renderTutorDashboard() { renderFamilies(); renderApptRequests(); renderPending(); updateTutorUnreadBadge(); }
-
-function renderFamilies() {
-  const entries = Object.values(getUsers());
-  const list = document.getElementById('families-list');
-  list.innerHTML = entries.length === 0
-    ? '<p style="color:var(--text-muted);">No families registered yet.</p>'
-    : entries.map(u => {
-        const unread = countUnreadForTutor(u.email);
-        return `<div class="parent-row">
-          <div class="parent-row-info">
-            <strong>${u.firstName} ${u.lastName}</strong>
-            <span>${u.email}${u.phone ? ' · ' + u.phone : ''}</span>
-            <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age} · ${u.child.subject}</span>
-            ${u.child.specific ? `<span>Needs help with: ${u.child.specific}</span>` : ''}
-            ${u.child.questions ? `<span style="font-style:italic;">Questions: "${u.child.questions}"</span>` : ''}
-            <span style="font-size:.75rem;margin-top:.2rem;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
-          </div>
-          <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
-            ${unread > 0 ? `<span class="msg-unread-badge">${unread} new</span>` : ''}
-            <button class="family-msg-btn" onclick="switchTutorTab(document.querySelector('.tutor-tab:nth-child(4)'), 'tp-messages'); setTimeout(()=>openTutorThread('${u.email}'),50)">Message</button>
-          </div>
-        </div>`;
-      }).join('');
+async function renderTutorDashboard() {
+  await Promise.all([renderFamilies(), renderApptRequests(), renderPending()]);
+  updateTutorUnreadBadge();
 }
 
-function renderApptRequests() {
-  const appts = getAppts();
+async function renderFamilies() {
+  const users = await fsGetAllUsers();
+  _cachedUsers = {};
+  users.forEach(u => { _cachedUsers[u.email] = u; });
+  const list = document.getElementById('families-list');
+  if (!list) return;
+  if (users.length === 0) { list.innerHTML = '<p style="color:var(--text-muted);">No families registered yet.</p>'; return; }
+  const unreadCounts = await Promise.all(users.map(u => fsCountUnread(u.email, 'parent')));
+  list.innerHTML = users.map((u, i) => {
+    const unread = unreadCounts[i];
+    return `<div class="parent-row">
+      <div class="parent-row-info">
+        <strong>${u.firstName} ${u.lastName}</strong>
+        <span>${u.email}${u.phone?' · '+u.phone:''}</span>
+        <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age} · ${u.child.subject}</span>
+        ${u.child.specific?`<span>Needs: ${u.child.specific}</span>`:''}
+        ${u.child.questions?`<span style="font-style:italic;">Q: "${u.child.questions}"</span>`:''}
+        <span style="font-size:.75rem;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
+      </div>
+      <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+        ${unread>0?`<span class="msg-unread-badge">${unread} new</span>`:''}
+        <button class="family-msg-btn" onclick="switchTutorTab(document.querySelectorAll('.tutor-tab')[3],'tp-messages');setTimeout(()=>openTutorThread('${u.email}'),100)">Message</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function renderApptRequests() {
+  const appts = await fsGetAppts(null);
   const list = document.getElementById('appt-requests-list');
+  if (!list) return;
   list.innerHTML = appts.length === 0
     ? '<p style="color:var(--text-muted);">No session requests yet.</p>'
-    : appts.map(a => `<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''} ${a.status==='Confirmed'?`<button class="btn-reject" onclick="cancelAppt(${a.id})">✕ Cancel</button>`:''}</div></div>`).join('');
+    : appts.map(a => `<div class="appt-request-row">
+        <div>
+          <strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong>
+          <div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>
+          ${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <span class="appt-status ${a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s'}">${a.status}</span>
+          ${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt('${a.id}')">✓ Confirm</button><button class="btn-reject" onclick="declineAppt('${a.id}')">✗ Decline</button>`:''}
+          ${a.status==='Confirmed'?`<button class="btn-reject" onclick="cancelAppt('${a.id}')">✕ Cancel</button>`:''}
+        </div>
+      </div>`).join('');
 }
 
-function confirmAppt(id) {
-  const appts = getAppts(), a = appts.find(x => x.id === id);
-  if (a) { a.status = 'Confirmed'; saveAppts(appts); renderApptRequests(); renderCalendar(); showToast('Session confirmed!'); }
+async function confirmAppt(id) {
+  await fsUpdateAppt(id, {status:'Confirmed'});
+  renderApptRequests(); renderCalendar(); showToast('Session confirmed!');
 }
-function declineAppt(id) { saveAppts(getAppts().filter(x => x.id !== id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
-function cancelAppt(id) {
-  if (!confirm('Are you sure you want to cancel this confirmed session?')) return;
-  const appts = getAppts(), a = appts.find(x => x.id === id);
-  if (a) { a.status = 'Cancelled'; saveAppts(appts); renderApptRequests(); renderCalendar(); if(currentUser && !isTutor) renderParentDashboard(); showToast('Session cancelled.'); }
+async function declineAppt(id) {
+  await fsDeleteAppt(id);
+  renderApptRequests(); renderCalendar(); showToast('Session declined.');
+}
+async function cancelAppt(id) {
+  if (!confirm('Cancel this confirmed session?')) return;
+  await fsUpdateAppt(id, {status:'Cancelled'});
+  renderApptRequests(); renderCalendar();
+  if (currentUser && !isTutor) renderParentDashboard();
+  showToast('Session cancelled.');
 }
 
-// ── EDIT CHILD ──
+// ══════════════════════════════════════════
+//  APPOINTMENTS (parent)
+// ══════════════════════════════════════════
+function openApptRequest(dateStr) {
+  if (!currentUser || isTutor) { openLoginModal(); return; }
+  if (dateStr) document.getElementById('appt-date').value = dateStr;
+  document.getElementById('appt-modal').classList.add('visible');
+}
+async function submitApptRequest() {
+  if (!currentUser) return;
+  const date = document.getElementById('appt-date').value;
+  if (!date) { showToast('Please select a date!'); return; }
+  await fsAddAppt({
+    email: currentUser.email,
+    parentName: currentUser.firstName + ' ' + currentUser.lastName,
+    childName: currentUser.child.firstName,
+    grade: currentUser.child.subject,
+    date,
+    time: document.getElementById('appt-time').value,
+    subject: document.getElementById('appt-subject').value,
+    notes: document.getElementById('appt-notes').value.trim(),
+    status: 'Pending'
+  });
+  document.getElementById('appt-modal').classList.remove('visible');
+  document.getElementById('appt-date').value = '';
+  document.getElementById('appt-notes').value = '';
+  await renderParentDashboard();
+  renderCalendar();
+  showToast('Session request sent! Giuliana Reitzell will confirm soon.');
+}
+
+// ══════════════════════════════════════════
+//  EDIT CHILD INFO
+// ══════════════════════════════════════════
 function openEditChild() {
   const c = currentUser.child;
   document.getElementById('ec-phone').value       = currentUser.phone || '';
@@ -943,7 +1137,7 @@ function openEditChild() {
   document.getElementById('ec-questions').value   = c.questions || '';
   document.getElementById('edit-child-modal').classList.add('visible');
 }
-function saveChildInfo() {
+async function saveChildInfo() {
   currentUser.phone             = document.getElementById('ec-phone').value.trim();
   currentUser.child.firstName   = document.getElementById('ec-child-first').value.trim();
   currentUser.child.lastName    = document.getElementById('ec-child-last').value.trim();
@@ -951,226 +1145,151 @@ function saveChildInfo() {
   currentUser.child.subject     = document.getElementById('ec-subject').value.trim();
   currentUser.child.specific    = document.getElementById('ec-specific').value.trim();
   currentUser.child.questions   = document.getElementById('ec-questions').value.trim();
-  const users = getUsers(); users[currentUser.email] = currentUser; saveUsers(users);
+  await fsSetUser(currentUser.email, currentUser);
   document.getElementById('edit-child-modal').classList.remove('visible');
-  renderParentDashboard(); showToast('Information updated!');
+  await renderParentDashboard();
+  showToast('Information updated!');
 }
 
-// ── APPOINTMENTS ──
-function openApptRequest(dateStr) {
-  if (!currentUser || isTutor) { openLoginModal(); return; }
-  if (dateStr) document.getElementById('appt-date').value = dateStr;
-  document.getElementById('appt-modal').classList.add('visible');
-}
-function submitApptRequest() {
-  if (!currentUser) return;
-  const date = document.getElementById('appt-date').value;
-  if (!date) { showToast('Please select a date!'); return; }
-  const appts = getAppts();
-  appts.push({id:Date.now(), email:currentUser.email, parentName:currentUser.firstName+' '+currentUser.lastName, childName:currentUser.child.name, grade:currentUser.child.grade, date, time:document.getElementById('appt-time').value, subject:document.getElementById('appt-subject').value, notes:document.getElementById('appt-notes').value.trim(), status:'Pending', createdAt:new Date().toISOString()});
-  saveAppts(appts);
-  document.getElementById('appt-modal').classList.remove('visible');
-  document.getElementById('appt-date').value = ''; document.getElementById('appt-notes').value = '';
-  renderParentDashboard(); renderCalendar();
-  showToast('Session request sent! Giuliana Reitzell will confirm soon.');
-}
-
-// ── REVIEWS ──
-function renderApproved() {
-  const reviews = getApproved();
+// ══════════════════════════════════════════
+//  REVIEWS
+// ══════════════════════════════════════════
+async function renderApproved() {
+  const reviews = await fsGetApproved();
   document.getElementById('approved-reviews').innerHTML = reviews.length === 0
     ? '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet!</p>'
     : reviews.map(r => `<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
-  document.getElementById('hero-testimonials').innerHTML = reviews.slice(0,4).map(r => `<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+  document.getElementById('hero-testimonials').innerHTML = reviews.slice(0,4).map(r =>
+    `<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
 }
 
 let selectedStars = 0;
 document.getElementById('star-picker').addEventListener('click', e => {
-  if (e.target.dataset.val) { selectedStars = parseInt(e.target.dataset.val); document.querySelectorAll('#star-picker span').forEach((s,i) => s.classList.toggle('active', i < selectedStars)); }
+  if (e.target.dataset.val) {
+    selectedStars = parseInt(e.target.dataset.val);
+    document.querySelectorAll('#star-picker span').forEach((s,i) => s.classList.toggle('active', i < selectedStars));
+  }
 });
 
-function submitReview() {
-  const name = document.getElementById('r-name').value.trim(), text = document.getElementById('r-text').value.trim();
+async function submitReview() {
+  const name = document.getElementById('r-name').value.trim();
+  const text = document.getElementById('r-text').value.trim();
   if (!name||!text||!selectedStars) { showToast('Please fill out all fields and pick a rating!'); return; }
-  const p = getPending();
-  p.push({id:Date.now(), name, stars:selectedStars, text, date:new Date().toISOString().slice(0,7)});
-  savePending(p);
-  document.getElementById('r-name').value = ''; document.getElementById('r-text').value = '';
-  selectedStars = 0; document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
+  await fsAddReview({name, stars:selectedStars, text});
+  document.getElementById('r-name').value='';
+  document.getElementById('r-text').value='';
+  selectedStars = 0;
+  document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
   showToast('Thank you for your review!');
 }
 
-function renderPending() {
-  const pending = getPending(), list = document.getElementById('pending-list');
+async function renderPending() {
+  const pending = await fsGetPending();
+  const list = document.getElementById('pending-list');
+  if (!list) return;
   list.innerHTML = pending.length === 0
-    ? '<p style="color:var(--text-muted);">No pending reviews — you\'re all caught up.</p>'
-    : pending.map(r => `<div class="pending-card"><div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div><div class="pending-actions"><button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button><button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button></div></div>`).join('');
+    ? "<p style='color:var(--text-muted);'>No pending reviews — you're all caught up.</p>"
+    : pending.map(r => `<div class="pending-card">
+        <div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>
+        <div class="pending-actions">
+          <button class="btn-approve" onclick="approveReview('${r.id}')">✓ Approve</button>
+          <button class="btn-reject" onclick="rejectReview('${r.id}')">✗ Reject</button>
+        </div>
+      </div>`).join('');
 }
-function approveReview(id) {
-  let p = getPending(), idx = p.findIndex(r => r.id === id); if (idx === -1) return;
-  const [rev] = p.splice(idx, 1); savePending(p);
-  const a = getApproved(); a.unshift(rev); saveApproved(a);
-  renderPending(); renderApproved(); showToast('Review approved!');
-}
-function rejectReview(id) { savePending(getPending().filter(r => r.id !== id)); renderPending(); showToast('Review removed.'); }
+async function approveReview(id) { await fsApproveReview(id); renderPending(); renderApproved(); showToast('Review approved!'); }
+async function rejectReview(id)  { await fsRejectReview(id);  renderPending(); showToast('Review removed.'); }
 
-// ── CALENDAR ──
+// ══════════════════════════════════════════
+//  CALENDAR
+// ══════════════════════════════════════════
 let calDate = new Date();
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-function renderCalendar() {
+async function renderCalendar() {
   const year = calDate.getFullYear(), month = calDate.getMonth(), today = new Date();
   document.getElementById('cal-month-label').textContent = MONTHS[month] + ' ' + year;
-  const appts = getAppts().filter(a => a.status === 'Confirmed');
-  const myAppts    = currentUser && !isTutor ? appts.filter(a => a.email === currentUser.email) : [];
-  const otherAppts = currentUser && !isTutor ? appts.filter(a => a.email !== currentUser.email) : appts;
-  const toKey = d => `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const allAppts = await fsGetAppts(null);
+  const confirmed = allAppts.filter(a => a.status === 'Confirmed');
+  const myAppts    = currentUser && !isTutor ? confirmed.filter(a => a.email === currentUser.email) : [];
+  const otherAppts = currentUser && !isTutor ? confirmed.filter(a => a.email !== currentUser.email) : confirmed;
   const myDays    = new Set(myAppts.map(a => a.date));
   const otherDays = new Set(otherAppts.map(a => a.date));
   const grid = document.getElementById('cal-grid');
   grid.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
-  const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month+1, 0).getDate();
+  const firstDay = new Date(year,month,1).getDay(), daysInMonth = new Date(year,month+1,0).getDate();
   for (let i=0;i<firstDay;i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
   for (let d=1;d<=daysInMonth;d++) {
-    const key = toKey(d);
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday = d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
-    const isMine = myDays.has(key), isOther = otherDays.has(key);
-    const cls = isMine ? 'my-appt' : isOther ? 'booked' : isToday ? 'today' : '';
+    const cls = myDays.has(key)?'my-appt':otherDays.has(key)?'booked':isToday?'today':'';
     grid.innerHTML += `<div class="cal-day ${cls}" onclick="selectCalDay(${d},${month},${year},'${key}',this)">${d}</div>`;
   }
 }
 
-function selectCalDay(d, m, y, key, el) {
-  document.querySelectorAll('.cal-day').forEach(e => { if (!e.classList.contains('my-appt')&&!e.classList.contains('booked')) e.classList.remove('selected'); });
+async function selectCalDay(d, m, y, key, el) {
+  document.querySelectorAll('.cal-day').forEach(e => { if(!e.classList.contains('my-appt')&&!e.classList.contains('booked')) e.classList.remove('selected'); });
   el.classList.add('selected');
-  const appts = getAppts().filter(a => a.status === 'Confirmed');
-  const mine  = currentUser&&!isTutor ? appts.filter(a => a.email===currentUser.email&&a.date===key) : [];
-  const other = appts.filter(a => a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
-  const note  = document.getElementById('cal-note');
-  const rw    = document.getElementById('cal-request-wrap');
+  const allAppts = await fsGetAppts(null);
+  const confirmed = allAppts.filter(a => a.status === 'Confirmed');
+  const mine  = currentUser&&!isTutor ? confirmed.filter(a=>a.email===currentUser.email&&a.date===key) : [];
+  const other = confirmed.filter(a=>a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
+  const note = document.getElementById('cal-note');
+  const rw   = document.getElementById('cal-request-wrap');
   if (mine.length > 0) {
     note.textContent = `You have a session on ${MONTHS[m]} ${d} (${mine[0].time} · ${mine[0].subject}).`;
-    rw.style.display = 'none';
+    rw.style.display='none';
   } else if (other.length > 0) {
     note.textContent = `${MONTHS[m]} ${d} is already booked. Please choose another date.`;
-    rw.style.display = 'none';
+    rw.style.display='none';
   } else {
     note.textContent = `${MONTHS[m]} ${d}, ${y} is available.`;
     if (currentUser && !isTutor) {
-      rw.style.display = 'block';
+      rw.style.display='block';
       document.getElementById('cal-request-btn').onclick = () => openApptRequest(key);
     } else if (!currentUser) {
-      note.innerHTML = `${MONTHS[m]} ${d} is available. <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request a session →</a>`;
-      rw.style.display = 'none';
+      note.innerHTML = `${MONTHS[m]} ${d} is available. <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request →</a>`;
+      rw.style.display='none';
     }
   }
 }
 
 function changeMonth(dir) { calDate = new Date(calDate.getFullYear(), calDate.getMonth()+dir, 1); renderCalendar(); }
 
-// ── UTILS ──
-function formatDate(s) { if (!s) return ''; const [y,m,d] = s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
-function formatTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
-function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3200); }
-
-// ── REFRESH & POLLING ──
-function refreshParentMsgs(btn) {
-  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
-  document.getElementById('parent-new-msg-banner').classList.remove('visible');
-  renderParentThread();
-  renderContactThread();
-  // Also refresh appointments in case of cancellations
-  if (currentUser && !isTutor) renderParentDashboard();
-}
-
-function refreshTutorMsgs(btn) {
-  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
-  document.getElementById('tutor-new-msg-banner').classList.remove('visible');
-  renderTutorThread();
-  renderTutorFamilySelector();
-  updateTutorUnreadBadge();
-}
-
-// Track last-seen message counts for polling
-let _lastParentMsgCount = 0;
-let _lastTutorMsgCount  = 0;
-
-function pollMessages() {
-  // Parent side: check for new tutor messages
-  if (currentUser && !isTutor) {
-    const thread = getThread(currentUser.email);
-    const newFromTutor = thread.filter(m => m.from === 'tutor' && !m.readByParent).length;
-    if (newFromTutor > _lastParentMsgCount) {
-      _lastParentMsgCount = newFromTutor;
-      const banner = document.getElementById('parent-new-msg-banner');
-      if (banner) banner.classList.add('visible');
-    }
-  }
-  // Tutor side: check for new parent messages
-  if (isTutor && activeTutorThreadEmail) {
-    const thread = getThread(activeTutorThreadEmail);
-    const newFromParent = thread.filter(m => m.from === 'parent' && !m.readByTutor).length;
-    if (newFromParent > _lastTutorMsgCount) {
-      _lastTutorMsgCount = newFromParent;
-      const banner = document.getElementById('tutor-new-msg-banner');
-      if (banner) banner.classList.add('visible');
-      updateTutorUnreadBadge();
-    }
-  }
-  // Update tutor unread badge even when not in thread
-  if (isTutor) updateTutorUnreadBadge();
-}
-
-// Poll every 5 seconds
-setInterval(pollMessages, 5000);
-
-// ── PROFILE DROPDOWN ──
-function toggleProfileMenu() {
-  document.getElementById('profile-dropdown').classList.toggle('open');
-}
-function closeProfileMenu() {
-  document.getElementById('profile-dropdown').classList.remove('open');
-}
-// Close dropdown on outside click
+// ══════════════════════════════════════════
+//  PROFILE DROPDOWN
+// ══════════════════════════════════════════
+function toggleProfileMenu() { document.getElementById('profile-dropdown').classList.toggle('open'); }
+function closeProfileMenu()  { document.getElementById('profile-dropdown').classList.remove('open'); }
 document.addEventListener('click', e => {
   const wrap = document.getElementById('profile-menu-wrap');
   if (wrap && !wrap.contains(e.target)) closeProfileMenu();
 });
 
-// ── ACCOUNT PANEL ──
+// ══════════════════════════════════════════
+//  ACCOUNT PANEL
+// ══════════════════════════════════════════
 function openAccountPanel() {
   closeProfileMenu();
-  const panel = document.getElementById('account-panel');
-  const overlay = document.getElementById('account-panel-overlay');
-  overlay.classList.add('visible');
-  panel.classList.add('open');
+  document.getElementById('account-panel').classList.add('open');
+  document.getElementById('account-panel-overlay').classList.add('visible');
   renderAccountPanel();
 }
-
 function closeAccountPanel() {
   document.getElementById('account-panel').classList.remove('open');
   document.getElementById('account-panel-overlay').classList.remove('visible');
 }
-
 function renderAccountPanel() {
-  const body = document.getElementById('panel-body');
+  const body  = document.getElementById('panel-body');
   const title = document.getElementById('panel-title');
-
-  if (isTutor) {
-    title.textContent = 'Tutor Account';
-    renderTutorAccountPanel(body);
-  } else if (currentUser) {
-    title.textContent = 'My Account';
-    renderParentAccountPanel(body);
-  }
+  if (isTutor) { title.textContent = 'Tutor Account'; renderTutorAccountPanel(body); }
+  else if (currentUser) { title.textContent = 'My Account'; renderParentAccountPanel(body); }
 }
 
-function renderParentAccountPanel(body) {
-  const u = currentUser;
-  const c = u.child;
-  const appts = getAppts().filter(a => a.email === u.email);
-
+async function renderParentAccountPanel(body) {
+  const u = currentUser, c = u.child;
+  const appts = await fsGetAppts(u.email);
   body.innerHTML = `
     <div class="panel-section">
       <p class="panel-section-title">Your Information</p>
@@ -1178,151 +1297,142 @@ function renderParentAccountPanel(body) {
         <h5>Parent</h5>
         <div class="panel-info-row"><span>Name</span><span>${u.firstName} ${u.lastName}</span></div>
         <div class="panel-info-row"><span>Email</span><span>${u.email}</span></div>
-        <div class="panel-info-row"><span>Phone</span><span>${u.phone || '—'}</span></div>
+        <div class="panel-info-row"><span>Phone</span><span>${u.phone||'—'}</span></div>
       </div>
       <div class="panel-card">
         <h5>Child</h5>
         <div class="panel-info-row"><span>Name</span><span>${c.firstName} ${c.lastName}</span></div>
         <div class="panel-info-row"><span>Age</span><span>${c.age}</span></div>
         <div class="panel-info-row"><span>Subject</span><span>${c.subject}</span></div>
-        <div class="panel-info-row"><span>Needs help with</span><span style="text-align:right;max-width:55%;">${c.specific || '—'}</span></div>
+        <div class="panel-info-row"><span>Needs help with</span><span style="text-align:right;max-width:55%;">${c.specific||'—'}</span></div>
       </div>
       <button onclick="openEditChild()" style="margin-top:.5rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
     </div>
-
     <div class="panel-section">
       <p class="panel-section-title">My Appointments</p>
-      ${appts.length === 0
-        ? '<p style="color:var(--text-muted);font-size:.88rem;">No sessions yet.</p>'
-        : appts.map(a => {
-            const statusClass = a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';
-            return `<div class="panel-appt-item">
-              <div class="panel-appt-date">${formatDate(a.date)}</div>
-              <div style="flex:1;"><div style="font-size:.88rem;font-weight:500;">${a.time} · ${a.subject}</div><div style="font-size:.78rem;color:var(--text-muted);">${a.notes||'No notes'}</div></div>
-              <span class="appt-status ${statusClass}">${a.status}</span>
-            </div>`;
-          }).join('')
-      }
-      <button onclick="openApptRequest();closeAccountPanel();" style="margin-top:.8rem;" class="request-btn" style="font-size:.82rem;">+ Request Session</button>
+      ${appts.length===0 ? '<p style="color:var(--text-muted);font-size:.88rem;">No sessions yet.</p>'
+        : appts.map(a=>{const sc=a.status==='Confirmed'?'confirmed':a.status==='Cancelled'?'cancelled':'pending-s';return`<div class="panel-appt-item"><div class="panel-appt-date">${formatDate(a.date)}</div><div style="flex:1;"><div style="font-size:.88rem;font-weight:500;">${a.time} · ${a.subject}</div><div style="font-size:.78rem;color:var(--text-muted);">${a.notes||'No notes'}</div></div><span class="appt-status ${sc}">${a.status}</span></div>`;}).join('')}
+      <button onclick="openApptRequest();closeAccountPanel();" style="margin-top:.8rem;" class="request-btn">+ Request Session</button>
     </div>
-
     <div class="panel-section">
       <p class="panel-section-title">Messages</p>
-      <div class="new-msg-banner" id="panel-new-msg-banner" style="display:none;"></div>
       <div class="msg-thread" id="panel-msg-thread" style="max-height:240px;"></div>
       <div class="msg-compose" style="margin-top:.6rem;">
         <input type="text" id="panel-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendPanelMsg()">
         <button class="msg-send-btn" onclick="sendPanelMsg()">Send</button>
       </div>
     </div>
-
     <div class="panel-section">
       <p class="panel-section-title">Account</p>
       <div class="panel-danger-zone">
-        <p>Deleting your account will permanently remove all your data, including appointments and messages. This cannot be undone.</p>
+        <p>Deleting your account will permanently remove all your data including appointments and messages. This cannot be undone.</p>
         <button class="btn-danger" onclick="deleteAccount()">Delete My Account</button>
       </div>
     </div>
   `;
-  renderPanelThread();
+  // Load messages into panel thread
+  const msgs = await fsGetMessages(u.email);
+  renderPanelThreadFromData(msgs);
 }
 
-function renderTutorAccountPanel(body) {
-  const users = Object.values(getUsers());
+async function renderTutorAccountPanel(body) {
+  const users = await fsGetAllUsers();
   body.innerHTML = `
     <div class="panel-section">
       <p class="panel-section-title">Registered Students</p>
-      ${users.length === 0
-        ? '<p style="color:var(--text-muted);font-size:.88rem;">No families registered yet.</p>'
-        : users.map(u => `
-          <div class="tutor-family-row">
+      ${users.length===0 ? '<p style="color:var(--text-muted);font-size:.88rem;">No families registered yet.</p>'
+        : users.map(u=>`<div class="tutor-family-row">
             <div class="tutor-family-row-info">
               <strong>${u.firstName} ${u.lastName}</strong>
               <span>Child: ${u.child.firstName} ${u.child.lastName} · Age ${u.child.age}</span>
-              <span>${u.child.subject}${u.child.specific ? ' — ' + u.child.specific : ''}</span>
+              <span>${u.child.subject}${u.child.specific?' — '+u.child.specific:''}</span>
             </div>
             <button class="btn-danger" style="font-size:.78rem;padding:.4rem .8rem;" onclick="removeStudent('${u.email}')">Remove</button>
-          </div>`).join('')
-      }
+          </div>`).join('')}
     </div>
-    <div class="panel-section">
-      <p class="panel-section-title" style="color:var(--text-muted);font-size:.82rem;">Logged in as Giuliana Reitzell</p>
-    </div>
+    <div class="panel-section"><p style="color:var(--text-muted);font-size:.82rem;">Logged in as Giuliana Reitzell</p></div>
   `;
 }
 
-// ── PANEL MESSAGE THREAD ──
-function renderPanelThread() {
-  const threadEl = document.getElementById('panel-msg-thread');
-  if (!threadEl || !currentUser) return;
-  const thread = getThread(currentUser.email);
-  let changed = false;
-  thread.forEach(m => { if (m.from === 'tutor' && !m.readByParent) { m.readByParent = true; changed = true; } });
-  if (changed) saveThread(currentUser.email, thread);
-
-  if (thread.length === 0) {
-    threadEl.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">No messages yet.</p>';
-  } else {
-    threadEl.innerHTML = thread.map(m => {
-      const isMine = m.from === 'parent';
-      return `<div class="msg-row ${isMine ? 'mine' : 'theirs'}">
-        ${!isMine ? `<div class="msg-sender-name">Giuliana</div>` : ''}
-        <div class="msg-bubble">${m.text}<div class="msg-meta">${formatTime(m.ts)}</div></div>
-      </div>`;
-    }).join('');
-    threadEl.scrollTop = threadEl.scrollHeight;
-  }
-  // Also sync main dashboard thread
-  renderParentThread();
-}
-
-function sendPanelMsg() {
-  if (!currentUser || isTutor) return;
-  const input = document.getElementById('panel-msg-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const thread = getThread(currentUser.email);
-  thread.push({id:Date.now(), from:'parent', text, ts:new Date().toISOString(), readByTutor:false, readByParent:true});
-  saveThread(currentUser.email, thread);
-  input.value = '';
-  renderPanelThread();
-  renderContactThread();
-  updateTutorUnreadBadge();
-}
-
-// ── REMOVE STUDENT (tutor) ──
-function removeStudent(email) {
+// ══════════════════════════════════════════
+//  REMOVE STUDENT / DELETE ACCOUNT
+// ══════════════════════════════════════════
+async function removeStudent(email) {
   if (!confirm('Remove this family? This will permanently delete their account, appointments, and messages.')) return;
-  const users = getUsers();
-  delete users[email];
-  saveUsers(users);
-  // Also remove their appointments and messages
-  saveAppts(getAppts().filter(a => a.email !== email));
-  const msgs = getMessages();
-  delete msgs[email];
-  saveMessages(msgs);
+  await fsDeleteUser(email);
+  const appts = await fsGetAppts(email);
+  await Promise.all(appts.map(a => fsDeleteAppt(a.id)));
+  await fsDeleteAllMessages(email);
   renderTutorAccountPanel(document.getElementById('panel-body'));
   renderTutorDashboard();
   showToast('Family removed.');
 }
 
-// ── DELETE ACCOUNT (parent) ──
-function deleteAccount() {
+async function deleteAccount() {
   if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
   const email = currentUser.email;
-  const users = getUsers();
-  delete users[email];
-  saveUsers(users);
-  saveAppts(getAppts().filter(a => a.email !== email));
-  const msgs = getMessages();
-  delete msgs[email];
-  saveMessages(msgs);
+  await fsDeleteUser(email);
+  const appts = await fsGetAppts(email);
+  await Promise.all(appts.map(a => fsDeleteAppt(a.id)));
+  await fsDeleteAllMessages(email);
   logout();
   showToast('Your account has been deleted.');
 }
 
-// INIT
-seedReviews(); renderApproved(); renderCalendar(); updateContactUI();
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function formatDate(s) { if(!s)return''; const[y,m,d]=s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
+function formatTime(ts) { if(!ts)return''; const d=new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+async function init() {
+  await seedReviews();
+  await renderApproved();
+  await renderCalendar();
+  updateContactUI();
+}
+init();
+
+// Expose functions needed by inline HTML onclick handlers
+window.openLoginModal    = openLoginModal;
+window.closeLoginModal   = closeLoginModal;
+window.switchAuthTab     = switchAuthTab;
+window.showTutorTab      = showTutorTab;
+window.doLogin           = doLogin;
+window.doTutorLogin      = doTutorLogin;
+window.doSignup          = doSignup;
+window.logout            = logout;
+window.toggleProfileMenu = toggleProfileMenu;
+window.openAccountPanel  = openAccountPanel;
+window.closeAccountPanel = closeAccountPanel;
+window.openEditChild     = openEditChild;
+window.saveChildInfo     = saveChildInfo;
+window.openApptRequest   = openApptRequest;
+window.submitApptRequest = submitApptRequest;
+window.submitReview      = submitReview;
+window.sendParentMsg     = sendParentMsg;
+window.sendContactMsg    = sendContactMsg;
+window.sendPanelMsg      = sendPanelMsg;
+window.sendTutorMsg      = sendTutorMsg;
+window.refreshParentMsgs = refreshParentMsgs;
+window.refreshTutorMsgs  = refreshTutorMsgs;
+window.switchTutorTab    = switchTutorTab;
+window.renderTutorFamilySelector = renderTutorFamilySelector;
+window.openTutorThread   = openTutorThread;
+window.closeTutorThread  = closeTutorThread;
+window.confirmAppt       = confirmAppt;
+window.declineAppt       = declineAppt;
+window.cancelAppt        = cancelAppt;
+window.approveReview     = approveReview;
+window.rejectReview      = rejectReview;
+window.removeStudent     = removeStudent;
+window.deleteAccount     = deleteAccount;
+window.changeMonth       = changeMonth;
+window.selectCalDay      = selectCalDay;
 </script>
 </body>
 </html>
