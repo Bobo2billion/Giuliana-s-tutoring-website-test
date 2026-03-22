@@ -154,6 +154,13 @@
   .appt-status{font-size:.75rem;padding:.25rem .7rem;border-radius:99px;font-weight:500;}
   .appt-status.confirmed{background:var(--green);color:var(--green-text);}
   .appt-status.pending-s{background:var(--pink-light);color:var(--accent);}
+  .appt-status.cancelled{background:#f0f0f0;color:#888;text-decoration:line-through;}
+  .refresh-btn{background:none;border:1.5px solid var(--border);border-radius:99px;padding:.3rem .9rem;font-size:.75rem;font-family:inherit;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;transition:border-color .2s,color .2s;}
+  .refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .refresh-btn svg{transition:transform .5s ease;}
+  .refresh-btn.spinning svg{transform:rotate(360deg);}
+  .new-msg-banner{background:var(--pink);color:var(--accent);font-size:.82rem;font-weight:500;padding:.5rem 1rem;border-radius:10px;margin-bottom:.8rem;display:none;text-align:center;cursor:pointer;}
+  .new-msg-banner.visible{display:block;}
   .request-btn{background:var(--accent);color:white;border:none;border-radius:10px;padding:.6rem 1.2rem;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;transition:opacity .2s;}
   .request-btn:hover{opacity:.85;}
 
@@ -313,7 +320,14 @@
       <button onclick="openApptRequest()" style="margin-top:1.2rem;" class="request-btn">+ Request New Session</button>
     </div>
     <div class="dash-card">
-      <h4>Messages <span id="parent-unread-badge" style="display:none;" class="msg-unread-badge"></span></h4>
+      <h4 style="display:flex;align-items:center;justify-content:space-between;">
+        Messages <span id="parent-unread-badge" style="display:none;" class="msg-unread-badge"></span>
+        <button class="refresh-btn" onclick="refreshParentMsgs(this)" title="Check for new messages">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Refresh
+        </button>
+      </h4>
+      <div class="new-msg-banner" id="parent-new-msg-banner" onclick="refreshParentMsgs(null)">New message from Giuliana — tap to load</div>
       <div class="msg-thread" id="parent-msg-thread"></div>
       <div class="msg-compose">
         <input type="text" id="parent-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendParentMsg()">
@@ -356,8 +370,15 @@
       <div id="tutor-msg-area" style="display:none;margin-top:1.5rem;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
           <strong id="tutor-msg-target-name" style="font-size:.95rem;"></strong>
-          <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back to all</button>
+          <div style="display:flex;gap:.6rem;align-items:center;">
+            <button class="refresh-btn" onclick="refreshTutorMsgs(this)" title="Check for new messages">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+            <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back to all</button>
+          </div>
         </div>
+        <div class="new-msg-banner" id="tutor-new-msg-banner" onclick="refreshTutorMsgs(null)">New message — tap to load</div>
         <div class="msg-thread" id="tutor-msg-thread"></div>
         <div class="msg-compose">
           <input type="text" id="tutor-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
@@ -598,7 +619,10 @@ function renderParentDashboard() {
   const div = document.getElementById('my-appointments');
   div.innerHTML = appts.length === 0
     ? '<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
-    : appts.map(a => `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span></div>`).join('');
+    : appts.map(a => {
+        const statusClass = a.status==='Confirmed' ? 'confirmed' : a.status==='Cancelled' ? 'cancelled' : 'pending-s';
+        return `<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${statusClass}">${a.status}</span></div>`;
+      }).join('');
   renderParentThread();
 }
 
@@ -815,7 +839,7 @@ function renderApptRequests() {
   const list = document.getElementById('appt-requests-list');
   list.innerHTML = appts.length === 0
     ? '<p style="color:var(--text-muted);">No session requests yet.</p>'
-    : appts.map(a => `<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''}</div></div>`).join('');
+    : appts.map(a => `<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''} ${a.status==='Confirmed'?`<button class="btn-reject" onclick="cancelAppt(${a.id})">✕ Cancel</button>`:''}</div></div>`).join('');
 }
 
 function confirmAppt(id) {
@@ -823,6 +847,11 @@ function confirmAppt(id) {
   if (a) { a.status = 'Confirmed'; saveAppts(appts); renderApptRequests(); renderCalendar(); showToast('Session confirmed!'); }
 }
 function declineAppt(id) { saveAppts(getAppts().filter(x => x.id !== id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
+function cancelAppt(id) {
+  if (!confirm('Are you sure you want to cancel this confirmed session?')) return;
+  const appts = getAppts(), a = appts.find(x => x.id === id);
+  if (a) { a.status = 'Cancelled'; saveAppts(appts); renderApptRequests(); renderCalendar(); if(currentUser && !isTutor) renderParentDashboard(); showToast('Session cancelled.'); }
+}
 
 // ── EDIT CHILD ──
 function openEditChild() {
@@ -966,6 +995,57 @@ function changeMonth(dir) { calDate = new Date(calDate.getFullYear(), calDate.ge
 function formatDate(s) { if (!s) return ''; const [y,m,d] = s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
 function formatTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3200); }
+
+// ── REFRESH & POLLING ──
+function refreshParentMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
+  document.getElementById('parent-new-msg-banner').classList.remove('visible');
+  renderParentThread();
+  renderContactThread();
+  // Also refresh appointments in case of cancellations
+  if (currentUser && !isTutor) renderParentDashboard();
+}
+
+function refreshTutorMsgs(btn) {
+  if (btn) { btn.classList.add('spinning'); setTimeout(() => btn.classList.remove('spinning'), 500); }
+  document.getElementById('tutor-new-msg-banner').classList.remove('visible');
+  renderTutorThread();
+  renderTutorFamilySelector();
+  updateTutorUnreadBadge();
+}
+
+// Track last-seen message counts for polling
+let _lastParentMsgCount = 0;
+let _lastTutorMsgCount  = 0;
+
+function pollMessages() {
+  // Parent side: check for new tutor messages
+  if (currentUser && !isTutor) {
+    const thread = getThread(currentUser.email);
+    const newFromTutor = thread.filter(m => m.from === 'tutor' && !m.readByParent).length;
+    if (newFromTutor > _lastParentMsgCount) {
+      _lastParentMsgCount = newFromTutor;
+      const banner = document.getElementById('parent-new-msg-banner');
+      if (banner) banner.classList.add('visible');
+    }
+  }
+  // Tutor side: check for new parent messages
+  if (isTutor && activeTutorThreadEmail) {
+    const thread = getThread(activeTutorThreadEmail);
+    const newFromParent = thread.filter(m => m.from === 'parent' && !m.readByTutor).length;
+    if (newFromParent > _lastTutorMsgCount) {
+      _lastTutorMsgCount = newFromParent;
+      const banner = document.getElementById('tutor-new-msg-banner');
+      if (banner) banner.classList.add('visible');
+      updateTutorUnreadBadge();
+    }
+  }
+  // Update tutor unread badge even when not in thread
+  if (isTutor) updateTutorUnreadBadge();
+}
+
+// Poll every 5 seconds
+setInterval(pollMessages, 5000);
 
 // INIT
 seedReviews(); renderApproved(); renderCalendar(); updateContactUI();
