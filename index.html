@@ -296,7 +296,7 @@
 <section id="tutor-dashboard">
   <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
     <p class="section-label">Tutor Portal</p>
-    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana 💕</h2>
+    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back Giuliana! </h2>
     <div class="tutor-tabs">
       <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
       <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
@@ -318,8 +318,7 @@
 </section>
 
 <footer>
-  <strong>Giuliana ✦ Tutoring</strong>
-  <p>Making learning a little more lovely, one student at a time 💕</p>
+  <strong>Giuliana Reitzell ✦ Tutoring</strong>
 </footer>
 
 <!-- LOGIN / SIGNUP MODAL -->
@@ -333,7 +332,7 @@
     </div>
     <!-- LOGIN -->
     <div class="tab-panel active" id="tab-login">
-      <h3>Welcome back 💕</h3>
+      <h3>Welcome back </h3>
       <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
       <div class="form-group"><label>Password</label><input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-primary" onclick="doLogin()" style="animation:none;border:none;width:100%;text-align:center;">Log In</button>
@@ -409,14 +408,14 @@
     </div>
     <div class="form-group"><label>Notes (optional)</label><textarea id="appt-notes" placeholder="Anything specific to focus on?"></textarea></div>
     <button class="btn-primary" onclick="submitApptRequest()" style="animation:none;border:none;width:100%;text-align:center;">Send Request</button>
-    <p class="modal-note">Giuliana will confirm within 24 hours 💕</p>
+    <p class="modal-note">Giuliana will confirm within 24 hours! </p>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const TUTOR_PASSWORD = "giuliana2024"; // ← Change this!
+const TUTOR_PASSWORD = "giuliana2026"; // ← Change this!
 
 // DATA
 const db = { get:k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
@@ -513,7 +512,7 @@ function onLoggedIn(){
     document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
   }
   renderCalendar();
-  showToast('Welcome back, '+currentUser.firstName+'! 💕');
+  showToast('Welcome back, '+currentUser.firstName+'!');
 }
 
 function logout(){
@@ -528,7 +527,7 @@ function logout(){
 // PARENT DASHBOARD
 function renderParentDashboard(){
   const u=currentUser;
-  document.getElementById('dash-greeting').textContent='Hello, '+u.firstName+'! 💕';
+  document.getElementById('dash-greeting').textContent='Hello, '+u.firstName+'!';
   const c=u.child;
   document.getElementById('child-info-grid').innerHTML=`
     <div class="info-item"><div class="label">Child's Name</div><div class="value">${c.name}</div></div>
@@ -645,7 +644,7 @@ function submitReview(){
   const p=getPending(); p.push({id:Date.now(),name,stars:selectedStars,text,date:new Date().toISOString().slice(0,7)});
   savePending(p); document.getElementById('r-name').value=''; document.getElementById('r-text').value='';
   selectedStars=0; document.querySelectorAll('#star-picker span').forEach(s=>s.classList.remove('active'));
-  showToast('Thank you for your review! 💕');
+  showToast('Thank you for your review!');
 }
 
 function renderPending(){
