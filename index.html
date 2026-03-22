@@ -7,615 +7,168 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --pink: #f9c8d8;
-    --pink-deep: #f2a8c0;
-    --pink-light: #fdeef4;
-    --pink-pale: #fff5f9;
-    --white: #ffffff;
-    --text: #3a2a30;
-    --text-muted: #9a7080;
-    --border: #f0d5e0;
-    --accent: #e8849e;
+    --pink:#f9c8d8;--pink-deep:#f2a8c0;--pink-light:#fdeef4;--pink-pale:#fff5f9;
+    --white:#ffffff;--text:#3a2a30;--text-muted:#9a7080;--border:#f0d5e0;--accent:#e8849e;
+    --green:#d4edda;--green-text:#2d6a4f;--red-bg:#fce8ec;--red-text:#a02828;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--white);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.2rem 3rem;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.6rem;
-    font-weight: 300;
-    letter-spacing: 0.05em;
-    color: var(--text);
-    text-decoration: none;
-  }
-
-  .nav-logo span { color: var(--accent); font-style: italic; }
-
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-
-  .nav-links a {
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--accent); }
-
-  /* ─── HERO ─── */
-  #home {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(160deg, var(--pink-pale) 0%, var(--white) 60%, var(--pink-light) 100%);
-    padding: 6rem 2rem 4rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #home::before {
-    content: '';
-    position: absolute;
-    width: 500px; height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
-    top: -100px; right: -100px;
-    opacity: 0.35;
-  }
-
-  #home::after {
-    content: '';
-    position: absolute;
-    width: 350px; height: 350px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--pink-deep) 0%, transparent 70%);
-    bottom: -50px; left: -80px;
-    opacity: 0.2;
-  }
-
-  .hero-tag {
-    display: inline-block;
-    background: var(--pink);
-    color: var(--accent);
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0.4rem 1.2rem;
-    border-radius: 99px;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-    animation: fadeUp 0.7s ease both;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    font-weight: 300;
-    line-height: 1.1;
-    margin-bottom: 1.2rem;
-    animation: fadeUp 0.7s 0.1s ease both;
-  }
-
-  .hero-title em { color: var(--accent); font-style: italic; }
-
-  .hero-sub {
-    font-size: 1.05rem;
-    color: var(--text-muted);
-    max-width: 480px;
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-    font-weight: 300;
-    animation: fadeUp 0.7s 0.2s ease both;
-  }
-
-  .btn-primary {
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-    padding: 0.9rem 2.4rem;
-    border-radius: 99px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    animation: fadeUp 0.7s 0.3s ease both;
-    box-shadow: 0 4px 20px rgba(232,132,158,0.35);
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(232,132,158,0.45);
-  }
-
-  .btn-secondary {
-    display: inline-block;
-    border: 1.5px solid var(--border);
-    color: var(--text);
-    padding: 0.9rem 2.4rem;
-    border-radius: 99px;
-    font-size: 0.9rem;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
-    margin-left: 1rem;
-    animation: fadeUp 0.7s 0.35s ease both;
-  }
-
-  .btn-secondary:hover { border-color: var(--accent); background: var(--pink-pale); }
-
-  /* ─── TESTIMONIALS ─── */
-  #reviews-home {
-    background: var(--white);
-    padding: 5rem 2rem;
-    text-align: center;
-  }
-
-  .section-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 0.6rem;
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 300;
-    margin-bottom: 3rem;
-  }
-
-  .testimonials-track {
-    display: flex;
-    gap: 1.5rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 1rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .testimonials-track::-webkit-scrollbar { display: none; }
-
-  .testimonial-card {
-    flex: 0 0 320px;
-    scroll-snap-align: start;
-    background: var(--pink-pale);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 2rem;
-    text-align: left;
-  }
-
-  .t-stars { color: var(--accent); font-size: 1rem; margin-bottom: 0.8rem; letter-spacing: 2px; }
-
-  .t-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-weight: 400;
-    line-height: 1.65;
-    color: var(--text);
-    font-style: italic;
-    margin-bottom: 1.2rem;
-  }
-
-  .t-author { font-size: 0.82rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; }
-
-  /* ─── ABOUT ─── */
-  #about {
-    background: var(--pink-pale);
-    padding: 5rem 2rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  .about-inner {
-    max-width: 700px;
-    text-align: center;
-  }
-
-  .about-inner p {
-    font-size: 1rem;
-    line-height: 1.85;
-    color: var(--text-muted);
-    font-weight: 300;
-    margin-top: 1.5rem;
-  }
-
-  /* ─── ENROLL ─── */
-  #enroll {
-    padding: 5rem 2rem;
-    text-align: center;
-    background: var(--white);
-  }
-
-  .enroll-card {
-    display: inline-block;
-    background: linear-gradient(135deg, var(--pink-pale), var(--white));
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 3rem 3.5rem;
-    max-width: 560px;
-    width: 100%;
-  }
-
-  .enroll-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-
-  .enroll-card p {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin: 1rem 0 2rem;
-    font-weight: 300;
-  }
-
-  /* ─── REVIEWS PAGE ─── */
-  #reviews {
-    padding: 5rem 2rem;
-    background: var(--pink-pale);
-    min-height: 60vh;
-  }
-
-  .reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    max-width: 1000px;
-    margin: 2rem auto 0;
-  }
-
-  .review-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.6rem;
-  }
-
-  .review-card .t-text { font-size: 1rem; }
-
-  /* ─── SUBMIT REVIEW ─── */
-  #submit-review {
-    padding: 5rem 2rem;
-    background: var(--white);
-    text-align: center;
-  }
-
-  .form-wrap {
-    max-width: 520px;
-    margin: 2rem auto 0;
-    text-align: left;
-  }
-
-  .form-group { margin-bottom: 1.2rem; }
-
-  .form-group label {
-    display: block;
-    font-size: 0.82rem;
-    letter-spacing: 0.06em;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-  }
-
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text);
-    background: var(--pink-pale);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus { border-color: var(--accent); background: var(--white); }
-
-  .form-group textarea { height: 100px; resize: vertical; }
-
-  .star-picker { display: flex; gap: 0.4rem; margin-top: 0.3rem; }
-
-  .star-picker span {
-    font-size: 1.6rem;
-    cursor: pointer;
-    color: #ddd;
-    transition: color 0.15s;
-    user-select: none;
-  }
-
-  .star-picker span.active { color: var(--accent); }
-
-  .notice {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    margin-top: 0.8rem;
-    font-style: italic;
-  }
-
-  /* ─── ADMIN PANEL ─── */
-  #admin {
-    padding: 5rem 2rem;
-    background: var(--pink-pale);
-    display: none;
-  }
-
-  #admin.visible { display: block; }
-
-  .pending-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-    margin: 1rem auto;
-    max-width: 700px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .pending-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-
-  .btn-approve {
-    background: #d4edda; color: #2d6a4f;
-    border: none; border-radius: 8px;
-    padding: 0.4rem 1rem;
-    cursor: pointer; font-size: 0.85rem;
-    font-family: inherit; font-weight: 500;
-    transition: opacity 0.2s;
-  }
-
-  .btn-reject {
-    background: #fce8ec; color: #a02828;
-    border: none; border-radius: 8px;
-    padding: 0.4rem 1rem;
-    cursor: pointer; font-size: 0.85rem;
-    font-family: inherit; font-weight: 500;
-    transition: opacity 0.2s;
-  }
-
-  .btn-approve:hover, .btn-reject:hover { opacity: 0.75; }
-
-  /* ─── CALENDAR ─── */
-  #calendar {
-    padding: 5rem 2rem;
-    background: var(--white);
-    text-align: center;
-  }
-
-  .cal-wrap { max-width: 500px; margin: 2rem auto 0; }
-
-  .cal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.2rem;
-  }
-
-  .cal-header h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
-    font-weight: 400;
-  }
-
-  .cal-nav {
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    width: 34px; height: 34px;
-    cursor: pointer;
-    font-size: 1rem;
-    color: var(--text-muted);
-    transition: border-color 0.2s;
-  }
-
-  .cal-nav:hover { border-color: var(--accent); color: var(--accent); }
-
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-  }
-
-  .cal-day-label {
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-align: center;
-    padding: 0.3rem 0;
-  }
-
-  .cal-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    border: 1.5px solid transparent;
-    color: var(--text);
-  }
-
-  .cal-day:hover { background: var(--pink-light); border-color: var(--border); }
-  .cal-day.today { background: var(--pink); color: var(--accent); font-weight: 500; }
-  .cal-day.selected { background: var(--accent); color: white; border-color: var(--accent); }
-  .cal-day.empty { cursor: default; }
-  .cal-day.booked { background: var(--pink-light); color: var(--accent); position: relative; }
-  .cal-day.booked::after {
-    content: '•';
-    position: absolute;
-    bottom: 2px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.5rem;
-    color: var(--accent);
-  }
-
-  .cal-legend {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-top: 1.2rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-
-  .legend-dot {
-    display: inline-block;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    margin-right: 0.3rem;
-    vertical-align: middle;
-  }
-
-  .cal-note {
-    margin-top: 1.5rem;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    font-style: italic;
-    line-height: 1.6;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--pink-pale);
-    border-top: 1px solid var(--border);
-    padding: 2.5rem 2rem;
-    text-align: center;
-    font-size: 0.82rem;
-    color: var(--text-muted);
-  }
-
-  footer strong {
-    display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    font-weight: 300;
-    color: var(--text);
-    margin-bottom: 0.3rem;
-  }
-
-  /* ─── ADMIN LOGIN ─── */
-  #admin-login-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(58,42,48,0.4);
-    backdrop-filter: blur(6px);
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #admin-login-overlay.visible { display: flex; }
-
-  .login-box {
-    background: var(--white);
-    border-radius: 20px;
-    padding: 2.5rem;
-    width: 90%;
-    max-width: 360px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(58,42,48,0.15);
-  }
-
-  .login-box h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 300;
-    margin-bottom: 1.2rem;
-  }
-
-  .login-box input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    background: var(--pink-pale);
-    outline: none;
-    margin-bottom: 1rem;
-    text-align: center;
-    letter-spacing: 0.1em;
-  }
-
-  .login-box input:focus { border-color: var(--accent); }
-
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--text);
-    color: white;
-    padding: 0.8rem 2rem;
-    border-radius: 99px;
-    font-size: 0.88rem;
-    font-weight: 400;
-    transition: transform 0.3s ease;
-    z-index: 9999;
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 600px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { gap: 1rem; }
-    .enroll-card { padding: 2rem 1.5rem; }
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden;}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;letter-spacing:.05em;color:var(--text);text-decoration:none;}
+  .nav-logo span{color:var(--accent);font-style:italic;}
+  .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+  .nav-links a{font-size:.85rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--accent);}
+  #nav-login-btn{background:var(--pink);color:var(--accent);border:none;padding:.5rem 1.3rem;border-radius:99px;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:background .2s;}
+  #nav-login-btn:hover{background:var(--pink-deep);}
+  #nav-user-info{display:none;align-items:center;gap:.8rem;font-size:.85rem;color:var(--text-muted);}
+  #nav-user-info strong{color:var(--accent);}
+  #nav-logout{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;font-family:inherit;text-decoration:underline;}
+
+  /* HERO */
+  #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--pink-pale) 0%,var(--white) 60%,var(--pink-light) 100%);padding:6rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
+  #home::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:-100px;right:-100px;opacity:.35;}
+  #home::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,var(--pink-deep) 0%,transparent 70%);bottom:-50px;left:-80px;opacity:.2;}
+  .hero-tag{display:inline-block;background:var(--pink);color:var(--accent);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem 1.2rem;border-radius:99px;margin-bottom:1.5rem;font-weight:500;animation:fadeUp .7s ease both;}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:300;line-height:1.1;margin-bottom:1.2rem;animation:fadeUp .7s .1s ease both;}
+  .hero-title em{color:var(--accent);font-style:italic;}
+  .hero-sub{font-size:1.05rem;color:var(--text-muted);max-width:480px;line-height:1.7;margin-bottom:2.5rem;font-weight:300;animation:fadeUp .7s .2s ease both;}
+  .btn-primary{display:inline-block;background:var(--accent);color:white;padding:.9rem 2.4rem;border-radius:99px;font-size:.9rem;font-weight:500;letter-spacing:.04em;text-decoration:none;transition:transform .2s,box-shadow .2s;animation:fadeUp .7s .3s ease both;box-shadow:0 4px 20px rgba(232,132,158,.35);border:none;cursor:pointer;font-family:inherit;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,132,158,.45);}
+  .btn-secondary{display:inline-block;border:1.5px solid var(--border);color:var(--text);padding:.9rem 2.4rem;border-radius:99px;font-size:.9rem;font-weight:400;letter-spacing:.04em;text-decoration:none;transition:border-color .2s,background .2s;margin-left:1rem;animation:fadeUp .7s .35s ease both;}
+  .btn-secondary:hover{border-color:var(--accent);background:var(--pink-pale);}
+
+  .section-label{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:.6rem;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;margin-bottom:2rem;}
+
+  /* TESTIMONIALS */
+  .testimonials-track{display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .testimonials-track::-webkit-scrollbar{display:none;}
+  .testimonial-card{flex:0 0 320px;scroll-snap-align:start;background:var(--pink-pale);border:1px solid var(--border);border-radius:18px;padding:2rem;text-align:left;}
+  .t-stars{color:var(--accent);font-size:1rem;margin-bottom:.8rem;letter-spacing:2px;}
+  .t-text{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;line-height:1.65;color:var(--text);font-style:italic;margin-bottom:1.2rem;}
+  .t-author{font-size:.82rem;font-weight:500;color:var(--text-muted);letter-spacing:.05em;}
+
+  /* ABOUT */
+  #about{background:var(--pink-pale);padding:5rem 2rem;display:flex;justify-content:center;text-align:center;}
+  .about-inner{max-width:700px;}
+  .about-inner p{font-size:1rem;line-height:1.85;color:var(--text-muted);font-weight:300;margin-top:1.5rem;}
+
+  /* ENROLL */
+  #enroll{padding:5rem 2rem;text-align:center;background:var(--white);}
+  .enroll-card{display:inline-block;background:linear-gradient(135deg,var(--pink-pale),var(--white));border:1px solid var(--border);border-radius:24px;padding:3rem 3.5rem;max-width:560px;width:100%;}
+  .enroll-card p{font-size:.95rem;color:var(--text-muted);line-height:1.7;margin:1rem 0 2rem;font-weight:300;}
+  .notice{font-size:.82rem;color:var(--text-muted);margin-top:.8rem;font-style:italic;}
+
+  /* REVIEWS */
+  #reviews{padding:5rem 2rem;background:var(--pink-pale);}
+  .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto;}
+  .review-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.6rem;}
+
+  /* SUBMIT REVIEW */
+  #submit-review{padding:5rem 2rem;background:var(--white);text-align:center;}
+  .form-wrap{max-width:520px;margin:2rem auto 0;text-align:left;}
+  .form-group{margin-bottom:1.2rem;}
+  .form-group label{display:block;font-size:.82rem;letter-spacing:.06em;font-weight:500;color:var(--text-muted);text-transform:uppercase;margin-bottom:.4rem;}
+  .form-group input,.form-group textarea,.form-group select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);background:var(--pink-pale);outline:none;transition:border-color .2s;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);background:var(--white);}
+  .form-group textarea{height:100px;resize:vertical;}
+  .star-picker{display:flex;gap:.4rem;margin-top:.3rem;}
+  .star-picker span{font-size:1.6rem;cursor:pointer;color:#ddd;transition:color .15s;user-select:none;}
+  .star-picker span.active{color:var(--accent);}
+
+  /* CALENDAR */
+  #calendar{padding:5rem 2rem;background:var(--white);text-align:center;}
+  .cal-wrap{max-width:500px;margin:2rem auto 0;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+  .cal-header h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;}
+  .cal-nav{background:none;border:1.5px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1rem;color:var(--text-muted);transition:border-color .2s;}
+  .cal-nav:hover{border-color:var(--accent);color:var(--accent);}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-day-label{font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-align:center;padding:.3rem 0;}
+  .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:.88rem;cursor:pointer;transition:background .15s,color .15s;border:1.5px solid transparent;color:var(--text);}
+  .cal-day:hover{background:var(--pink-light);border-color:var(--border);}
+  .cal-day.today{background:var(--pink);color:var(--accent);font-weight:500;}
+  .cal-day.selected{background:var(--accent);color:white;border-color:var(--accent);}
+  .cal-day.empty{cursor:default;pointer-events:none;}
+  .cal-day.booked{background:var(--pink-light);color:var(--accent);position:relative;}
+  .cal-day.booked::after{content:'•';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:.5rem;color:var(--accent);}
+  .cal-day.my-appt{background:var(--accent);color:white;}
+  .cal-legend{display:flex;gap:1.5rem;justify-content:center;margin-top:1.2rem;font-size:.8rem;color:var(--text-muted);flex-wrap:wrap;}
+  .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle;}
+  .cal-note{margin-top:1.5rem;font-size:.88rem;color:var(--text-muted);font-style:italic;line-height:1.6;}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(58,42,48,.45);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
+  .modal-overlay.visible{display:flex;}
+  .modal-box{background:var(--white);border-radius:24px;padding:2.5rem;width:90%;max-width:420px;box-shadow:0 24px 64px rgba(58,42,48,.18);position:relative;animation:popIn .3s ease;max-height:90vh;overflow-y:auto;}
+  @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  .modal-close{position:absolute;top:1.2rem;right:1.4rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);line-height:1;}
+  .modal-tabs{display:flex;gap:.5rem;margin-bottom:1.8rem;border-bottom:1.5px solid var(--border);}
+  .tab-btn{background:none;border:none;padding:.7rem 1.2rem;font-size:.85rem;font-weight:500;font-family:inherit;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:color .2s,border-color .2s;}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .modal-box h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;margin-bottom:1.2rem;text-align:center;}
+  .modal-box .form-group{margin-bottom:1rem;}
+  .modal-box .form-group input,.modal-box .form-group select,.modal-box .form-group textarea{background:var(--pink-pale);}
+  .modal-note{font-size:.78rem;color:var(--text-muted);text-align:center;margin-top:.8rem;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+
+  /* PARENT DASHBOARD */
+  #parent-dashboard{display:none;padding:5rem 2rem;background:var(--pink-pale);}
+  #parent-dashboard.visible{display:block;}
+  .dash-wrap{max-width:800px;margin:0 auto;}
+  .dash-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:1.8rem;margin-bottom:1.5rem;}
+  .dash-card h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem;}
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.8rem;}
+  .info-item{background:var(--pink-pale);border-radius:10px;padding:.8rem 1rem;}
+  .info-item .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);font-weight:500;margin-bottom:.2rem;}
+  .info-item .value{font-size:.95rem;color:var(--text);}
+  .appt-item{display:flex;align-items:center;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);}
+  .appt-item:last-child{border-bottom:none;}
+  .appt-date{background:var(--pink);color:var(--accent);border-radius:10px;padding:.4rem .8rem;font-size:.82rem;font-weight:500;white-space:nowrap;}
+  .appt-details{flex:1;}
+  .appt-details strong{font-size:.9rem;display:block;}
+  .appt-details span{font-size:.82rem;color:var(--text-muted);}
+  .appt-status{font-size:.75rem;padding:.25rem .7rem;border-radius:99px;font-weight:500;}
+  .appt-status.confirmed{background:var(--green);color:var(--green-text);}
+  .appt-status.pending-s{background:var(--pink-light);color:var(--accent);}
+  .request-btn{background:var(--accent);color:white;border:none;border-radius:10px;padding:.6rem 1.2rem;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;transition:opacity .2s;}
+  .request-btn:hover{opacity:.85;}
+
+  /* TUTOR DASHBOARD */
+  #tutor-dashboard{display:none;padding:5rem 2rem;background:var(--pink-pale);}
+  #tutor-dashboard.visible{display:block;}
+  .tutor-tabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap;}
+  .tutor-tab{background:var(--white);border:1.5px solid var(--border);border-radius:99px;padding:.5rem 1.3rem;font-size:.82rem;font-weight:500;font-family:inherit;cursor:pointer;color:var(--text-muted);transition:all .2s;}
+  .tutor-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+  .tutor-panel{display:none;}
+  .tutor-panel.active{display:block;}
+  .parent-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;}
+  .parent-row strong{font-size:.95rem;display:block;margin-bottom:.2rem;}
+  .parent-row span{font-size:.82rem;color:var(--text-muted);}
+  .pending-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+  .pending-actions{display:flex;gap:.5rem;flex-shrink:0;}
+  .btn-approve{background:var(--green);color:var(--green-text);border:none;border-radius:8px;padding:.4rem 1rem;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:500;}
+  .btn-reject{background:var(--red-bg);color:var(--red-text);border:none;border-radius:8px;padding:.4rem 1rem;cursor:pointer;font-size:.85rem;font-family:inherit;font-weight:500;}
+  .appt-request-row{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+
+  footer{background:var(--pink-pale);border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;font-size:.82rem;color:var(--text-muted);}
+  footer strong{display:block;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.3rem;}
+
+  .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:white;padding:.8rem 2rem;border-radius:99px;font-size:.88rem;transition:transform .3s ease;z-index:9999;white-space:nowrap;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:600px){nav{padding:1rem 1.2rem;}.nav-links{gap:.8rem;}.enroll-card{padding:2rem 1.2rem;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="#home" class="nav-logo">Giuliana <span>✦</span></a>
   <ul class="nav-links">
@@ -624,7 +177,13 @@
     <li><a href="#enroll">Enroll</a></li>
     <li><a href="#reviews">Reviews</a></li>
     <li><a href="#calendar">Calendar</a></li>
-    <li><a href="#" onclick="openAdmin(event)">Admin</a></li>
+    <li>
+      <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
+      <div id="nav-user-info">
+        <span>Hi, <strong id="nav-username"></strong></span>
+        <button id="nav-logout" onclick="logout()">Log out</button>
+      </div>
+    </li>
   </ul>
 </nav>
 
@@ -634,12 +193,10 @@
   <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
   <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
   <div>
-    <a href="#enroll" class="btn-primary">Get Started</a>
+    <a href="#enroll" class="btn-primary" style="animation:none;">Get Started</a>
     <a href="#about" class="btn-secondary">Learn More</a>
   </div>
-
-  <!-- Testimonials carousel in hero -->
-  <div style="margin-top: 4rem; width: 100%; max-width: 900px;" id="reviews-home">
+  <div style="margin-top:4rem;width:100%;max-width:900px;text-align:center;">
     <p class="section-label">What parents are saying</p>
     <div class="testimonials-track" id="hero-testimonials"></div>
   </div>
@@ -650,8 +207,8 @@
   <div class="about-inner">
     <p class="section-label">About</p>
     <h2 class="section-title">Hi, I'm Giuliana 💕</h2>
-    <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I specialize in creating a warm, supportive environment where every child feels seen and capable.</p>
-    <p style="margin-top: 1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
+    <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I create a warm, supportive space where every child feels seen and capable.</p>
+    <p style="margin-top:1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
   </div>
 </section>
 
@@ -660,15 +217,15 @@
   <p class="section-label">Enrollment</p>
   <h2 class="section-title">Ready to get started?</h2>
   <div class="enroll-card">
-    <div class="enroll-icon">📋</div>
-    <h3 style="font-family:'Cormorant Garamond',serif; font-weight:300; font-size:1.5rem;">Tell me about your child</h3>
-    <p>Fill out a quick intake form with your child's age, grade, subject needs, and learning goals. I'll reach out to schedule your first session!</p>
-    <a href="https://forms.google.com" target="_blank" class="btn-primary">Fill Out Intake Form →</a>
+    <div style="font-size:2.5rem;margin-bottom:1rem;">📋</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.5rem;">Tell me about your child</h3>
+    <p>Fill out the Google intake form, then create an account to track your sessions, view appointments, and stay connected.</p>
+    <a href="https://forms.google.com" target="_blank" class="btn-primary" style="animation:none;">Fill Out Intake Form →</a>
     <p class="notice">🔒 Your information is private and never shared.</p>
   </div>
 </section>
 
-<!-- REVIEWS DISPLAY -->
+<!-- REVIEWS -->
 <section id="reviews">
   <div style="text-align:center;">
     <p class="section-label">Testimonials</p>
@@ -682,36 +239,16 @@
   <p class="section-label">Leave a Review</p>
   <h2 class="section-title">Share your experience</h2>
   <div class="form-wrap">
-    <div class="form-group">
-      <label>Your Name</label>
-      <input type="text" id="r-name" placeholder="e.g. Sarah M.">
-    </div>
+    <div class="form-group"><label>Your Name</label><input type="text" id="r-name" placeholder="e.g. Sarah M."></div>
     <div class="form-group">
       <label>Star Rating</label>
       <div class="star-picker" id="star-picker">
-        <span data-val="1">★</span>
-        <span data-val="2">★</span>
-        <span data-val="3">★</span>
-        <span data-val="4">★</span>
-        <span data-val="5">★</span>
+        <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
       </div>
     </div>
-    <div class="form-group">
-      <label>Your Review</label>
-      <textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea>
-    </div>
-    <button class="btn-primary" onclick="submitReview()" style="border:none;cursor:pointer;width:100%;text-align:center;">Submit Review</button>
-    <p class="notice">✨ Reviews are moderated and posted after approval.</p>
+    <div class="form-group"><label>Your Review</label><textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea></div>
+    <button class="btn-primary" onclick="submitReview()" style="animation:none;border:none;width:100%;text-align:center;">Submit Review</button>
   </div>
-</section>
-
-<!-- ADMIN PANEL -->
-<section id="admin">
-  <div style="text-align:center; margin-bottom: 2rem;">
-    <p class="section-label">Admin</p>
-    <h2 class="section-title">Pending Reviews</h2>
-  </div>
-  <div id="pending-list"></div>
 </section>
 
 <!-- CALENDAR -->
@@ -727,234 +264,467 @@
     <div class="cal-grid" id="cal-grid"></div>
     <div class="cal-legend">
       <span><span class="legend-dot" style="background:var(--pink)"></span>Today</span>
-      <span><span class="legend-dot" style="background:var(--accent)"></span>Selected</span>
-      <span><span class="legend-dot" style="background:var(--pink-light)"></span>Booked</span>
+      <span><span class="legend-dot" style="background:var(--pink-light);border:1px solid var(--border)"></span>Booked</span>
+      <span><span class="legend-dot" style="background:var(--accent)"></span>Your Session</span>
     </div>
-    <p class="cal-note" id="cal-note">Select a date to check availability. Fill out the intake form to book a session!</p>
+    <p class="cal-note" id="cal-note">Select a date to check availability. Log in to request a session!</p>
+    <div id="cal-request-wrap" style="display:none;margin-top:1rem;text-align:center;">
+      <button class="request-btn" id="cal-request-btn">Request This Date</button>
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- PARENT DASHBOARD -->
+<section id="parent-dashboard">
+  <div class="dash-wrap">
+    <p class="section-label">Parent Portal</p>
+    <h2 class="section-title" id="dash-greeting" style="margin-bottom:1.5rem;">My Dashboard</h2>
+    <div class="dash-card">
+      <h4>👧 Child Information</h4>
+      <div class="info-grid" id="child-info-grid"></div>
+      <button onclick="openEditChild()" style="margin-top:1.2rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">✏️ Edit Info</button>
+    </div>
+    <div class="dash-card">
+      <h4>📅 My Appointments</h4>
+      <div id="my-appointments"></div>
+      <button onclick="openApptRequest()" style="margin-top:1.2rem;" class="request-btn">+ Request New Session</button>
+    </div>
+  </div>
+</section>
+
+<!-- TUTOR DASHBOARD -->
+<section id="tutor-dashboard">
+  <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
+    <p class="section-label">Tutor Portal</p>
+    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana 💕</h2>
+    <div class="tutor-tabs">
+      <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
+      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-reviews-mod')">Review Moderation</button>
+    </div>
+    <div id="tp-families" class="tutor-panel active">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Registered Families</h4>
+      <div id="families-list"></div>
+    </div>
+    <div id="tp-appointments" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Session Requests</h4>
+      <div id="appt-requests-list"></div>
+    </div>
+    <div id="tp-reviews-mod" class="tutor-panel">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Pending Reviews</h4>
+      <div id="pending-list"></div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <strong>Giuliana ✦ Tutoring</strong>
   <p>Making learning a little more lovely, one student at a time 💕</p>
 </footer>
 
-<!-- ADMIN LOGIN OVERLAY -->
-<div id="admin-login-overlay">
-  <div class="login-box">
-    <h3>Admin Access</h3>
-    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Enter your password to view pending reviews.</p>
-    <input type="password" id="admin-pw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdmin()">
-    <button class="btn-primary" onclick="checkAdmin()" style="border:none;cursor:pointer;width:100%;text-align:center;">Enter</button>
-    <button onclick="document.getElementById('admin-login-overlay').classList.remove('visible')" style="margin-top:0.7rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-family:inherit;font-size:0.85rem;">Cancel</button>
+<!-- LOGIN / SIGNUP MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLoginModal()">×</button>
+    <div class="modal-tabs">
+      <button class="tab-btn active" onclick="switchAuthTab('tab-login',this)">Log In</button>
+      <button class="tab-btn" onclick="switchAuthTab('tab-signup',this)">Create Account</button>
+      <button class="tab-btn" onclick="switchAuthTab('tab-tutor',this)" id="tutor-tab-btn" style="display:none;">Tutor</button>
+    </div>
+    <!-- LOGIN -->
+    <div class="tab-panel active" id="tab-login">
+      <h3>Welcome back 💕</h3>
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-primary" onclick="doLogin()" style="animation:none;border:none;width:100%;text-align:center;">Log In</button>
+      <p class="modal-note">Giuliana? <a href="#" onclick="showTutorTab(event)" style="color:var(--accent);">Tutor login →</a></p>
+    </div>
+    <!-- SIGNUP -->
+    <div class="tab-panel" id="tab-signup">
+      <h3>Create your account</h3>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="su-first" placeholder="Jane"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="su-last" placeholder="Smith"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="su-pw" placeholder="Min. 6 characters"></div>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem;padding-top:.8rem;border-top:1px solid var(--border);">👧 Child's Information</p>
+      <div class="form-row">
+        <div class="form-group"><label>Child's Name</label><input type="text" id="su-child-name" placeholder="Emma"></div>
+        <div class="form-group"><label>Age</label><input type="number" id="su-child-age" placeholder="9" min="4" max="18"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Grade</label>
+          <select id="su-grade"><option value="">Select…</option><option>Pre-K</option><option>Kindergarten</option><option>1st Grade</option><option>2nd Grade</option><option>3rd Grade</option><option>4th Grade</option><option>5th Grade</option><option>6th Grade</option><option>7th Grade</option><option>8th Grade</option><option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option></select>
+        </div>
+        <div class="form-group"><label>Subject</label>
+          <select id="su-subject"><option value="">Select…</option><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General / Multiple</option></select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="doSignup()" style="animation:none;border:none;width:100%;text-align:center;">Create Account</button>
+    </div>
+    <!-- TUTOR -->
+    <div class="tab-panel" id="tab-tutor">
+      <h3>Tutor Login 🌸</h3>
+      <div class="form-group"><label>Password</label><input type="password" id="tutor-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doTutorLogin()"></div>
+      <button class="btn-primary" onclick="doTutorLogin()" style="animation:none;border:none;width:100%;text-align:center;">Enter</button>
+      <p class="modal-note"><a href="#" onclick="switchAuthTab('tab-login',null);return false;" style="color:var(--text-muted);">← Back</a></p>
+    </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- EDIT CHILD MODAL -->
+<div class="modal-overlay" id="edit-child-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('edit-child-modal').classList.remove('visible')">×</button>
+    <h3>Edit Child Info</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Child's Name</label><input type="text" id="ec-name"></div>
+      <div class="form-group"><label>Age</label><input type="number" id="ec-age" min="4" max="18"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Grade</label>
+        <select id="ec-grade"><option>Pre-K</option><option>Kindergarten</option><option>1st Grade</option><option>2nd Grade</option><option>3rd Grade</option><option>4th Grade</option><option>5th Grade</option><option>6th Grade</option><option>7th Grade</option><option>8th Grade</option><option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option></select>
+      </div>
+      <div class="form-group"><label>Subject</label>
+        <select id="ec-subject"><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General / Multiple</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Notes for Giuliana</label><textarea id="ec-notes" placeholder="Any goals, needs, or things to know…"></textarea></div>
+    <button class="btn-primary" onclick="saveChildInfo()" style="animation:none;border:none;width:100%;text-align:center;">Save</button>
+  </div>
+</div>
+
+<!-- REQUEST APPOINTMENT MODAL -->
+<div class="modal-overlay" id="appt-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('appt-modal').classList.remove('visible')">×</button>
+    <h3>Request a Session</h3>
+    <div class="form-group"><label>Preferred Date</label><input type="date" id="appt-date"></div>
+    <div class="form-group"><label>Preferred Time</label>
+      <select id="appt-time"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option></select>
+    </div>
+    <div class="form-group"><label>Subject Focus</label>
+      <select id="appt-subject"><option>Math</option><option>Reading</option><option>Writing</option><option>Science</option><option>History</option><option>Test Prep</option><option>General Review</option></select>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><textarea id="appt-notes" placeholder="Anything specific to focus on?"></textarea></div>
+    <button class="btn-primary" onclick="submitApptRequest()" style="animation:none;border:none;width:100%;text-align:center;">Send Request</button>
+    <p class="modal-note">Giuliana will confirm within 24 hours 💕</p>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-  // ─── DATA (localStorage for persistence) ───
-  const ADMIN_PASSWORD = "tutor2024"; // Change this!
+const TUTOR_PASSWORD = "giuliana2024"; // ← Change this!
 
-  function getApproved() {
-    try { return JSON.parse(localStorage.getItem('approvedReviews') || '[]'); } catch { return []; }
+// DATA
+const db = { get:k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+const getUsers=()=>db.get('gt_users')||{};
+const getApproved=()=>db.get('gt_approved')||[];
+const getPending=()=>db.get('gt_pending')||[];
+const getAppts=()=>db.get('gt_appts')||[];
+const saveUsers=v=>db.set('gt_users',v);
+const saveApproved=v=>db.set('gt_approved',v);
+const savePending=v=>db.set('gt_pending',v);
+const saveAppts=v=>db.set('gt_appts',v);
+
+let currentUser=null, isTutor=false;
+
+function seedReviews(){
+  if(getApproved().length===0){
+    saveApproved([
+      {name:"Sarah M.",stars:5,text:"Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!",date:"2025-02"},
+      {name:"James & Priya L.",stars:5,text:"My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.",date:"2025-01"},
+      {name:"Tanya R.",stars:5,text:"Our daughter jumped two reading levels in one semester. We couldn't be more grateful.",date:"2024-12"},
+      {name:"Michelle K.",stars:5,text:"She tailors every session to where my child is at. It's clear she truly cares about her students.",date:"2024-11"},
+    ]);
   }
+}
 
-  function getPending() {
-    try { return JSON.parse(localStorage.getItem('pendingReviews') || '[]'); } catch { return []; }
+// AUTH
+function openLoginModal(){ document.getElementById('login-modal').classList.add('visible'); }
+function closeLoginModal(){ document.getElementById('login-modal').classList.remove('visible'); }
+
+function switchAuthTab(id, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function showTutorTab(e){
+  e.preventDefault();
+  document.getElementById('tutor-tab-btn').style.display='';
+  switchAuthTab('tab-tutor', document.getElementById('tutor-tab-btn'));
+}
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim().toLowerCase();
+  const pw=document.getElementById('login-pw').value;
+  const users=getUsers();
+  if(!users[email]){showToast('No account found. Please sign up!');return;}
+  if(users[email].password!==pw){showToast('Incorrect password.');return;}
+  currentUser=users[email]; isTutor=false;
+  onLoggedIn();
+}
+
+function doTutorLogin(){
+  const pw=document.getElementById('tutor-pw').value;
+  if(pw!==TUTOR_PASSWORD){showToast('Incorrect password.');return;}
+  isTutor=true; currentUser={firstName:'Giuliana',email:'__tutor__'};
+  onLoggedIn();
+}
+
+function doSignup(){
+  const first=document.getElementById('su-first').value.trim();
+  const last=document.getElementById('su-last').value.trim();
+  const email=document.getElementById('su-email').value.trim().toLowerCase();
+  const pw=document.getElementById('su-pw').value;
+  const cName=document.getElementById('su-child-name').value.trim();
+  const cAge=document.getElementById('su-child-age').value;
+  const grade=document.getElementById('su-grade').value;
+  const subject=document.getElementById('su-subject').value;
+  if(!first||!last||!email||!pw||!cName||!cAge||!grade||!subject){showToast('Please fill out all fields!');return;}
+  if(pw.length<6){showToast('Password must be at least 6 characters.');return;}
+  const users=getUsers();
+  if(users[email]){showToast('An account with that email already exists.');return;}
+  const user={firstName:first,lastName:last,email,password:pw,child:{name:cName,age:cAge,grade,subject,notes:''},createdAt:new Date().toISOString()};
+  users[email]=user; saveUsers(users);
+  currentUser=user; isTutor=false;
+  onLoggedIn();
+}
+
+function onLoggedIn(){
+  closeLoginModal();
+  document.getElementById('login-pw').value='';
+  document.getElementById('tutor-pw').value='';
+  document.getElementById('nav-login-btn').style.display='none';
+  const info=document.getElementById('nav-user-info');
+  info.style.display='flex';
+  document.getElementById('nav-username').textContent=currentUser.firstName;
+  if(isTutor){
+    document.getElementById('tutor-dashboard').classList.add('visible');
+    renderTutorDashboard();
+    document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('parent-dashboard').classList.add('visible');
+    renderParentDashboard();
+    document.getElementById('parent-dashboard').scrollIntoView({behavior:'smooth'});
   }
-
-  function saveApproved(arr) { localStorage.setItem('approvedReviews', JSON.stringify(arr)); }
-  function savePending(arr) { localStorage.setItem('pendingReviews', JSON.stringify(arr)); }
-
-  // Seed some default approved reviews if none exist
-  function seedReviews() {
-    if (getApproved().length === 0) {
-      saveApproved([
-        { name: "Sarah M.", stars: 5, text: "Giuliana has been an absolute game-changer for my daughter. Her confidence in math has skyrocketed in just a few weeks!", date: "2025-02" },
-        { name: "James & Priya L.", stars: 5, text: "My son actually looks forward to his sessions now — something I never thought I'd say! She is patient, kind, and incredibly effective.", date: "2025-01" },
-        { name: "Tanya R.", stars: 5, text: "Our daughter jumped two reading levels in one semester. We couldn't be more grateful.", date: "2024-12" },
-        { name: "Michelle K.", stars: 5, text: "She tailors every session to where my child is at. It's clear she truly cares about her students.", date: "2024-11" }
-      ]);
-    }
-  }
-
-  // ─── RENDER APPROVED REVIEWS ───
-  function renderApproved() {
-    const reviews = getApproved();
-    const grid = document.getElementById('approved-reviews');
-    grid.innerHTML = reviews.length === 0
-      ? '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet — be the first!</p>'
-      : reviews.map(r => `
-        <div class="review-card">
-          <div class="t-stars">${'★'.repeat(r.stars)}</div>
-          <p class="t-text">"${r.text}"</p>
-          <span class="t-author">— ${r.name}</span>
-        </div>`).join('');
-
-    // Hero carousel (first 4)
-    const hero = document.getElementById('hero-testimonials');
-    hero.innerHTML = reviews.slice(0,4).map(r => `
-      <div class="testimonial-card">
-        <div class="t-stars">${'★'.repeat(r.stars)}</div>
-        <p class="t-text">"${r.text}"</p>
-        <span class="t-author">— ${r.name}</span>
-      </div>`).join('');
-  }
-
-  // ─── STAR PICKER ───
-  let selectedStars = 0;
-  document.getElementById('star-picker').addEventListener('click', e => {
-    if (e.target.dataset.val) {
-      selectedStars = parseInt(e.target.dataset.val);
-      document.querySelectorAll('#star-picker span').forEach((s, i) => {
-        s.classList.toggle('active', i < selectedStars);
-      });
-    }
-  });
-
-  // ─── SUBMIT REVIEW ───
-  function submitReview() {
-    const name = document.getElementById('r-name').value.trim();
-    const text = document.getElementById('r-text').value.trim();
-    if (!name || !text || !selectedStars) { showToast('Please fill out all fields and select a rating!'); return; }
-
-    const pending = getPending();
-    pending.push({ id: Date.now(), name, stars: selectedStars, text, date: new Date().toISOString().slice(0,7) });
-    savePending(pending);
-
-    document.getElementById('r-name').value = '';
-    document.getElementById('r-text').value = '';
-    selectedStars = 0;
-    document.querySelectorAll('#star-picker span').forEach(s => s.classList.remove('active'));
-
-    showToast('Thank you! Your review has been submitted for approval 💕');
-  }
-
-  // ─── ADMIN ───
-  function openAdmin(e) {
-    e.preventDefault();
-    document.getElementById('admin-login-overlay').classList.add('visible');
-    setTimeout(() => document.getElementById('admin-pw').focus(), 100);
-  }
-
-  function checkAdmin() {
-    const pw = document.getElementById('admin-pw').value;
-    if (pw === ADMIN_PASSWORD) {
-      document.getElementById('admin-login-overlay').classList.remove('visible');
-      document.getElementById('admin-pw').value = '';
-      document.getElementById('admin').classList.add('visible');
-      renderPending();
-      document.getElementById('admin').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      showToast('Incorrect password. Try again.');
-    }
-  }
-
-  function renderPending() {
-    const pending = getPending();
-    const list = document.getElementById('pending-list');
-    if (pending.length === 0) {
-      list.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No pending reviews! You\'re all caught up ✨</p>';
-      return;
-    }
-    list.innerHTML = pending.map(r => `
-      <div class="pending-card" id="pending-${r.id}">
-        <div>
-          <div class="t-stars">${'★'.repeat(r.stars)}</div>
-          <p style="font-size:0.95rem;line-height:1.6;">"${r.text}"</p>
-          <span class="t-author">— ${r.name}</span>
-        </div>
-        <div class="pending-actions">
-          <button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button>
-          <button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button>
-        </div>
-      </div>`).join('');
-  }
-
-  function approveReview(id) {
-    let pending = getPending();
-    const idx = pending.findIndex(r => r.id === id);
-    if (idx === -1) return;
-    const [review] = pending.splice(idx, 1);
-    savePending(pending);
-    const approved = getApproved();
-    approved.unshift(review);
-    saveApproved(approved);
-    renderPending();
-    renderApproved();
-    showToast('Review approved and posted! ✨');
-  }
-
-  function rejectReview(id) {
-    let pending = getPending();
-    pending = pending.filter(r => r.id !== id);
-    savePending(pending);
-    renderPending();
-    showToast('Review rejected and removed.');
-  }
-
-  // ─── CALENDAR ───
-  let calDate = new Date();
-  const BOOKED_DAYS = [3, 7, 12, 18, 24]; // Example booked days
-  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-  function renderCalendar() {
-    const year = calDate.getFullYear();
-    const month = calDate.getMonth();
-    const today = new Date();
-    document.getElementById('cal-month-label').textContent = `${MONTHS[month]} ${year}`;
-
-    const grid = document.getElementById('cal-grid');
-    grid.innerHTML = DAYS.map(d => `<div class="cal-day-label">${d}</div>`).join('');
-
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      grid.innerHTML += `<div class="cal-day empty"></div>`;
-    }
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-      const isBooked = BOOKED_DAYS.includes(d);
-      const cls = isToday ? 'today' : isBooked ? 'booked' : '';
-      grid.innerHTML += `<div class="cal-day ${cls}" onclick="selectDay(${d}, ${month}, ${year})">${d}</div>`;
-    }
-  }
-
-  function selectDay(d, m, y) {
-    document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('selected'));
-    event.target.classList.add('selected');
-    const isBooked = BOOKED_DAYS.includes(d);
-    const note = document.getElementById('cal-note');
-    if (isBooked) {
-      note.textContent = `${MONTHS[m]} ${d}, ${y} is already booked. Please choose another date or fill out the intake form to join the waitlist!`;
-    } else {
-      note.innerHTML = `${MONTHS[m]} ${d}, ${y} looks available! <a href="#enroll" style="color:var(--accent)">Fill out the intake form</a> to request this date.`;
-    }
-  }
-
-  function changeMonth(dir) {
-    calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1);
-    renderCalendar();
-  }
-
-  // ─── TOAST ───
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  // ─── INIT ───
-  seedReviews();
-  renderApproved();
   renderCalendar();
+  showToast('Welcome back, '+currentUser.firstName+'! 💕');
+}
+
+function logout(){
+  currentUser=null; isTutor=false;
+  document.getElementById('nav-login-btn').style.display='';
+  document.getElementById('nav-user-info').style.display='none';
+  document.getElementById('parent-dashboard').classList.remove('visible');
+  document.getElementById('tutor-dashboard').classList.remove('visible');
+  renderCalendar();
+}
+
+// PARENT DASHBOARD
+function renderParentDashboard(){
+  const u=currentUser;
+  document.getElementById('dash-greeting').textContent='Hello, '+u.firstName+'! 💕';
+  const c=u.child;
+  document.getElementById('child-info-grid').innerHTML=`
+    <div class="info-item"><div class="label">Child's Name</div><div class="value">${c.name}</div></div>
+    <div class="info-item"><div class="label">Age</div><div class="value">${c.age}</div></div>
+    <div class="info-item"><div class="label">Grade</div><div class="value">${c.grade}</div></div>
+    <div class="info-item"><div class="label">Subject</div><div class="value">${c.subject}</div></div>
+    ${c.notes?`<div class="info-item" style="grid-column:1/-1"><div class="label">Notes</div><div class="value">${c.notes}</div></div>`:''}
+  `;
+  const appts=getAppts().filter(a=>a.email===u.email);
+  const div=document.getElementById('my-appointments');
+  div.innerHTML=appts.length===0
+    ?'<p style="color:var(--text-muted);font-size:.9rem;">No sessions yet — request your first one below!</p>'
+    :appts.map(a=>`<div class="appt-item"><div class="appt-date">${formatDate(a.date)}</div><div class="appt-details"><strong>${a.time} · ${a.subject}</strong><span>${a.notes||'No notes'}</span></div><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span></div>`).join('');
+}
+
+function openEditChild(){
+  const c=currentUser.child;
+  document.getElementById('ec-name').value=c.name;
+  document.getElementById('ec-age').value=c.age;
+  document.getElementById('ec-grade').value=c.grade;
+  document.getElementById('ec-subject').value=c.subject;
+  document.getElementById('ec-notes').value=c.notes||'';
+  document.getElementById('edit-child-modal').classList.add('visible');
+}
+
+function saveChildInfo(){
+  currentUser.child.name=document.getElementById('ec-name').value.trim();
+  currentUser.child.age=document.getElementById('ec-age').value;
+  currentUser.child.grade=document.getElementById('ec-grade').value;
+  currentUser.child.subject=document.getElementById('ec-subject').value;
+  currentUser.child.notes=document.getElementById('ec-notes').value.trim();
+  const users=getUsers(); users[currentUser.email]=currentUser; saveUsers(users);
+  document.getElementById('edit-child-modal').classList.remove('visible');
+  renderParentDashboard(); showToast('Child info updated! ✨');
+}
+
+// APPOINTMENTS
+function openApptRequest(dateStr){
+  if(!currentUser||isTutor){openLoginModal();return;}
+  if(dateStr) document.getElementById('appt-date').value=dateStr;
+  document.getElementById('appt-modal').classList.add('visible');
+}
+
+function submitApptRequest(){
+  if(!currentUser) return;
+  const date=document.getElementById('appt-date').value;
+  const time=document.getElementById('appt-time').value;
+  const subject=document.getElementById('appt-subject').value;
+  const notes=document.getElementById('appt-notes').value.trim();
+  if(!date){showToast('Please select a date!');return;}
+  const appts=getAppts();
+  appts.push({id:Date.now(),email:currentUser.email,parentName:currentUser.firstName+' '+currentUser.lastName,childName:currentUser.child.name,grade:currentUser.child.grade,date,time,subject,notes,status:'Pending',createdAt:new Date().toISOString()});
+  saveAppts(appts);
+  document.getElementById('appt-modal').classList.remove('visible');
+  document.getElementById('appt-date').value='';
+  document.getElementById('appt-notes').value='';
+  renderParentDashboard(); renderCalendar();
+  showToast('Session request sent! Giuliana will confirm soon 💕');
+}
+
+// TUTOR DASHBOARD
+function switchTutorTab(btn, panelId){
+  document.querySelectorAll('.tutor-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tutor-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+  if(panelId==='tp-families') renderFamilies();
+  if(panelId==='tp-appointments') renderApptRequests();
+  if(panelId==='tp-reviews-mod') renderPending();
+}
+
+function renderTutorDashboard(){ renderFamilies(); renderApptRequests(); renderPending(); }
+
+function renderFamilies(){
+  const entries=Object.values(getUsers());
+  const list=document.getElementById('families-list');
+  list.innerHTML=entries.length===0
+    ?'<p style="color:var(--text-muted);">No families registered yet.</p>'
+    :entries.map(u=>`<div class="parent-row"><strong>${u.firstName} ${u.lastName}</strong><span>${u.email}</span><span>Child: ${u.child.name} · ${u.child.grade} · ${u.child.subject}</span>${u.child.notes?`<span style="font-style:italic;">"${u.child.notes}"</span>`:''}<span style="font-size:.75rem;margin-top:.2rem;display:block;">Joined ${new Date(u.createdAt).toLocaleDateString()}</span></div>`).join('');
+}
+
+function renderApptRequests(){
+  const appts=getAppts();
+  const list=document.getElementById('appt-requests-list');
+  list.innerHTML=appts.length===0
+    ?'<p style="color:var(--text-muted);">No session requests yet.</p>'
+    :appts.map(a=>`<div class="appt-request-row"><div><strong style="font-size:.95rem;">${a.parentName} — ${a.childName} (${a.grade})</strong><div style="font-size:.85rem;color:var(--text-muted);margin-top:.2rem;">${formatDate(a.date)} · ${a.time} · ${a.subject}</div>${a.notes?`<div style="font-size:.82rem;color:var(--text-muted);font-style:italic;">"${a.notes}"</div>`:''}</div><div style="display:flex;gap:.5rem;align-items:center;"><span class="appt-status ${a.status==='Confirmed'?'confirmed':'pending-s'}">${a.status}</span>${a.status==='Pending'?`<button class="btn-approve" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn-reject" onclick="declineAppt(${a.id})">✗ Decline</button>`:''}</div></div>`).join('');
+}
+
+function confirmAppt(id){
+  const appts=getAppts(); const a=appts.find(x=>x.id===id);
+  if(a){a.status='Confirmed';saveAppts(appts);renderApptRequests();renderCalendar();showToast('Session confirmed! ✨');}
+}
+function declineAppt(id){ saveAppts(getAppts().filter(x=>x.id!==id)); renderApptRequests(); renderCalendar(); showToast('Session declined.'); }
+
+// REVIEWS
+function renderApproved(){
+  const reviews=getApproved();
+  document.getElementById('approved-reviews').innerHTML=reviews.length===0
+    ?'<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">No reviews yet!</p>'
+    :reviews.map(r=>`<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+  document.getElementById('hero-testimonials').innerHTML=reviews.slice(0,4).map(r=>`<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+}
+
+let selectedStars=0;
+document.getElementById('star-picker').addEventListener('click',e=>{
+  if(e.target.dataset.val){ selectedStars=parseInt(e.target.dataset.val); document.querySelectorAll('#star-picker span').forEach((s,i)=>s.classList.toggle('active',i<selectedStars)); }
+});
+
+function submitReview(){
+  const name=document.getElementById('r-name').value.trim();
+  const text=document.getElementById('r-text').value.trim();
+  if(!name||!text||!selectedStars){showToast('Please fill out all fields and pick a rating!');return;}
+  const p=getPending(); p.push({id:Date.now(),name,stars:selectedStars,text,date:new Date().toISOString().slice(0,7)});
+  savePending(p); document.getElementById('r-name').value=''; document.getElementById('r-text').value='';
+  selectedStars=0; document.querySelectorAll('#star-picker span').forEach(s=>s.classList.remove('active'));
+  showToast('Thank you for your review! 💕');
+}
+
+function renderPending(){
+  const pending=getPending(); const list=document.getElementById('pending-list');
+  list.innerHTML=pending.length===0
+    ?'<p style="color:var(--text-muted);">No pending reviews — you\'re all caught up ✨</p>'
+    :pending.map(r=>`<div class="pending-card"><div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div><div class="pending-actions"><button class="btn-approve" onclick="approveReview(${r.id})">✓ Approve</button><button class="btn-reject" onclick="rejectReview(${r.id})">✗ Reject</button></div></div>`).join('');
+}
+
+function approveReview(id){
+  let p=getPending(); const idx=p.findIndex(r=>r.id===id); if(idx===-1) return;
+  const [rev]=p.splice(idx,1); savePending(p);
+  const a=getApproved(); a.unshift(rev); saveApproved(a);
+  renderPending(); renderApproved(); showToast('Review approved! ✨');
+}
+function rejectReview(id){ savePending(getPending().filter(r=>r.id!==id)); renderPending(); showToast('Review removed.'); }
+
+// CALENDAR
+let calDate=new Date(), selectedCalDate=null;
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendar(){
+  const year=calDate.getFullYear(), month=calDate.getMonth(), today=new Date();
+  document.getElementById('cal-month-label').textContent=MONTHS[month]+' '+year;
+  const appts=getAppts().filter(a=>a.status==='Confirmed');
+  const myAppts=currentUser&&!isTutor?appts.filter(a=>a.email===currentUser.email):[];
+  const otherAppts=currentUser&&!isTutor?appts.filter(a=>a.email!==currentUser.email):appts;
+  const toKey=d=>`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const myDays=new Set(myAppts.map(a=>a.date));
+  const otherDays=new Set(otherAppts.map(a=>a.date));
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML=DAYS.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  const firstDay=new Date(year,month,1).getDay(), daysInMonth=new Date(year,month+1,0).getDate();
+  for(let i=0;i<firstDay;i++) grid.innerHTML+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const key=toKey(d);
+    const isToday=d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
+    const isMine=myDays.has(key), isOther=otherDays.has(key);
+    let cls=isMine?'my-appt':isOther?'booked':isToday?'today':'';
+    grid.innerHTML+=`<div class="cal-day ${cls}" data-key="${key}" onclick="selectCalDay(${d},${month},${year},'${key}',this)">${d}</div>`;
+  }
+}
+
+function selectCalDay(d,m,y,key,el){
+  document.querySelectorAll('.cal-day').forEach(e=>{if(!e.classList.contains('my-appt')&&!e.classList.contains('booked'))e.classList.remove('selected');});
+  el.classList.add('selected');
+  selectedCalDate=key;
+  const appts=getAppts().filter(a=>a.status==='Confirmed');
+  const mine=currentUser&&!isTutor?appts.filter(a=>a.email===currentUser.email&&a.date===key):[];
+  const other=appts.filter(a=>a.date===key&&(!currentUser||isTutor||a.email!==currentUser.email));
+  const note=document.getElementById('cal-note');
+  const rw=document.getElementById('cal-request-wrap');
+  if(mine.length>0){
+    note.textContent=`You have a session on ${MONTHS[m]} ${d}! (${mine[0].time} · ${mine[0].subject})`;
+    rw.style.display='none';
+  } else if(other.length>0){
+    note.textContent=`${MONTHS[m]} ${d} is already booked. Please choose another date!`;
+    rw.style.display='none';
+  } else {
+    note.textContent=`${MONTHS[m]} ${d}, ${y} is available!`;
+    if(currentUser&&!isTutor){
+      rw.style.display='block';
+      document.getElementById('cal-request-btn').onclick=()=>openApptRequest(key);
+    } else if(!currentUser){
+      note.innerHTML=`${MONTHS[m]} ${d} is available! <a href="#" onclick="openLoginModal();return false;" style="color:var(--accent);">Log in to request →</a>`;
+      rw.style.display='none';
+    }
+  }
+}
+
+function changeMonth(dir){ calDate=new Date(calDate.getFullYear(),calDate.getMonth()+dir,1); renderCalendar(); }
+
+function formatDate(s){ if(!s)return''; const[y,m,d]=s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
+
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
+
+// INIT
+seedReviews(); renderApproved(); renderCalendar();
 </script>
 </body>
 </html>
