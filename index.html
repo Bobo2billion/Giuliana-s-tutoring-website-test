@@ -271,6 +271,7 @@
     <li><button class="nav-page-btn" onclick="showPage('reviews')">Reviews</button></li>
     <li><button class="nav-page-btn" onclick="showPage('messages')">Messages</button></li>
     <li><button class="nav-page-btn" onclick="showPage('calendar')">Calendar</button></li>
+    <li id="nav-students-li" style="display:none;"><button class="nav-page-btn" onclick="showPage('students')">Students</button></li>
     <li>
       <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
       <div id="profile-menu-wrap" style="display:none;position:relative;">
@@ -299,6 +300,7 @@
   <button onclick="showPage('reviews');closeMobileMenu()">Reviews</button>
   <button onclick="showPage('messages');closeMobileMenu()">Messages</button>
   <button onclick="showPage('calendar');closeMobileMenu()">Calendar</button>
+  <button id="mobile-students-btn" style="display:none;" onclick="showPage('students');closeMobileMenu()">Students</button>
 </div>
 
 <!-- ═══ PAGE: HOME ═══ -->
@@ -456,7 +458,16 @@
   </section>
 </div>
 
-<!-- hidden stubs needed by JS -->
+<!-- ═══ PAGE: STUDENTS (tutor only) ═══ -->
+<div class="page" id="page-students">
+  <section style="padding:4rem 2rem;background:var(--pink-pale);min-height:calc(100vh - 65px);">
+    <div style="max-width:900px;margin:0 auto;">
+      <p class="section-label">Tutor Portal</p>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Students</h2>
+      <div id="students-list"></div>
+    </div>
+  </section>
+</div>
 <div id="parent-dashboard" style="display:none!important;">
   <div class="dash-wrap">
     <h2 id="dash-greeting"></h2>
@@ -600,7 +611,7 @@ let unsubMessages = null; // live listener unsub
 // ══════════════════════════════════════════
 //  PAGE ROUTING
 // ══════════════════════════════════════════
-const PAGES = ['home','about','reviews','messages','calendar','tutor'];
+const PAGES = ['home','about','reviews','messages','calendar','tutor','students'];
 
 function showPage(name) {
   PAGES.forEach(p => {
@@ -628,6 +639,8 @@ function showPage(name) {
   if (name === 'calendar') renderCalendar();
   // If reviews page, re-render
   if (name === 'reviews') renderApproved();
+  // If students page, re-render
+  if (name === 'students') renderStudentsPage();
 }
 
 function toggleMobileMenu() {
@@ -805,6 +818,8 @@ async function onLoggedIn() {
   const displayName = isTutor ? 'Giuliana Reitzell' : `${currentUser.firstName} ${currentUser.lastName}`;
   document.getElementById('profile-dropdown-name').textContent = displayName;
   if (isTutor) {
+    document.getElementById('nav-students-li').style.display = '';
+    document.getElementById('mobile-students-btn').style.display = '';
     showPage('tutor');
     await renderTutorDashboard();
   } else {
@@ -823,6 +838,8 @@ function logout() {
   currentUser = null; isTutor = false; activeTutorThreadEmail = null;
   document.getElementById('nav-login-btn').style.display='';
   document.getElementById('profile-menu-wrap').style.display='none';
+  document.getElementById('nav-students-li').style.display = 'none';
+  document.getElementById('mobile-students-btn').style.display = 'none';
   updateContactUI();
   showPage('home');
   renderCalendar();
@@ -1443,6 +1460,42 @@ async function deleteAccount() {
 }
 
 // ══════════════════════════════════════════
+//  STUDENTS PAGE
+// ══════════════════════════════════════════
+async function renderStudentsPage() {
+  const list = document.getElementById('students-list');
+  if (!list) return;
+  list.innerHTML = '<p style="color:var(--text-muted);font-size:.9rem;">Loading...</p>';
+  const users = await fsGetAllUsers();
+  if (users.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-muted);">No families registered yet.</p>';
+    return;
+  }
+  list.innerHTML = users.map(u => `
+    <div class="parent-row" style="margin-bottom:1.2rem;flex-direction:column;align-items:stretch;gap:.8rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.8rem;">
+        <div class="parent-row-info">
+          <strong>${u.firstName} ${u.lastName}</strong>
+          <span>${u.email}${u.phone ? ' · ' + u.phone : ''}</span>
+          <span style="font-size:.75rem;color:var(--text-muted);">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
+        </div>
+        <button class="btn-reject" style="font-size:.78rem;padding:.4rem .9rem;align-self:flex-start;" onclick="removeStudent('${u.email}')">Remove Student</button>
+      </div>
+      <div style="background:var(--pink-pale);border-radius:12px;padding:1rem 1.2rem;">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:500;margin-bottom:.6rem;">Child Information</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;">
+          <div class="info-item"><div class="label">Name</div><div class="value">${u.child.firstName} ${u.child.lastName}</div></div>
+          <div class="info-item"><div class="label">Age</div><div class="value">${u.child.age}</div></div>
+          <div class="info-item"><div class="label">Subject</div><div class="value">${u.child.subject}</div></div>
+        </div>
+        ${u.child.specific ? `<div class="info-item" style="margin-top:.6rem;"><div class="label">Specific Needs</div><div class="value">${u.child.specific}</div></div>` : ''}
+        ${u.child.questions ? `<div class="info-item" style="margin-top:.6rem;"><div class="label">Questions</div><div class="value">${u.child.questions}</div></div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════
 function formatDate(s) { if(!s)return''; const[y,m,d]=s.split('-'); return MONTHS[parseInt(m)-1]+' '+parseInt(d)+', '+y; }
@@ -1499,6 +1552,7 @@ window.removeStudent     = removeStudent;
 window.deleteAccount     = deleteAccount;
 window.changeMonth       = changeMonth;
 window.selectCalDay      = selectCalDay;
+window.renderStudentsPage = renderStudentsPage;
 </script>
 </body>
 </html>
