@@ -17,16 +17,36 @@
 
   /* NAV */
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;letter-spacing:.05em;color:var(--text);text-decoration:none;}
+  .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;letter-spacing:.05em;color:var(--text);text-decoration:none;cursor:pointer;}
   .nav-logo span{color:var(--accent);font-style:italic;}
   .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
-  .nav-links a{font-size:.85rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;}
-  .nav-links a:hover{color:var(--accent);}
+  .nav-links a,.nav-links button.nav-page-btn{font-size:.85rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+  .nav-links a:hover,.nav-links button.nav-page-btn:hover{color:var(--accent);}
+  .nav-links button.nav-page-btn.active{color:var(--accent);}
   #nav-login-btn{background:var(--pink);color:var(--accent);border:none;padding:.5rem 1.3rem;border-radius:99px;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:background .2s;}
   #nav-login-btn:hover{background:var(--pink-deep);}
   #nav-user-info{display:none;align-items:center;gap:.8rem;font-size:.85rem;color:var(--text-muted);}
   #nav-user-info strong{color:var(--accent);}
   #nav-logout{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;font-family:inherit;text-decoration:underline;}
+
+  /* HAMBURGER */
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:.3rem;}
+  .hamburger span{display:block;width:22px;height:2px;background:var(--text-muted);border-radius:2px;transition:all .25s;}
+  .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.open span:nth-child(2){opacity:0;}
+  .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .mobile-menu{display:none;position:fixed;top:65px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--border);padding:1rem 2rem;z-index:99;flex-direction:column;gap:.2rem;}
+  .mobile-menu.open{display:flex;}
+  .mobile-menu button,.mobile-menu a{background:none;border:none;font-family:inherit;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);cursor:pointer;padding:.7rem 0;text-align:left;border-bottom:1px solid var(--border);text-decoration:none;transition:color .2s;}
+  .mobile-menu button:last-child,.mobile-menu a:last-child{border-bottom:none;}
+  .mobile-menu button:hover,.mobile-menu a:hover{color:var(--accent);}
+  .mobile-menu button.active{color:var(--accent);}
+
+  /* PAGES */
+  .page{display:none;min-height:calc(100vh - 65px);padding-top:65px;opacity:0;transition:opacity .25s ease;}
+  .page.active{display:block;opacity:1;}
+  .page-fade{animation:pageFadeIn .3s ease forwards;}
+  @keyframes pageFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
   /* HERO */
   #home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--pink-pale) 0%,var(--white) 60%,var(--pink-light) 100%);padding:6rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
@@ -233,22 +253,26 @@
   .tutor-family-row-info span{font-size:.78rem;color:var(--text-muted);display:block;line-height:1.5;}
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-  @media(max-width:600px){nav{padding:1rem 1.2rem;}.nav-links{gap:.8rem;}.form-row{grid-template-columns:1fr;}}
+  @media(max-width:700px){
+    nav{padding:1rem 1.2rem;}
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .form-row{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#home" class="nav-logo">Giuliana Reitzell <span>✦</span></a>
+  <span class="nav-logo" onclick="showPage('home')">Giuliana Reitzell <span>✦</span></span>
   <ul class="nav-links">
-    <li><a href="#home">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#calendar">Calendar</a></li>
+    <li><button class="nav-page-btn active" onclick="showPage('home')">Home</button></li>
+    <li><button class="nav-page-btn" onclick="showPage('about')">About</button></li>
+    <li><button class="nav-page-btn" onclick="showPage('reviews')">Reviews</button></li>
+    <li><button class="nav-page-btn" onclick="showPage('messages')">Messages</button></li>
+    <li><button class="nav-page-btn" onclick="showPage('calendar')">Calendar</button></li>
     <li>
       <button id="nav-login-btn" onclick="openLoginModal()">Log In</button>
-      <!-- Profile dropdown (shown when logged in) -->
       <div id="profile-menu-wrap" style="display:none;position:relative;">
         <button id="profile-avatar-btn" onclick="toggleProfileMenu()" aria-label="Account menu">
           <svg id="profile-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -262,100 +286,187 @@
       </div>
     </li>
   </ul>
+  <!-- Hamburger for mobile -->
+  <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- HERO -->
-<section id="home">
-  <span class="hero-tag">✨ Personalized Tutoring</span>
-  <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
-  <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
-  <div>
-    <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Get Started</button>
-    <a href="#about" class="btn-secondary">Learn More</a>
-  </div>
-  <div style="margin-top:4rem;width:100%;max-width:900px;text-align:center;">
-    <p class="section-label">What parents are saying</p>
-    <div class="testimonials-track" id="hero-testimonials"></div>
-  </div>
-</section>
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="active" onclick="showPage('home');closeMobileMenu()">Home</button>
+  <button onclick="showPage('about');closeMobileMenu()">About</button>
+  <button onclick="showPage('reviews');closeMobileMenu()">Reviews</button>
+  <button onclick="showPage('messages');closeMobileMenu()">Messages</button>
+  <button onclick="showPage('calendar');closeMobileMenu()">Calendar</button>
+</div>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-inner">
-    <p class="section-label">About</p>
-    <h2 class="section-title">Hi, I'm Giuliana.</h2>
-    <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I create a warm, supportive space where every child feels seen and capable.</p>
-    <p style="margin-top:1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
-  </div>
-</section>
+<!-- ═══ PAGE: HOME ═══ -->
+<div class="page active" id="page-home">
+  <section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--pink-pale) 0%,var(--white) 60%,var(--pink-light) 100%);padding:4rem 2rem;text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,var(--pink) 0%,transparent 70%);top:-100px;right:-100px;opacity:.35;pointer-events:none;"></div>
+    <div style="position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,var(--pink-deep) 0%,transparent 70%);bottom:-50px;left:-80px;opacity:.2;pointer-events:none;"></div>
+    <span class="hero-tag">✨ Personalized Tutoring</span>
+    <h1 class="hero-title">Learning made<br><em>lovely.</em></h1>
+    <p class="hero-sub">Helping students shine — one session at a time. Patient, personalized, and always encouraging.</p>
+    <div>
+      <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Get Started</button>
+      <button class="btn-secondary" onclick="showPage('about')" style="animation:none;">Learn More</button>
+    </div>
+    <div style="margin-top:4rem;width:100%;max-width:900px;text-align:center;position:relative;z-index:1;">
+      <p class="section-label">What parents are saying</p>
+      <div class="testimonials-track" id="hero-testimonials"></div>
+    </div>
+  </section>
+</div>
 
-<!-- REVIEWS -->
-<section id="reviews">
-  <div style="text-align:center;">
-    <p class="section-label">Testimonials</p>
-    <h2 class="section-title">Parent Reviews</h2>
-  </div>
-  <div class="reviews-grid" id="approved-reviews"></div>
-</section>
+<!-- ═══ PAGE: ABOUT ═══ -->
+<div class="page" id="page-about">
+  <section style="min-height:calc(100vh - 65px);display:flex;align-items:center;justify-content:center;background:var(--pink-pale);padding:4rem 2rem;text-align:center;">
+    <div class="about-inner">
+      <p class="section-label">About</p>
+      <h2 class="section-title">Hi, I'm Giuliana.</h2>
+      <p>I'm a passionate tutor dedicated to helping students of all ages and grade levels build confidence, improve their skills, and truly love learning. I create a warm, supportive space where every child feels seen and capable.</p>
+      <p style="margin-top:1rem;">Whether your child needs help in math, reading, writing, or test prep — I'm here to make a real difference.</p>
+    </div>
+  </section>
+</div>
 
-<!-- SUBMIT REVIEW -->
-<section id="submit-review">
-  <p class="section-label">Leave a Review</p>
-  <h2 class="section-title">Share your experience</h2>
-  <div class="form-wrap">
-    <div class="form-group"><label>Your Name</label><input type="text" id="r-name" placeholder="e.g. Sarah M."></div>
-    <div class="form-group">
-      <label>Star Rating</label>
-      <div class="star-picker" id="star-picker">
-        <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
+<!-- ═══ PAGE: REVIEWS ═══ -->
+<div class="page" id="page-reviews">
+  <section style="padding:4rem 2rem;background:var(--pink-pale);">
+    <div style="text-align:center;">
+      <p class="section-label">Testimonials</p>
+      <h2 class="section-title">Parent Reviews</h2>
+    </div>
+    <div class="reviews-grid" id="approved-reviews"></div>
+  </section>
+  <section id="submit-review" style="padding:4rem 2rem;background:var(--white);text-align:center;">
+    <p class="section-label">Leave a Review</p>
+    <h2 class="section-title">Share your experience</h2>
+    <div class="form-wrap">
+      <div class="form-group"><label>Your Name</label><input type="text" id="r-name" placeholder="e.g. Sarah M."></div>
+      <div class="form-group">
+        <label>Star Rating</label>
+        <div class="star-picker" id="star-picker">
+          <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
+        </div>
+      </div>
+      <div class="form-group"><label>Your Review</label><textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea></div>
+      <button class="btn-primary" onclick="submitReview()" style="animation:none;border:none;width:100%;text-align:center;">Submit Review</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ PAGE: MESSAGES ═══ -->
+<div class="page" id="page-messages">
+  <section style="min-height:calc(100vh - 65px);padding:4rem 2rem;background:var(--pink-pale);display:flex;align-items:flex-start;justify-content:center;">
+    <div style="width:100%;max-width:600px;">
+      <p class="section-label">Messages</p>
+      <h2 class="section-title">Get in Touch</h2>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2rem;">
+        <p id="contact-desc" style="font-size:.95rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;font-weight:300;">Have a question? Log in to send a message and I'll get back to you as soon as possible.</p>
+        <div id="contact-login-prompt">
+          <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Log In to Message</button>
+        </div>
+        <div id="contact-thread-wrap" style="display:none;">
+          <div class="msg-thread" id="contact-thread" style="max-height:400px;"></div>
+          <div class="msg-compose" style="margin-top:.8rem;">
+            <input type="text" id="contact-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendContactMsg()">
+            <button class="msg-send-btn" onclick="sendContactMsg()">Send</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="form-group"><label>Your Review</label><textarea id="r-text" placeholder="Tell other parents about your experience..."></textarea></div>
-    <button class="btn-primary" onclick="submitReview()" style="animation:none;border:none;width:100%;text-align:center;">Submit Review</button>
-  </div>
-</section>
+  </section>
+</div>
 
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">Contact</p>
-  <h2 class="section-title">Get in Touch</h2>
-  <div class="contact-card">
-    <p id="contact-desc">Have a question? Send a message and I'll get back to you as soon as possible. Log in to start a conversation.</p>
-    <div id="contact-login-prompt">
-      <button class="btn-primary" onclick="openLoginModal()" style="animation:none;border:none;">Log In to Message</button>
-    </div>
-    <div id="contact-thread-wrap" style="display:none;">
-      <div class="msg-thread" id="contact-thread"></div>
-      <div class="msg-compose">
-        <input type="text" id="contact-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendContactMsg()">
-        <button class="msg-send-btn" onclick="sendContactMsg()">Send</button>
+<!-- ═══ PAGE: CALENDAR ═══ -->
+<div class="page" id="page-calendar">
+  <section style="min-height:calc(100vh - 65px);padding:4rem 2rem;background:var(--white);text-align:center;">
+    <p class="section-label">Schedule</p>
+    <h2 class="section-title">Availability Calendar</h2>
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+        <h3 id="cal-month-label"></h3>
+        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <span><span class="legend-dot" style="background:var(--pink)"></span>Today</span>
+        <span><span class="legend-dot" style="background:var(--pink-light);border:1px solid var(--border)"></span>Booked</span>
+        <span><span class="legend-dot" style="background:var(--accent)"></span>Your Session</span>
+      </div>
+      <p class="cal-note" id="cal-note">Select a date to check availability. Log in to request a session!</p>
+      <div id="cal-request-wrap" style="display:none;margin-top:1rem;text-align:center;">
+        <button class="request-btn" id="cal-request-btn">Request This Date</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
-<!-- CALENDAR -->
-<section id="calendar">
-  <p class="section-label">Schedule</p>
-  <h2 class="section-title">Availability Calendar</h2>
-  <div class="cal-wrap">
-    <div class="cal-header">
-      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
-      <h3 id="cal-month-label"></h3>
-      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+<!-- ═══ PAGE: TUTOR DASHBOARD ═══ -->
+<div class="page" id="page-tutor">
+  <section id="tutor-dashboard" style="padding:4rem 2rem;background:var(--pink-pale);">
+    <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
+      <p class="section-label">Tutor Portal</p>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana Reitzell.</h2>
+      <div class="tutor-tabs">
+        <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
+        <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
+        <button class="tutor-tab" onclick="switchTutorTab(this,'tp-reviews-mod')">Review Moderation</button>
+        <button class="tutor-tab" onclick="switchTutorTab(this,'tp-messages')">Messages <span id="tutor-unread-total" style="display:none;" class="msg-unread-badge"></span></button>
+      </div>
+      <div id="tp-families" class="tutor-panel active">
+        <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Registered Families</h4>
+        <div id="families-list"></div>
+      </div>
+      <div id="tp-appointments" class="tutor-panel">
+        <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Session Requests</h4>
+        <div id="appt-requests-list"></div>
+      </div>
+      <div id="tp-reviews-mod" class="tutor-panel">
+        <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Pending Reviews</h4>
+        <div id="pending-list"></div>
+      </div>
+      <div id="tp-messages" class="tutor-panel">
+        <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Family Messages</h4>
+        <div id="tutor-family-selector"></div>
+        <div id="tutor-msg-area" style="display:none;margin-top:1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <strong id="tutor-msg-target-name" style="font-size:.95rem;"></strong>
+            <div style="display:flex;gap:.6rem;align-items:center;">
+              <button class="refresh-btn" onclick="refreshTutorMsgs(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Refresh
+              </button>
+              <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back</button>
+            </div>
+          </div>
+          <div class="new-msg-banner" id="tutor-new-msg-banner" onclick="refreshTutorMsgs(null)">New message — tap to load</div>
+          <div class="msg-thread" id="tutor-msg-thread"></div>
+          <div class="msg-compose">
+            <input type="text" id="tutor-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
+            <button class="msg-send-btn" onclick="sendTutorMsg()">Send</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div class="cal-legend">
-      <span><span class="legend-dot" style="background:var(--pink)"></span>Today</span>
-      <span><span class="legend-dot" style="background:var(--pink-light);border:1px solid var(--border)"></span>Booked</span>
-      <span><span class="legend-dot" style="background:var(--accent)"></span>Your Session</span>
-    </div>
-    <p class="cal-note" id="cal-note">Select a date to check availability. Log in to request a session!</p>
-    <div id="cal-request-wrap" style="display:none;margin-top:1rem;text-align:center;">
-      <button class="request-btn" id="cal-request-btn">Request This Date</button>
-    </div>
+  </section>
+</div>
+
+<!-- hidden stubs needed by JS -->
+<div id="parent-dashboard" style="display:none!important;">
+  <div class="dash-wrap">
+    <h2 id="dash-greeting"></h2>
+    <div id="child-info-grid"></div>
+    <div id="my-appointments"></div>
+    <div id="parent-msg-thread"></div>
+    <span id="parent-unread-badge"></span>
+    <div id="parent-new-msg-banner"></div>
   </div>
-</section>
+</div>
 
 <!-- ACCOUNT PANEL OVERLAY -->
 <div id="account-panel-overlay" onclick="closeAccountPanel()"></div>
@@ -366,95 +477,8 @@
     <h2 id="panel-title">My Account</h2>
     <button class="panel-close" onclick="closeAccountPanel()">×</button>
   </div>
-  <div class="panel-body" id="panel-body">
-    <!-- filled by JS -->
-  </div>
+  <div class="panel-body" id="panel-body"></div>
 </div>
-
-<!-- PARENT DASHBOARD (hidden - content lives in account panel) -->
-<section id="parent-dashboard" style="display:none!important;">
-  <div class="dash-wrap">
-    <p class="section-label">Parent Portal</p>
-    <h2 class="section-title" id="dash-greeting" style="margin-bottom:1.5rem;">My Dashboard</h2>
-    <div class="dash-card">
-      <h4>Child Information</h4>
-      <div class="info-grid" id="child-info-grid"></div>
-      <button onclick="openEditChild()" style="margin-top:1.2rem;background:none;border:1.5px solid var(--border);border-radius:99px;padding:.45rem 1.2rem;font-size:.8rem;cursor:pointer;font-family:inherit;color:var(--text-muted);">Edit Info</button>
-    </div>
-    <div class="dash-card">
-      <h4>My Appointments</h4>
-      <div id="my-appointments"></div>
-      <button onclick="openApptRequest()" style="margin-top:1.2rem;" class="request-btn">+ Request New Session</button>
-    </div>
-    <div class="dash-card">
-      <h4 style="display:flex;align-items:center;justify-content:space-between;">
-        Messages <span id="parent-unread-badge" style="display:none;" class="msg-unread-badge"></span>
-        <button class="refresh-btn" onclick="refreshParentMsgs(this)" title="Check for new messages">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Refresh
-        </button>
-      </h4>
-      <div class="new-msg-banner" id="parent-new-msg-banner" onclick="refreshParentMsgs(null)">New message from Giuliana — tap to load</div>
-      <div class="msg-thread" id="parent-msg-thread"></div>
-      <div class="msg-compose">
-        <input type="text" id="parent-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendParentMsg()">
-        <button class="msg-send-btn" onclick="sendParentMsg()">Send</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TUTOR DASHBOARD -->
-<section id="tutor-dashboard">
-  <div class="dash-wrap" style="max-width:900px;margin:0 auto;">
-    <p class="section-label">Tutor Portal</p>
-    <h2 class="section-title" style="margin-bottom:1.5rem;">Welcome back, Giuliana Reitzell.</h2>
-    <div class="tutor-tabs">
-      <button class="tutor-tab active" onclick="switchTutorTab(this,'tp-families')">Families</button>
-      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-appointments')">Appointment Requests</button>
-      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-reviews-mod')">Review Moderation</button>
-      <button class="tutor-tab" onclick="switchTutorTab(this,'tp-messages')">Messages <span id="tutor-unread-total" style="display:none;" class="msg-unread-badge"></span></button>
-    </div>
-
-    <div id="tp-families" class="tutor-panel active">
-      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Registered Families</h4>
-      <div id="families-list"></div>
-    </div>
-
-    <div id="tp-appointments" class="tutor-panel">
-      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Session Requests</h4>
-      <div id="appt-requests-list"></div>
-    </div>
-
-    <div id="tp-reviews-mod" class="tutor-panel">
-      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Pending Reviews</h4>
-      <div id="pending-list"></div>
-    </div>
-
-    <div id="tp-messages" class="tutor-panel">
-      <h4 style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;margin-bottom:1rem;">Family Messages</h4>
-      <div id="tutor-family-selector"></div>
-      <div id="tutor-msg-area" style="display:none;margin-top:1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <strong id="tutor-msg-target-name" style="font-size:.95rem;"></strong>
-          <div style="display:flex;gap:.6rem;align-items:center;">
-            <button class="refresh-btn" onclick="refreshTutorMsgs(this)" title="Check for new messages">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-              Refresh
-            </button>
-            <button onclick="closeTutorThread()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;font-family:inherit;">← Back to all</button>
-          </div>
-        </div>
-        <div class="new-msg-banner" id="tutor-new-msg-banner" onclick="refreshTutorMsgs(null)">New message — tap to load</div>
-        <div class="msg-thread" id="tutor-msg-thread"></div>
-        <div class="msg-compose">
-          <input type="text" id="tutor-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
-          <button class="msg-send-btn" onclick="sendTutorMsg()">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <footer>
   <strong>Giuliana Reitzell ✦ Tutoring</strong>
@@ -572,6 +596,50 @@ const TUTOR_PASSWORD = "giuliana2026";
 let currentUser = null, isTutor = false;
 let activeTutorThreadEmail = null;
 let unsubMessages = null; // live listener unsub
+
+// ══════════════════════════════════════════
+//  PAGE ROUTING
+// ══════════════════════════════════════════
+const PAGES = ['home','about','reviews','messages','calendar','tutor'];
+
+function showPage(name) {
+  PAGES.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) { el.classList.remove('active'); el.classList.remove('page-fade'); }
+  });
+  const target = document.getElementById('page-' + name);
+  if (target) {
+    target.classList.add('active');
+    requestAnimationFrame(() => target.classList.add('page-fade'));
+    window.scrollTo(0, 0);
+  }
+  // Update nav active state
+  document.querySelectorAll('.nav-page-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-page-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+name+"'")) b.classList.add('active');
+  });
+  // Update mobile menu active state
+  document.querySelectorAll('.mobile-menu button').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+name+"'"));
+  });
+  // If messages page, update contact UI
+  if (name === 'messages') updateContactUI();
+  // If calendar page, re-render
+  if (name === 'calendar') renderCalendar();
+  // If reviews page, re-render
+  if (name === 'reviews') renderApproved();
+}
+
+function toggleMobileMenu() {
+  const btn = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
 
 // ══════════════════════════════════════════
 //  FIRESTORE HELPERS
@@ -737,9 +805,8 @@ async function onLoggedIn() {
   const displayName = isTutor ? 'Giuliana Reitzell' : `${currentUser.firstName} ${currentUser.lastName}`;
   document.getElementById('profile-dropdown-name').textContent = displayName;
   if (isTutor) {
-    document.getElementById('tutor-dashboard').classList.add('visible');
+    showPage('tutor');
     await renderTutorDashboard();
-    document.getElementById('tutor-dashboard').scrollIntoView({behavior:'smooth'});
   } else {
     startParentMessageListener();
     updateContactUI();
@@ -756,9 +823,8 @@ function logout() {
   currentUser = null; isTutor = false; activeTutorThreadEmail = null;
   document.getElementById('nav-login-btn').style.display='';
   document.getElementById('profile-menu-wrap').style.display='none';
-  document.getElementById('parent-dashboard').classList.remove('visible');
-  document.getElementById('tutor-dashboard').classList.remove('visible');
   updateContactUI();
+  showPage('home');
   renderCalendar();
 }
 
@@ -1326,19 +1392,10 @@ async function renderParentAccountPanel(body) {
       <button onclick="openApptRequest();closeAccountPanel();" style="margin-top:.8rem;" class="request-btn">+ Request Session</button>
     </div>
     <div class="panel-section">
-      <p class="panel-section-title">Messages</p>
-      <div class="msg-thread" id="panel-msg-thread" style="max-height:240px;"></div>
-      <div class="msg-compose" style="margin-top:.6rem;">
-        <input type="text" id="panel-msg-input" placeholder="Write a message to Giuliana..." onkeydown="if(event.key==='Enter')sendPanelMsg()">
-        <button class="msg-send-btn" onclick="sendPanelMsg()">Send</button>
-      </div>
-    </div>
-    <div class="panel-section">
       <button onclick="deleteAccount()" style="width:100%;background:var(--pink);color:var(--accent);border:none;border-radius:12px;padding:.9rem;font-size:.9rem;font-weight:500;font-family:inherit;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--pink-deep)'" onmouseout="this.style.background='var(--pink)'">Delete My Account</button>
     </div>
   `;
-  const msgs = await fsGetMessages(u.email);
-  renderPanelThreadFromData(msgs);
+  // no message thread in account panel anymore
 }
 
 async function renderTutorAccountPanel(body) {
@@ -1404,6 +1461,9 @@ async function init() {
 init();
 
 // Expose functions needed by inline HTML onclick handlers
+window.showPage         = showPage;
+window.toggleMobileMenu = toggleMobileMenu;
+window.closeMobileMenu  = closeMobileMenu;
 window.openLoginModal    = openLoginModal;
 window.closeLoginModal   = closeLoginModal;
 window.switchAuthTab     = switchAuthTab;
