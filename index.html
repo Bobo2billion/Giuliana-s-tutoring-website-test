@@ -584,6 +584,19 @@
   </div>
 </div>
 
+<!-- STUDENT MESSAGE MODAL -->
+<div class="modal-overlay" id="student-msg-modal">
+  <div class="modal-box" style="max-width:480px;">
+    <button class="modal-close" onclick="closeStudentMsgModal()">×</button>
+    <h3 id="student-msg-modal-name" style="margin-bottom:1.2rem;"></h3>
+    <div class="msg-thread" id="student-msg-thread" style="max-height:340px;"></div>
+    <div class="msg-compose" style="margin-top:.8rem;">
+      <input type="text" id="student-msg-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter')sendStudentMsg()">
+      <button class="msg-send-btn" onclick="sendStudentMsg()">Send</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -1479,7 +1492,10 @@ async function renderStudentsPage() {
           <span>${u.email}${u.phone ? ' · ' + u.phone : ''}</span>
           <span style="font-size:.75rem;color:var(--text-muted);">Joined ${new Date(u.createdAt).toLocaleDateString()}</span>
         </div>
-        <button class="btn-reject" style="font-size:.78rem;padding:.4rem .9rem;align-self:flex-start;" onclick="removeStudent('${u.email}')">Remove Student</button>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="family-msg-btn" onclick="openStudentMsgModal('${u.email}','${u.firstName} ${u.lastName}')">✉ Message</button>
+          <button class="btn-reject" style="font-size:.78rem;padding:.4rem .9rem;" onclick="removeStudent('${u.email}')">Remove</button>
+        </div>
       </div>
       <div style="background:var(--pink-pale);border-radius:12px;padding:1rem 1.2rem;">
         <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:500;margin-bottom:.6rem;">Child Information</div>
@@ -1493,6 +1509,44 @@ async function renderStudentsPage() {
       </div>
     </div>
   `).join('');
+}
+
+let _studentMsgEmail = null;
+let _studentMsgUnsub = null;
+
+async function openStudentMsgModal(email, name) {
+  _studentMsgEmail = email;
+  document.getElementById('student-msg-modal-name').textContent = name;
+  document.getElementById('student-msg-modal').classList.add('visible');
+  document.getElementById('student-msg-thread').innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:1rem 0;">Loading...</p>';
+  // Start live listener for this thread
+  if (_studentMsgUnsub) _studentMsgUnsub();
+  const threadRef = collection(db, 'messages', email, 'thread');
+  _studentMsgUnsub = onSnapshot(query(threadRef, orderBy('ts','asc')), snap => {
+    const msgs = snap.docs.map(d => ({id:d.id,...d.data()}));
+    const u = _cachedUsers ? _cachedUsers[email] : null;
+    const label = u ? `${u.firstName} — ${u.child.firstName}, ${u.child.age}, ${u.child.subject}` : 'Parent';
+    const div = document.getElementById('student-msg-thread');
+    if (!div) return;
+    div.innerHTML = buildMsgHTML(msgs, false, label);
+    div.scrollTop = div.scrollHeight;
+  });
+  fsMarkMessagesRead(email, 'parent');
+}
+
+function closeStudentMsgModal() {
+  if (_studentMsgUnsub) { _studentMsgUnsub(); _studentMsgUnsub = null; }
+  _studentMsgEmail = null;
+  document.getElementById('student-msg-modal').classList.remove('visible');
+}
+
+async function sendStudentMsg() {
+  if (!_studentMsgEmail) return;
+  const input = document.getElementById('student-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  await fsAddMessage(_studentMsgEmail, {from:'tutor', text, readByTutor:true, readByParent:false});
 }
 
 // ══════════════════════════════════════════
@@ -1552,7 +1606,10 @@ window.removeStudent     = removeStudent;
 window.deleteAccount     = deleteAccount;
 window.changeMonth       = changeMonth;
 window.selectCalDay      = selectCalDay;
-window.renderStudentsPage = renderStudentsPage;
+window.renderStudentsPage   = renderStudentsPage;
+window.openStudentMsgModal  = openStudentMsgModal;
+window.closeStudentMsgModal = closeStudentMsgModal;
+window.sendStudentMsg       = sendStudentMsg;
 </script>
 </body>
 </html>
