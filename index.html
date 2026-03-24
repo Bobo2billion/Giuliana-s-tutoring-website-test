@@ -343,6 +343,14 @@
     </div>
     <div class="reviews-grid" id="approved-reviews"></div>
   </section>
+  <!-- Pending reviews — tutor only -->
+  <section id="pending-reviews-section" style="display:none;padding:3rem 2rem;background:var(--white);">
+    <div style="max-width:900px;margin:0 auto;">
+      <p class="section-label">Tutor Portal</p>
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Pending Reviews</h2>
+      <div id="pending-list-reviews"></div>
+    </div>
+  </section>
   <section id="submit-review" style="padding:4rem 2rem;background:var(--white);text-align:center;">
     <p class="section-label">Leave a Review</p>
     <h2 class="section-title">Share your experience</h2>
@@ -510,7 +518,7 @@
       <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@email.com"></div>
       <div class="form-group"><label>Password</label><input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-primary" onclick="doLogin()" style="animation:none;border:none;width:100%;text-align:center;">Log In</button>
-      <p class="modal-note">Giuliana? <a href="#" onclick="showTutorTab(event)" style="color:var(--accent);">Tutor login →</a></p>
+      <p class="modal-note"><a href="#" onclick="showTutorTab(event)" style="color:var(--accent);">Tutor login →</a></p>
     </div>
     <div class="tab-panel" id="tab-signup">
       <h3>Create your account</h3>
@@ -651,7 +659,7 @@ function showPage(name) {
   // If calendar page, re-render
   if (name === 'calendar') renderCalendar();
   // If reviews page, re-render
-  if (name === 'reviews') renderApproved();
+  if (name === 'reviews') { renderApproved(); if (isTutor) renderPendingOnReviewsPage(); }
   // If students page, re-render
   if (name === 'students') renderStudentsPage();
 }
@@ -1255,6 +1263,10 @@ async function renderApproved() {
     : reviews.map(r => `<div class="review-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
   document.getElementById('hero-testimonials').innerHTML = reviews.slice(0,4).map(r =>
     `<div class="testimonial-card"><div class="t-stars">${'★'.repeat(r.stars)}</div><p class="t-text">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>`).join('');
+  // Show pending reviews section for tutor
+  const pendingSection = document.getElementById('pending-reviews-section');
+  if (pendingSection) pendingSection.style.display = isTutor ? 'block' : 'none';
+  if (isTutor) renderPendingOnReviewsPage();
 }
 
 let selectedStars = 0;
@@ -1277,6 +1289,21 @@ async function submitReview() {
   showToast('Thank you for your review!');
 }
 
+async function renderPendingOnReviewsPage() {
+  const pending = await fsGetPending();
+  const list = document.getElementById('pending-list-reviews');
+  if (!list) return;
+  list.innerHTML = pending.length === 0
+    ? "<p style='color:var(--text-muted);'>No pending reviews — you're all caught up.</p>"
+    : pending.map(r => `<div class="pending-card">
+        <div><div class="t-stars">${'★'.repeat(r.stars)}</div><p style="font-size:.95rem;line-height:1.6;">"${r.text}"</p><span class="t-author">— ${r.name}</span></div>
+        <div class="pending-actions">
+          <button class="btn-approve" onclick="approveReview('${r.id}')">✓ Approve</button>
+          <button class="btn-reject" onclick="rejectReview('${r.id}')">✗ Reject</button>
+        </div>
+      </div>`).join('');
+}
+
 async function renderPending() {
   const pending = await fsGetPending();
   const list = document.getElementById('pending-list');
@@ -1291,8 +1318,8 @@ async function renderPending() {
         </div>
       </div>`).join('');
 }
-async function approveReview(id) { await fsApproveReview(id); renderPending(); renderApproved(); showToast('Review approved!'); }
-async function rejectReview(id)  { await fsRejectReview(id);  renderPending(); showToast('Review removed.'); }
+async function approveReview(id) { await fsApproveReview(id); renderPending(); renderPendingOnReviewsPage(); renderApproved(); showToast('Review approved!'); }
+async function rejectReview(id)  { await fsRejectReview(id);  renderPending(); renderPendingOnReviewsPage(); showToast('Review removed.'); }
 
 // ══════════════════════════════════════════
 //  CALENDAR
